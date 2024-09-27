@@ -1,0 +1,47 @@
+{% extends "layouts/full.html" %}
+
+{% set selectedNav = "Create" %}
+{% set pageName = "What is the title of the standard?" %}
+{% set seoPageName = "" %}
+{% set pageDescription = ""%}
+{% set view = "standard" %}
+
+{% block hero %}
+{% include 'create/standard/_head.html' %}
+{% endblock %}
+
+    {% block head %}
+        <meta name="robots" content="noindex, nofollow">
+    {% endblock %}
+
+    {% block content %}
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                
+
+   <form action="/create/standard/title" method="post" >
+                <div class="govuk-form-group">
+                    <h2 class="govuk-label-wrapper">
+                        <label class="govuk-label govuk-label--l" for="title">
+     {{pageName}}
+    </label>
+                    </h2>
+                    <div id="title-hint" class="govuk-hint">
+    This should help people understand what the standard is for.
+  </div>
+                    <input class="govuk-input" id="title" name="title" type="text" aria-describedby="title-hint" value="{{data['title']}}">
+                </div>
+
+<div class="govuk-button-group">
+  <button type="submit" class="govuk-button" data-module="govuk-button">
+    Continue
+  </button>
+  <a class="govuk-link" href="/create/standard">Return to tasks</a>
+</div>
+</form>
+            </div>
+        </div>
+
+
+
+    {% endblock %}

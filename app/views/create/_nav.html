@@ -1,0 +1,29 @@
+<nav class="app-sub-navigation" aria-label="Application menu">
+    <ul class="app-sub-navigation__list">
+       
+        <li class="app-sub-navigation__item">
+            <a class="app-sub-navigation__link" {% if view==='standard' %} aria-current="page" {% endif
+                                %} href="/create/standard">Standard</a>
+        </li>
+        <li class="app-sub-navigation__item">
+            <a class="app-sub-navigation__link" {% if view==='guidance' %} aria-current="page" {% endif
+                                %}href="/create/standard/guidance">Guidance</a>
+        </li>
+        <li class="app-sub-navigation__item">
+            <a class="app-sub-navigation__link" {% if view==='products' %} aria-current="page" {% endif
+                                %}href="/create/standard/products">Products</a>
+        </li>
+        <li class="app-sub-navigation__item">
+            <a class="app-sub-navigation__link" {% if view==='exceptions' %} aria-current="page" {% endif
+                                %}href="/create/standard/exceptions">Exceptions</a>
+        </li>
+        <li class="app-sub-navigation__item">
+            <a class="app-sub-navigation__link" {% if view==='contacts' %} aria-current="page" {% endif
+                                %}href="/create/standard/contacts">Contacts</a>
+        </li>
+        <li class="app-sub-navigation__item">
+            <a class="app-sub-navigation__link" {% if view==='preview' %} aria-current="page" {% endif
+                                %}href="/create/standard/preview">Preview</a>
+        </li>
+    </ul>
+</nav>

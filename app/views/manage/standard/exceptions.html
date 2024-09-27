@@ -1,0 +1,75 @@
+{% extends "layouts/full.html" %}
+
+{% set selectedNav = "Manage" %}
+{% set pageName = "Exceptions" %}
+{% set seoPageName = "" %}
+{% set pageDescription = ""%}
+{% set view = "exceptions" %}
+
+{% block hero %}
+    {% include 'manage/standard/_head.html' %}
+{% endblock %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+
+               
+
+            <h2 class="govuk-heading-l">Exceptions</h2>
+
+            <p>Exceptions that apply to this standard.</p>
+
+            <div class="govuk-summary-card">
+                <div class="govuk-summary-card__title-wrapper">
+                    <h2 class="govuk-summary-card__title">
+      Exceptions
+    </h2>
+                    <ul class="govuk-summary-card__actions">
+                        <li class="govuk-summary-card__action">
+                            <a class="govuk-link" href="/manage/standard/add-exception/{{standard.sys.id}}">Add <span class="govuk-visually-hidden"> exception</span></a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="govuk-summary-card__content">
+
+                    {% if standard.fields.exceptions | length %}
+
+                       
+
+                             <table class="govuk-table">
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th scope="col" class="govuk-table__header">Exception</th>
+                            <th scope="col" class="govuk-table__header">Details</th>
+                            <th scope="col" class="govuk-table__header">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="govuk-table__body">
+                         {% for exception in standard.fields.exceptions %}
+                            <tr class="govuk-table__row">
+                                <td class="govuk-table__cell">{{exception.fields.title}}</td>
+                                <td class="govuk-table__cell">{{exception.fields.details | truncate(140)}}</td>
+                                <td class="govuk-table__cell">
+                                    <a href="/manage/standard/manage-exception/{{standard.sys.id}}/{{exception.sys.id}}">Manage</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+               
+
+                    {% else %}
+
+                     
+                           <p class="govuk-!-margin-bottom-0">No exceptions added.</p>
+                    
+
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,114 @@
+{% extends "layouts/full.html" %}
+{% set selectedNav = "Manage" %}
+{% set pageName = "Preview standard" %}
+{% set seoPageName = "" %}
+{% set pageDescription = ""%}
+
+{% block hero %}
+    <div class="dfe-page-header dfe-page-header--with-sub-nav">
+        <div class="govuk-width-container dfe-width-container ">
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-full">
+                    <h1 class="govuk-heading-xl govuk-!-margin-bottom-3 govuk-!-margin-top-5">{{standard.fields.title}}</h1>
+
+                    <table class="govuk-table  govuk-!-margin-bottom-5">
+                        <thead class="govuk-table__head">
+                            <tr class="govuk-table__row">
+
+                                <th class="govuk-table__header govuk-!-width-one-quarter" scope="col">Reference</th>
+                                <th class="govuk-table__header govuk-!-width-one-quarter" scope="col">Version</th>
+                                <th class="govuk-table__header govuk-!-width-one-quarter" scope="col">Last updated</th>
+                            </tr>
+                        </thead>
+                        <tbody class="govuk-table__body">
+                            <tr class="govuk-table__row">
+
+                                <td class="govuk-table__cell">DDTS{{standard.fields.number}}</td>
+                                <td class="govuk-table__cell">V{{standard.fields.version}}</td>
+                                <td class="govuk-table__cell">{{standard.sys.updatedAt | date('DD MMMM YYYY')}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+
+        <div class="govuk-grid-column-one-quarter">
+
+            <nav class="dfe-vertical-nav">
+
+                <ul class="dfe-vertical-nav__section">
+
+                    <li class="dfe-vertical-nav__section-item">
+                        <a class="dfe-vertical-nav__link" href="/preview/{{standard.sys.id}}">Summary</a>
+                    </li>
+                    <li class="dfe-vertical-nav__section-item">
+                        <a class="dfe-vertical-nav__link" href="/preview/how/{{standard.sys.id}}">How to meet this standard</a>
+                    </li>
+                    <li class="dfe-vertical-nav__section-item ">
+                        <a class="dfe-vertical-nav__link" href="/preview/considerations/{{standard.sys.id}}">Considerations</a>
+                    </li>
+                    <li class="dfe-vertical-nav__section-item ">
+                        <a class="dfe-vertical-nav__link" href="/preview/templates/{{standard.sys.id}}">Templates and tools</a>
+                    </li>
+                    <li class="dfe-vertical-nav__section-item ">
+                        <a class="dfe-vertical-nav__link" href="/preview/products/{{standard.sys.id}}">Products</a>
+                    </li>
+                    <li class="dfe-vertical-nav__section-item   dfe-vertical-nav__section-item--current">
+                        <a class="dfe-vertical-nav__link" href="/preview/exceptions/{{standard.sys.id}}">Exceptions</a>
+                    </li>
+                </ul>
+            </nav>
+
+        </div>
+
+        <div class="govuk-grid-column-three-quarters">
+
+         
+    <h2 class="govuk-heading-l">Exceptions</h2>
+
+    <p>Any use cases where it is known that the approved products or services cannot be applied. </p>
+
+    
+         {% if standard.fields.exceptions | length %}
+
+
+
+                <table class="govuk-table">
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">Exception</th>
+                            <th scope="col" class="govuk-table__header">Details</th>
+                        </tr>
+                    </thead>
+                    <tbody class="govuk-table__body">
+                        {% for product in standard.fields.exceptions %}
+                            <tr class="govuk-table__row">
+                                <td class="govuk-table__cell">{{product.fields.title}}</td>
+                                <td class="govuk-table__cell">{{product.fields.details}}</td>
+                               
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+            {% else %}
+           
+                    <p class="govuk-!-margin-bottom-0">No exceptions have been added.</p>
+
+            {% endif %}   
+        
+
+    
+
+        </div>
+        <div class="govuk-grid-column-one-third"></div>
+    </div>
+{% endblock %}

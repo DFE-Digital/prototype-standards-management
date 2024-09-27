@@ -1,0 +1,20 @@
+{% extends "layouts/full.html" %}
+
+{% set selectedNav = "Home" %}
+{% set pageName = "Dashboard" %}
+{% set seoPageName = "" %}
+{% set pageDescription = ""%}
+
+
+{% block content %}
+
+<h1 class="govuk-heading-xl">Dashboard</h1> 
+
+<p><a href="/create" class="govuk-link">Draft a new standard</a>.</p>
+ 
+<section id="approvals" class="approvals-panel">
+   <p>There are [tk] new standards to review.</p>
+</section>
+
+
+{% endblock %}

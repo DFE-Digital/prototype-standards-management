@@ -1,0 +1,66 @@
+{% extends "layouts/full.html" %}
+
+{% set selectedNav = "Create" %}
+{% set pageName = "What categories apply to this standard?" %}
+{% set seoPageName = "" %}
+{% set pageDescription = ""%}
+{% set view = "standard" %}
+{% set mainClasses = "govuk-!-padding-top-1" %}
+
+{% block hero %}
+    {% include 'create/standard/_head.html' %}
+{% endblock %}
+
+{% block head %}
+    <meta name="robots" content="noindex, nofollow">
+{% endblock %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+
+            <a href="/create/standard/title" class="govuk-back-link govuk-!-margin-bottom-5">Back</a>
+
+            <form action="/create/standard/categories" method="post" >
+
+                <div class="govuk-form-group">
+                    <fieldset class="govuk-fieldset" aria-describedby="categories-hint">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                            <h2 class="govuk-fieldset__heading">
+                                {{pageName}}
+                            </h2>
+                        </legend>
+                        <div id="categories-hint" class="govuk-hint">
+      These will be used to group standards together in the same family. Select all that apply. 
+    </div>
+                        <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+
+                            {% for category in categories %}
+                                <div class="govuk-checkboxes__item">
+                                    <input class="govuk-checkboxes__input" 
+               id="categories_{{ loop.index }}" 
+               name="categories" 
+               type="checkbox" 
+               value="{{ category.value }}">
+                                    <label class="govuk-label govuk-checkboxes__label" for="categories_{{ loop.index }}">
+                                        {{ category.text }}
+                                    </label>
+                                </div>
+                            {% endfor %}
+
+                        </div>
+                    </fieldset>
+                </div>
+
+                <div class="govuk-button-group">
+                    <button type="submit" class="govuk-button" data-module="govuk-button">
+    Continue
+  </button>
+                    <a class="govuk-link" href="/create/standard">Return to tasks</a>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+{% endblock %}

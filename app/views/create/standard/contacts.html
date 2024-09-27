@@ -1,0 +1,85 @@
+{% extends "layouts/full.html" %}
+
+{% set selectedNav = "Create" %}
+{% set pageName = "Contacts" %}
+{% set seoPageName = "" %}
+{% set pageDescription = ""%}
+{% set view = "contacts" %}
+
+{% block hero %}
+    {% include 'create/standard/_head.html' %}
+{% endblock %}
+
+{% block head %}
+    <meta name="robots" content="noindex, nofollow">
+{% endblock %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+
+            <h2 class="govuk-heading-l">Contacts</h2>
+
+            <p>Contacts for this standard.{% if contacts | length %} <a href="/create/standard/add-contact">Add another contact</a>.{% endif %}</p>
+
+            {% if contacts | length %}
+
+                {% for contact in contacts %}
+
+                    <div class="govuk-summary-card">
+                        <div class="govuk-summary-card__title-wrapper">
+                            <h2 class="govuk-summary-card__title">
+      Contact
+    </h2>
+                            <ul class="govuk-summary-card__actions"> <li class="govuk-summary-card__action">
+                                    <a class="govuk-link" href="#">Edit <span class="govuk-visually-hidden"> contact</span></a>
+                                </li>
+                                <li class="govuk-summary-card__action">
+                                    <a class="govuk-link" href="#">Delete <span class="govuk-visually-hidden"> contact</span></a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="govuk-summary-card__content">
+                            <dl class="govuk-summary-list">
+                                <div class="govuk-summary-list__row">
+                                    <dt class="govuk-summary-list__key">
+          Contact role
+        </dt>
+                                    <dd class="govuk-summary-list__value">
+                                        {{contact.contactType}}
+                                    </dd>
+                                </div>
+                                <div class="govuk-summary-list__row">
+                                    <dt class="govuk-summary-list__key">
+          Name
+        </dt>
+                                    <dd class="govuk-summary-list__value">
+                                        {{contact.contactName}}
+                                    </dd>
+                                </div>
+                                 <div class="govuk-summary-list__row">
+                                    <dt class="govuk-summary-list__key">
+          Email
+        </dt>
+                                    <dd class="govuk-summary-list__value">
+                                        {{contact.contactEmail}}
+                                    </dd>
+                                </div>
+                            </dl>
+                        </div>
+                    </div>
+
+                {% endfor %}
+
+            {% else %}
+
+                <div class="govuk-inset-text">
+                    <p>No contacts added. <a href="/create/standard/add-contact">Add a contact</a>.</p>
+                </div>
+
+            {% endif %}
+
+        </div>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,38 @@
+<nav class="app-sub-navigation" aria-label="Application menu">
+    <ul class="app-sub-navigation__list">
+       
+        <li class="app-sub-navigation__item">
+            <a class="app-sub-navigation__link" {% if view==='standard' %} aria-current="page" {% endif
+                                %} href="/manage/standard/{{standard.sys.id}}">Standard</a>
+        </li>
+        <li class="app-sub-navigation__item">
+            <a class="app-sub-navigation__link" {% if view==='purpose' %} aria-current="page" {% endif
+                                %}href="/manage/standard/purpose/{{standard.sys.id}}">Purpose</a>
+        </li>
+
+        <li class="app-sub-navigation__item">
+            <a class="app-sub-navigation__link" {% if view==='guidance' %} aria-current="page" {% endif
+                                %}href="/manage/standard/guidance/{{standard.sys.id}}">Application</a>
+        </li>
+        <li class="app-sub-navigation__item">
+            <a class="app-sub-navigation__link" {% if view==='templates' %} aria-current="page" {% endif
+                                %}href="/manage/standard/templates/{{standard.sys.id}}">Templates and tools</a>
+        </li>
+        <li class="app-sub-navigation__item">
+            <a class="app-sub-navigation__link" {% if view==='considerations' %} aria-current="page" {% endif
+                                %}href="/manage/standard/considerations/{{standard.sys.id}}">Considerations</a>
+        </li>
+        <li class="app-sub-navigation__item">
+            <a class="app-sub-navigation__link" {% if view==='products' %} aria-current="page" {% endif
+                                %}href="/manage/standard/products/{{standard.sys.id}}">Products</a>
+        </li>
+        <li class="app-sub-navigation__item">
+            <a class="app-sub-navigation__link" {% if view==='exceptions' %} aria-current="page" {% endif
+                                %}href="/manage/standard/exceptions/{{standard.sys.id}}">Exceptions</a>
+        </li>
+        <li class="app-sub-navigation__item">
+            <a class="app-sub-navigation__link" {% if view==='contacts' %} aria-current="page" {% endif
+                                %}href="/manage/standard/contacts/{{standard.sys.id}}">Contacts</a>
+        </li>
+    </ul>
+</nav>

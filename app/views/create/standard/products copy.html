@@ -1,0 +1,107 @@
+{% extends "layouts/full.html" %}
+
+{% set selectedNav = "Create" %}
+{% set pageName = "Products" %}
+{% set seoPageName = "" %}
+{% set pageDescription = ""%}
+{% set view = "products" %}
+
+{% block hero %}
+{% include 'create/standard/_head.html' %}
+{% endblock %}
+
+    {% block head %}
+        <meta name="robots" content="noindex, nofollow">
+    {% endblock %}
+
+    {% block content %}
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+
+
+
+                <h2 class="govuk-heading-l">Products</h2>
+
+                <p>The approved and tolerated products that are associated with this standard.</p>
+
+                <h3 class="govuk-heading-m">Approved products</h3>
+
+                <p>Approved products are those that have been tested and approved for use with this standard.  {% if approvedProducts | length %}<a href="/create/standard/add-approved-product">Add another approved product</a>.{% endif %}</p>
+
+
+                {% if approvedProducts | length %}
+
+                <table class="govuk-table">
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th scope="col" class="govuk-table__header">Product name</th>
+                            <th scope="col" class="govuk-table__header">Vendor</th>
+                            <th scope="col" class="govuk-table__header">Version</th>
+                            <th scope="col" class="govuk-table__header">Use-case</th>
+                            <th scope="col" class="govuk-table__header">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="govuk-table__body">
+                        {% for product in approvedProducts %}
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell">{{product.name}}</td>
+                            <td class="govuk-table__cell">{{product.vendor}}</td>
+                            <td class="govuk-table__cell">{{product.version}}</td>
+                            <td class="govuk-table__cell">{{product.usecase}}</td>
+                            <td class="govuk-table__cell"><a href="/create/standard/remove-approved-product/{{product.id}}">Remove</a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                {% else %}
+
+                <div class="govuk-inset-text">
+                    <p>No approved products added. <a href="/create/standard/add-approved-product">Add an approved product</a></p>
+                </div>
+
+                {% endif %}
+
+                   <h3 class="govuk-heading-m">Tolerated products</h3>
+
+                <p>Tolerated products are those that have been tested and tolerated for use with this standard.  {% if toleratedProducts | length %}<a href="/create/standard/add-tolerated-product">Add another tolerated product</a>.{% endif %}</p>
+                    {% if toleratedProducts | length %}
+
+                <table class="govuk-table">
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th scope="col" class="govuk-table__header">Product name</th>
+                            <th scope="col" class="govuk-table__header">Vendor</th>
+                            <th scope="col" class="govuk-table__header">Version</th>
+                            <th scope="col" class="govuk-table__header">Use-case</th>
+                            <th scope="col" class="govuk-table__header">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="govuk-table__body">
+                        {% for product in toleratedProducts %}
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell">{{product.name}}</td>
+                            <td class="govuk-table__cell">{{product.vendor}}</td>
+                            <td class="govuk-table__cell">{{product.version}}</td>
+                            <td class="govuk-table__cell">{{product.usecase}}</td>
+                            <td class="govuk-table__cell"><a href="/create/standard/remove-tolerated-product/{{product.id}}">Remove</a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                {% else %}
+
+                <div class="govuk-inset-text">
+                    <p>No tolerated products added. <a href="/create/standard/add-tolerated-product">Add a tolerated product</a></p>
+                </div>
+
+                {% endif %}
+                
+
+            </div>
+        </div>
+
+
+
+    {% endblock %}

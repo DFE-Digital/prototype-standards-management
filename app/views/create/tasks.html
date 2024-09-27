@@ -1,0 +1,112 @@
+{% extends "layouts/full.html" %}
+
+{% set selectedNav = "Create" %}
+{% set pageName = "Draft a new standard" %}
+{% set seoPageName = "" %}
+{% set pageDescription = ""%}
+{% set view = "overview" %}
+
+{% block hero %}
+{% include 'create/standard/_head.html' %}
+{% endblock %}
+
+    {% block head %}
+        <meta name="robots" content="noindex, nofollow">
+    {% endblock %}
+
+    {% block content %}
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+
+                <h2 class="govuk-heading-l">Tasks</h2>
+
+                <ul class="govuk-task-list">
+                    <li class="govuk-task-list__item govuk-task-list__item--with-link">
+                        <div class="govuk-task-list__name-and-hint">
+                            <a class="govuk-link govuk-task-list__link" href="/create/standard" aria-describedby="company-details-1-status">
+        Standard information
+      </a>
+                        </div>
+                        <div class="govuk-task-list__status" id="company-details-1-status">
+                            <strong class="govuk-tag govuk-tag--blue">
+                                {% if data['1_standard'] == true %}
+                                In progress
+                                {% else %}
+                                Not started
+                                {% endif %}
+      </strong>
+                        </div>
+                    </li>
+                    <li class="govuk-task-list__item govuk-task-list__item--with-link">
+                        <div class="govuk-task-list__name-and-hint">
+                          
+       
+
+       {% if data['1_standard'] == true %}
+                                 <a class="govuk-link govuk-task-list__link" href="/create/standard/products" aria-describedby="company-details-1-status">
+        Products
+      </a>
+                                {% else %}
+                                Standard information
+                                {% endif %}
+    
+                        </div>
+                        <div class="govuk-task-list__status" id="company-details-2-status">
+                           
+                                {% if data['1_standard'] == true %}
+                                <strong class="govuk-tag govuk-tag--blue"> In progress  </strong>
+                                {% else %}
+                                Not started
+                                {% endif %}
+    
+                        </div>
+                    </li>
+                   
+                    <li class="govuk-task-list__item govuk-task-list__item--with-link">
+                        <div class="govuk-task-list__name-and-hint">
+                           
+           {% if data['1_standard'] == true %}
+                                 <a class="govuk-link govuk-task-list__link" href="/create/standard/exceptions" aria-describedby="company-details-1-status">
+        Exceptions
+      </a>
+                                {% else %}
+                               Exceptions
+                                {% endif %}
+    
+                        </div>
+                        <div class="govuk-task-list__status" id="company-details-4-status">
+                               {% if data['1_standard'] == true %}
+                                <strong class="govuk-tag govuk-tag--blue"> In progress  </strong>
+                                {% else %}
+                                Not started
+                                {% endif %}
+                        </div>
+                    </li>
+                      <li class="govuk-task-list__item govuk-task-list__item--with-link">
+                        <div class="govuk-task-list__name-and-hint">
+                           
+        
+
+          {% if data['1_standard'] == true %}
+                                 <a class="govuk-link govuk-task-list__link" href="/create/standard/contacts" aria-describedby="company-details-1-status">
+        Owner and technical contacts
+      </a>
+                                {% else %}
+                               Owner and technical contacts
+                                {% endif %}
+    
+                        </div>
+                        <div class="govuk-task-list__status" id="company-details-4-status">
+                               {% if data['1_standard'] == true %}
+                                <strong class="govuk-tag govuk-tag--blue"> In progress  </strong>
+                                {% else %}
+                                Not started
+                                {% endif %}
+                        </div>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+
+    {% endblock %}

@@ -1,0 +1,239 @@
+{% extends "layouts/full.html" %}
+{% set selectedNav = "Manage" %}
+{% set pageName = "Manage standards" %}
+{% set seoPageName = "" %}
+{% set pageDescription = ""%}
+{% set view = "standard" %}
+
+{% block hero %}
+   {% include 'manage/standard/_head.html' %}
+{% endblock %}
+
+{% block content %}
+   <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+         <h2 class="govuk-heading-l">Standard information</h2>
+
+         <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+               <dt class="govuk-summary-list__key">
+               Title
+            </dt>
+               <dd class="govuk-summary-list__value">
+                  {{standard.fields.title }}
+               </dd>
+               <dd class="govuk-summary-list__actions">
+                  <a class="govuk-link" href="/manage/standard/title/{{standard.sys.id}}">Change<span class="govuk-visually-hidden"> title</span></a>
+               </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+               <dt class="govuk-summary-list__key">
+               Categories
+            </dt>
+               <dd class="govuk-summary-list__value">
+                  <ul class="govuk-list">
+                     {% for category in standard.fields.category %}
+                        <li>{{category.fields.title}}</li>
+                     {% endfor %}
+                  </ul>
+               </dd>
+               <dd class="govuk-summary-list__actions">
+
+                  <a class="govuk-link" href="/manage/standard/categories/{{standard.sys.id}}">Change<span class="govuk-visually-hidden"> category</span></a>
+               </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+               <dt class="govuk-summary-list__key">
+               Sub-categories
+            </dt>
+               <dd class="govuk-summary-list__value">
+                  <ul class="govuk-list">
+                     {% for category in standard.fields.subCategory %}
+                        <li>{{category.fields.title}}</li>
+                     {% endfor %}
+                  </ul>
+               </dd>
+               <dd class="govuk-summary-list__actions">
+                  <a class="govuk-link" href="/manage/standard/sub-categories/{{standard.sys.id}}">Change<span class="govuk-visually-hidden"> sub-category</span></a>
+
+               </dd>
+            </div>
+         </dl>
+
+         <h2 class="govuk-heading-m">Guidance</h2>
+
+         <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+               <dt class="govuk-summary-list__key">
+               Purpose
+            </dt>
+               <dd class="govuk-summary-list__value">
+                  {{standard.fields.purpose  | truncate(140)}}
+               </dd>
+               <dd class="govuk-summary-list__actions">
+                  <a class="govuk-link" href="/manage/standard/purpose/{{standard.sys.id}}">Change<span class="govuk-visually-hidden"> purpose</span></a>
+               </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+               <dt class="govuk-summary-list__key">
+               How to meet the standard
+            </dt>
+               <dd class="govuk-summary-list__value">
+                  {{standard.fields.compliance  | truncate(140)}}
+               </dd>
+               <dd class="govuk-summary-list__actions">
+
+                  <a class="govuk-link" href="/manage/standard/guidance/{{standard.sys.id}}">Change<span class="govuk-visually-hidden"> guidance</span></a>
+               </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+               <dt class="govuk-summary-list__key">
+               Templates and tools
+            </dt>
+               <dd class="govuk-summary-list__value">
+                  {{standard.fields.templates | truncate(140)}}
+               </dd>
+               <dd class="govuk-summary-list__actions">
+                  <a class="govuk-link" href="/manage/standard/templates/{{standard.sys.id}}">Change<span class="govuk-visually-hidden"> templates and tools</span></a>
+
+               </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+               <dt class="govuk-summary-list__key">
+               Considerations
+            </dt>
+               <dd class="govuk-summary-list__value">
+                  {{standard.fields.considerations | truncate(140) }}
+               </dd>
+               <dd class="govuk-summary-list__actions">
+                  <a class="govuk-link" href="/manage/standard/considerations/{{standard.sys.id}}">Change<span class="govuk-visually-hidden"> considerations</span></a>
+
+               </dd>
+            </div>
+         </dl>
+
+         <h2 class="govuk-heading-m">Products</h2>
+         <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+               <dt class="govuk-summary-list__key">
+               Approved products
+            </dt>
+               <dd class="govuk-summary-list__value">
+
+                  {% if standard.fields.approvedProducts %}
+                     {{standard.fields.approvedProducts| length}} product{% if standard.fields.approvedProducts | length !== 1 %}s{% endif%}  added
+               {% else %}
+                        <a href="/manage/standard/products/{{standard.sys.id}}" class="govuk-link">Add approved products</a>
+                     {% endif %}
+                  </dd>
+                  <dd class="govuk-summary-list__actions">
+                     {% if standard.fields.approvedProducts %}
+                        <a class="govuk-link" href="/manage/standard/products/{{standard.sys.id}}">Change<span class="govuk-visually-hidden"> approved products</span></a>
+                     {% endif %}
+                  </dd>
+               </div>
+               <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">
+               Approved products
+            </dt>
+                  <dd class="govuk-summary-list__value">
+
+                     {% if standard.fields.toleratedProducts %}
+                        {{standard.fields.toleratedProducts| length}} product{% if standard.fields.toleratedProducts | length !== 1 %}s{% endif%}  added
+               {% else %}
+                           <a href="/manage/standard/products/{{standard.sys.id}}" class="govuk-link">Add tolerated products</a>
+                        {% endif %}
+                     </dd>
+                     <dd class="govuk-summary-list__actions">
+                        {% if standard.fields.toleratedProducts %}
+                           <a class="govuk-link" href="/manage/standard/products/{{standard.sys.id}}">Change<span class="govuk-visually-hidden"> tolerated products</span></a>
+                        {% endif %}
+                     </dd>
+                  </div>
+               </dl>
+               <h2 class="govuk-heading-m">Exceptions</h2>
+               <dl class="govuk-summary-list">
+                  <div class="govuk-summary-list__row">
+                     <dt class="govuk-summary-list__key">
+               Exceptions
+            </dt>
+                     <dd class="govuk-summary-list__value">
+
+                        {% if standard.fields.exceptions %}
+                           {{standard.fields.exceptions| length}} exception{% if standard.fields.exceptions | length !== 1 %}s{% endif%}  added
+               {% else %}
+                              <a href="/manage/standard/exceptions/{{standard.sys.id}}" class="govuk-link">Add exception</a>
+                           {% endif %}
+                        </dd>
+                        <dd class="govuk-summary-list__actions">
+                           {% if standard.fields.exceptions %}
+                              <a class="govuk-link" href="/manage/standard/exceptions/{{standard.sys.id}}">Change<span class="govuk-visually-hidden"> exceptions</span></a>
+                           {% endif %}
+                        </dd>
+                     </div>
+                  </dl>
+                  <h2 class="govuk-heading-m">Contacts</h2>
+                  <dl class="govuk-summary-list">
+                     <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+               Contacts
+            </dt>
+                        <dd class="govuk-summary-list__value">
+
+                           {% if standard.fields.contacts %}
+                              {{standard.fields.contacts| length}} contact{% if standard.fields.contacts | length !== 1 %}s{% endif%}  added
+               {% else %}
+                                 <a href="/manage/standard/contacts/{{standard.sys.id}}" class="govuk-link">Add contacts</a>
+                              {% endif %}
+                           </dd>
+                           <dd class="govuk-summary-list__actions">
+                              {% if standard.fields.contacts %}
+                                 <a class="govuk-link" href="/manage/standard/contacts/{{standard.sys.id}}">Change<span class="govuk-visually-hidden"> contacts</span></a>
+                              {% endif %}
+                           </dd>
+                        </div>
+                     </dl>
+
+                  </div>
+                  <div class="govuk-grid-column-one-third">
+                     <h2 class="govuk-heading-m">Progress towards publishing</h2>
+                     <div class="dfe-timeline">
+                        <ol>
+                           <li class="inactive">
+                              <h3 class="govuk-heading-s govuk-!-margin-bottom-2" id="proposal">Proposal</h3>
+                              <p class="govuk-body-s">Proposed standard started 12&nbsp;September&nbsp;2024</p>
+                           </li>
+                           <li class="active">
+                              <h3 class="govuk-heading-s govuk-!-margin-bottom-2" id="draft">Draft</h3>
+                              <p class="govuk-body-s">Created 24 September 2024 by Andy Jones</p>
+                           </li>
+                           <li>
+                              <h3 class="govuk-heading-s govuk-!-margin-bottom-2" id="review">Profession review</h3>
+                              <p class="govuk-body-s govuk-!-margin-bottom-2">Not started.</p>
+                              <p  class="govuk-body-s">
+                                 <a href="/manage/standard/moveto/review/{{standard.sys.id}}">Move to profession review</a>
+                              </p>
+                           </li>
+                           <li>
+                              <h3 class="govuk-heading-s govuk-!-margin-bottom-2" id="board">Board review</h3>
+                              <p class="govuk-body-s">Not started</p>
+                           </li>
+                           <li>
+                              <h3 class="govuk-heading-s govuk-!-margin-bottom-2" id="outcome">Outcome</h3>
+                              <p class="govuk-body-s">Not started</p>
+                           </li>
+                           <li>
+                              <h3 class="govuk-heading-s govuk-!-margin-bottom-2" id="published">Published</h3>
+                              <p class="govuk-body-s">Not started</p>
+                           </li>
+                        </ol>
+                     </div>
+                  </div>
+               </div>
+               <style>
+                  .dfe-timeline ol > li:before {
+                     top: 0;
+                  }
+               </style>
+
+            {% endblock %}

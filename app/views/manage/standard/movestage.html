@@ -1,0 +1,70 @@
+{% extends "layouts/full.html" %}
+
+{% set selectedNav = "Manage" %}
+{% set pageName = "Move to next stage" %}
+{% set seoPageName = "" %}
+{% set pageDescription = ""%}
+{% set view = "standard" %}
+
+{% block hero %}
+    {% include 'manage/standard/_head.html' %}
+{% endblock %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+
+         
+
+            <h2 class="govuk-heading-l">{{pageName}}</h2>
+
+            <p>Move this standard to the next stage. You can read <a href="">guidance for the stages a standard</a> goes through.</p>
+
+         
+<dl class="govuk-summary-list">
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Current stage
+    </dt>
+    <dd class="govuk-summary-list__value">
+      Draft<br/>Created 24 September 2024 by Andy Jones.
+    </dd>
+  </div>
+ <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Next stage
+    </dt>
+    <dd class="govuk-summary-list__value">
+      Profession review
+    </dd>
+  </div>
+  </dl>
+
+  <p>At the profession review stage, you're expected to:
+
+<ul class="govuk-list govuk-list--bullet">
+    <li>share the draft standard with relevant professions who may be interested in the standard</li>
+    <li>get feedback, comments and make any necessary changes</li>
+    <li>make a decision as to whether you want to progress the standard to the Standard review board stage for approval</li>
+</ul>
+
+<p>You can continue to work on this standard as a draft while it's at the profession review stage.</p>
+
+            <form action="/manage/standard/move-stage" method="post">
+                <input type="hidden" name="standard_id" value="{{standard.sys.id}}">
+
+             
+
+                <div class="govuk-button-group">
+                    <button type="submit" class="govuk-button" data-module="govuk-button">
+Move to next stage
+  </button>   <a class="govuk-link" href="/manage/standard/{{standard.sys.id}}">Return to standard</a>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+{% endblock %}
