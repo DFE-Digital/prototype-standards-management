@@ -18,18 +18,18 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-three-quarters">
 
-            <h2 class="govuk-heading-l">Products</h2>
+            <h2 class="govuk-heading-l">Products or services</h2>
 
-            <p>The approved and tolerated products that are associated with this standard.</p>
+            <p>The approved and tolerated products or services that are associated with this standard.</p>
 
-            <h3 class="govuk-heading-m">Approved products</h3>
+            <h3 class="govuk-heading-m">Approved products or services</h3>
             <p>Approved products are those that have been tested and approved for use with this standard.
             </p>
 
             <div class="govuk-summary-card">
                 <div class="govuk-summary-card__title-wrapper">
                     <h2 class="govuk-summary-card__title">
-      Approved products
+      Approved products or services
     </h2>
                     <ul class="govuk-summary-card__actions">
                         <li class="govuk-summary-card__action">
@@ -73,9 +73,11 @@
                 </div>
             </div>
 
-            <h3 class="govuk-heading-m">Tolerated products</h3>
+         
 
-            <p>Tolerated products are those that have been tested and tolerated for use with this standard.  {% if toleratedProducts | length %}
+            <h3 class="govuk-heading-m">Tolerated products or services</h3>
+
+            <p>Tolerated products or services are those that have been tested and tolerated for use with this standard.  {% if toleratedProducts | length %}
                     <a href="/create/standard/add-tolerated-product">Add another tolerated product</a>.{% endif %}
             </p>
             {% if toleratedProducts | length %}

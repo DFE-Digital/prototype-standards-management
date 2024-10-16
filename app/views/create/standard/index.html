@@ -58,25 +58,25 @@
                     <dt class="govuk-summary-list__key">
                Sub-categories
             </dt>
-                    <dd class="govuk-summary-list__value">
-                        {% if subcategories %}
-                            <ul class="govuk-list">
-                                {% for category in subcategories %}
-                                    <li>{{category.text}}</li>
-                                {% endfor %}
-                            </ul>
-                        {% else %}
-                            <a href="/create/standard/sub-categories" class="govuk-link">Enter sub-category</a>
-                        </dd>
-                    {% endif %}
-                    <dd class="govuk-summary-list__actions">
-                        {% if subcategories %}
-                            <a class="govuk-link" href="/create/standard/sub-categories">Change<span class="govuk-visually-hidden"> sub-category</span></a>
-                        {% endif %}
-                    </dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
+            <dd class="govuk-summary-list__value">
+               {% if subcategories %}
+               <ul class="govuk-list">
+                  {% for category in subcategories %}
+                  <li>{{category.text}}</li>
+                  {% endfor %}
+               </ul>
+               {% else %}
+               <a href="/create/standard/sub-categories" class="govuk-link">Enter sub-categories</a>
+            </dd>
+            {% endif %}
+            <dd class="govuk-summary-list__actions">
+               {% if subcategories %}
+               <a class="govuk-link" href="/create/standard/sub-categories">Change<span class="govuk-visually-hidden"> sub-category</span></a>
+               {% endif %}
+            </dd>
+         </div>
+         <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
                Purpose
             </dt>
                     <dd class="govuk-summary-list__value">

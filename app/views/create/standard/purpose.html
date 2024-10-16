@@ -1,7 +1,7 @@
 {% extends "layouts/full.html" %}
 
 {% set selectedNav = "Create" %}
-{% set pageName = "Purpose of the standard" %}
+{% set pageName = "Summary of the standard" %}
 {% set seoPageName = "" %}
 {% set pageDescription = ""%}
 {% set view = "standard" %}
@@ -22,14 +22,16 @@
 
             <form action="/create/standard/purpose" method="post" >
 
-                <div class="govuk-form-group govuk-character-count" data-module="govuk-character-count" data-maxlength="10000">
-                    <h2 class="govuk-label-wrapper">
-                        <label class="govuk-label govuk-label--l" for="purpose-hint">
-                            {{pageName}}
-                        </label>
-                    </h2>
-                    <div id="purpose-hint-hint" class="govuk-hint">
-    This helps people to understand the purpose of the standard, quickly.
+   <form action="/create/standard/purpose" method="post" >
+
+   <div class="govuk-form-group govuk-character-count" data-module="govuk-character-count" data-maxlength="10000">
+  <h2 class="govuk-label-wrapper">
+    <label class="govuk-label govuk-label--l" for="purpose-hint">
+      {{pageName}}
+    </label>
+  </h2>
+  <div id="purpose-hint-hint" class="govuk-hint">
+    Add a short description to provide an overview of the standard.
   </div>
                     <textarea class="govuk-textarea govuk-js-character-count" id="purpose-hint" name="purpose" rows="30" aria-describedby="purpose-hint-info purpose-hint-hint">{{data['purpose']}}</textarea>
                     <div id="purpose-hint-info" class="govuk-hint govuk-character-count__message">
