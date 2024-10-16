@@ -10,12 +10,9 @@
     {% include 'manage/standard/_head.html' %}
 {% endblock %}
 
-
 {% block content %}
     <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-
-            
+        <div class="govuk-grid-column-three-quarters">
 
             <h2 class="govuk-heading-l">Products</h2>
 
@@ -37,49 +34,46 @@
                     </ul>
                 </div>
                 <div class="govuk-summary-card__content">
-   {% if standard.fields.approvedProducts | length %}
+                    {% if standard.fields.approvedProducts | length %}
 
-                <table class="govuk-table">
-                    <thead class="govuk-table__head">
-                        <tr class="govuk-table__row">
-                            <th scope="col" class="govuk-table__header">Product name</th>
-                            <th scope="col" class="govuk-table__header">Vendor</th>
-                            <th scope="col" class="govuk-table__header">Version</th>
-                            <th scope="col" class="govuk-table__header">Use-case</th>
-                            <th scope="col" class="govuk-table__header">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody class="govuk-table__body">
-                        {% for product in standard.fields.approvedProducts %}
-                            <tr class="govuk-table__row">
-                                <td class="govuk-table__cell">{{product.fields.product}}</td>
-                                <td class="govuk-table__cell">{{product.fields.vendor}}</td>
-                                <td class="govuk-table__cell">{{product.fields.version}}</td>
-                                <td class="govuk-table__cell">{{product.fields.useCase}}</td>
-                                <td class="govuk-table__cell">
-                                    <a href="/manage/standard/remove-approved-product/{{standard.sys.id}}/{{product.sys.id}}">Remove</a>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                        <table class="govuk-table">
+                            <thead class="govuk-table__head">
+                                <tr class="govuk-table__row">
+                                    <th scope="col" class="govuk-table__header">Product name</th>
+                                    <th scope="col" class="govuk-table__header">Vendor</th>
+                                    <th scope="col" class="govuk-table__header">Version</th>
+                                    <th scope="col" class="govuk-table__header">Use-case</th>
+                                    <th scope="col" class="govuk-table__header">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody class="govuk-table__body">
+                                {% for product in standard.fields.approvedProducts %}
+                                    <tr class="govuk-table__row">
+                                        <td class="govuk-table__cell">{{product.fields.product}}</td>
+                                        <td class="govuk-table__cell">{{product.fields.vendor}}</td>
+                                        <td class="govuk-table__cell">{{product.fields.version}}</td>
+                                        <td class="govuk-table__cell">{{product.fields.useCase}}</td>
+                                        <td class="govuk-table__cell">
+                                            <a href="/manage/standard/remove-approved-product/{{standard.sys.id}}/{{product.sys.id}}">Remove</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
 
-            {% else %}
-           
-                    <p class="govuk-!-margin-bottom-0">No approved products.</p>
+                    {% else %}
 
-            {% endif %}
+                        <p class="govuk-!-margin-bottom-0">No approved products.</p>
+
+                    {% endif %}
                 </div>
             </div>
-
-         
 
             <h3 class="govuk-heading-m">Tolerated products</h3>
 
             <p>Tolerated products are those that have been tested and tolerated for use with this standard.</p>
 
-
-    <div class="govuk-summary-card">
+            <div class="govuk-summary-card">
                 <div class="govuk-summary-card__title-wrapper">
                     <h2 class="govuk-summary-card__title">
       Tolerated products
@@ -92,43 +86,40 @@
                 </div>
                 <div class="govuk-summary-card__content">
 
+                    {% if toleratedProducts | length %}
 
-            {% if toleratedProducts | length %}
+                        <table class="govuk-table">
+                            <thead class="govuk-table__head">
+                                <tr class="govuk-table__row">
+                                    <th scope="col" class="govuk-table__header">Product name</th>
+                                    <th scope="col" class="govuk-table__header">Vendor</th>
+                                    <th scope="col" class="govuk-table__header">Version</th>
+                                    <th scope="col" class="govuk-table__header">Use-case</th>
+                                    <th scope="col" class="govuk-table__header">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody class="govuk-table__body">
+                                {% for product in toleratedProducts %}
+                                    <tr class="govuk-table__row">
+                                        <td class="govuk-table__cell">{{product.name}}</td>
+                                        <td class="govuk-table__cell">{{product.vendor}}</td>
+                                        <td class="govuk-table__cell">{{product.version}}</td>
+                                        <td class="govuk-table__cell">{{product.usecase}}</td>
+                                        <td class="govuk-table__cell">
+                                            <a href="/manage/standard/remove-tolerated-product/{{product.id}}">Remove</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
 
-                <table class="govuk-table">
-                    <thead class="govuk-table__head">
-                        <tr class="govuk-table__row">
-                            <th scope="col" class="govuk-table__header">Product name</th>
-                            <th scope="col" class="govuk-table__header">Vendor</th>
-                            <th scope="col" class="govuk-table__header">Version</th>
-                            <th scope="col" class="govuk-table__header">Use-case</th>
-                            <th scope="col" class="govuk-table__header">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody class="govuk-table__body">
-                        {% for product in toleratedProducts %}
-                            <tr class="govuk-table__row">
-                                <td class="govuk-table__cell">{{product.name}}</td>
-                                <td class="govuk-table__cell">{{product.vendor}}</td>
-                                <td class="govuk-table__cell">{{product.version}}</td>
-                                <td class="govuk-table__cell">{{product.usecase}}</td>
-                                <td class="govuk-table__cell">
-                                    <a href="/manage/standard/remove-tolerated-product/{{product.id}}">Remove</a>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                    {% else %}
 
-            {% else %}
+                        <p>No tolerated products.</p>
 
-             
-                    <p>No tolerated products.</p>
-           
-
-            {% endif %}
-               </div>
-                  </div>
+                    {% endif %}
+                </div>
+            </div>
 
         </div>
     </div>

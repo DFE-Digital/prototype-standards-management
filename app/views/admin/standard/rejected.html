@@ -6,260 +6,257 @@
 {% set view = "standard" %}
 
 {% block hero %}
-   {% include 'admin/standard/_headrejected.html' %}
+    {% include 'admin/standard/_headrejected.html' %}
 {% endblock %}
 
 {% block content %}
 
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
 
-
-      <div class="govuk-grid-row">
-         <div class="govuk-grid-column-two-thirds">
-
- <div class="govuk-notification-banner govuk-notification-banner--warning" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
-  <div class="govuk-notification-banner__header">
-    <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+            <div class="govuk-notification-banner govuk-notification-banner--warning" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+                <div class="govuk-notification-banner__header">
+                    <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
       Rejected
     </h2>
-  </div>
-  <div class="govuk-notification-banner__content">
-    <h3 class="govuk-notification-banner__heading">
+                </div>
+                <div class="govuk-notification-banner__content">
+                    <h3 class="govuk-notification-banner__heading">
      Standard has been rejected
     </h3>
 
-   <p>{{data['reason']}}</p>
+                    <p>{{data['reason']}}</p>
 
-
-    <p class="govuk-body">An email has been sent to Andy Jones confirming the outcome and next steps.</p>
-  </div>
-</div>
+                    <p class="govuk-body">An email has been sent to Andy Jones confirming the outcome and next steps.</p>
+                </div>
+            </div>
 
             <h2 class="govuk-heading-l">Standard information</h2>
 
             <dl class="govuk-summary-list">
-               <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
                Title
             </dt>
-                  <dd class="govuk-summary-list__value">
-                     {{standard.fields.title }}
-                  </dd>
-                  <dd class="govuk-summary-list__actions">
-                     <a class="govuk-link" href="/admin/standard/title/{{standard.sys.id}}">View<span class="govuk-visually-hidden"> title</span></a>
-                  </dd>
-               </div>
-               <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">
+                    <dd class="govuk-summary-list__value">
+                        {{standard.fields.title }}
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a class="govuk-link" href="/admin/standard/title/{{standard.sys.id}}">View<span class="govuk-visually-hidden"> title</span></a>
+                    </dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
                Categories
             </dt>
-                  <dd class="govuk-summary-list__value">
-                     <ul class="govuk-list">
-                        {% for category in standard.fields.category %}
-                           <li>{{category.fields.title}}</li>
-                        {% endfor %}
-                     </ul>
-                  </dd>
-                  <dd class="govuk-summary-list__actions">
+                    <dd class="govuk-summary-list__value">
+                        <ul class="govuk-list">
+                            {% for category in standard.fields.category %}
+                                <li>{{category.fields.title}}</li>
+                            {% endfor %}
+                        </ul>
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
 
-                     <a class="govuk-link" href="/admin/standard/categories/{{standard.sys.id}}">View<span class="govuk-visually-hidden"> category</span></a>
-                  </dd>
-               </div>
-               <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">
+                        <a class="govuk-link" href="/admin/standard/categories/{{standard.sys.id}}">View<span class="govuk-visually-hidden"> category</span></a>
+                    </dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
                Sub-categories
             </dt>
-                  <dd class="govuk-summary-list__value">
-                     <ul class="govuk-list">
-                        {% for category in standard.fields.subCategory %}
-                           <li>{{category.fields.title}}</li>
-                        {% endfor %}
-                     </ul>
-                  </dd>
-                  <dd class="govuk-summary-list__actions">
-                     <a class="govuk-link" href="/admin/standard/sub-categories/{{standard.sys.id}}">View<span class="govuk-visually-hidden"> sub-category</span></a>
+                    <dd class="govuk-summary-list__value">
+                        <ul class="govuk-list">
+                            {% for category in standard.fields.subCategory %}
+                                <li>{{category.fields.title}}</li>
+                            {% endfor %}
+                        </ul>
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a class="govuk-link" href="/admin/standard/sub-categories/{{standard.sys.id}}">View<span class="govuk-visually-hidden"> sub-category</span></a>
 
-                  </dd>
-               </div>
+                    </dd>
+                </div>
             </dl>
 
             <h2 class="govuk-heading-m">Guidance</h2>
 
             <dl class="govuk-summary-list">
-               <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
                Purpose
             </dt>
-                  <dd class="govuk-summary-list__value">
-                     {{standard.fields.purpose  | truncate(140)}}
-                  </dd>
-                  <dd class="govuk-summary-list__actions">
-                     <a class="govuk-link" href="/admin/standard/purpose/{{standard.sys.id}}">View<span class="govuk-visually-hidden"> purpose</span></a>
-                  </dd>
-               </div>
-               <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">
+                    <dd class="govuk-summary-list__value">
+                        {{standard.fields.purpose  | truncate(140)}}
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a class="govuk-link" href="/admin/standard/purpose/{{standard.sys.id}}">View<span class="govuk-visually-hidden"> purpose</span></a>
+                    </dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
                How to meet the standard
             </dt>
-                  <dd class="govuk-summary-list__value">
-                     {{standard.fields.compliance  | truncate(140)}}
-                  </dd>
-                  <dd class="govuk-summary-list__actions">
+                    <dd class="govuk-summary-list__value">
+                        {{standard.fields.compliance  | truncate(140)}}
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
 
-                     <a class="govuk-link" href="/admin/standard/guidance/{{standard.sys.id}}">View<span class="govuk-visually-hidden"> guidance</span></a>
-                  </dd>
-               </div>
-               <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">
+                        <a class="govuk-link" href="/admin/standard/guidance/{{standard.sys.id}}">View<span class="govuk-visually-hidden"> guidance</span></a>
+                    </dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
                Templates and tools
             </dt>
-                  <dd class="govuk-summary-list__value">
-                     {{standard.fields.templates | truncate(140)}}
-                  </dd>
-                  <dd class="govuk-summary-list__actions">
-                     <a class="govuk-link" href="/admin/standard/templates/{{standard.sys.id}}">View<span class="govuk-visually-hidden"> templates and tools</span></a>
+                    <dd class="govuk-summary-list__value">
+                        {{standard.fields.templates | truncate(140)}}
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a class="govuk-link" href="/admin/standard/templates/{{standard.sys.id}}">View<span class="govuk-visually-hidden"> templates and tools</span></a>
 
-                  </dd>
-               </div>
-               <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">
+                    </dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
                Considerations
             </dt>
-                  <dd class="govuk-summary-list__value">
-                     {{standard.fields.considerations | truncate(140) }}
-                  </dd>
-                  <dd class="govuk-summary-list__actions">
-                     <a class="govuk-link" href="/admin/standard/considerations/{{standard.sys.id}}">View<span class="govuk-visually-hidden"> considerations</span></a>
+                    <dd class="govuk-summary-list__value">
+                        {{standard.fields.considerations | truncate(140) }}
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a class="govuk-link" href="/admin/standard/considerations/{{standard.sys.id}}">View<span class="govuk-visually-hidden"> considerations</span></a>
 
-                  </dd>
-               </div>
+                    </dd>
+                </div>
             </dl>
 
             <h2 class="govuk-heading-m">Products</h2>
             <dl class="govuk-summary-list">
-               <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
                Approved products
             </dt>
-                  <dd class="govuk-summary-list__value">
+                    <dd class="govuk-summary-list__value">
 
-                     {% if standard.fields.approvedProducts %}
-                        {{standard.fields.approvedProducts| length}} product{% if standard.fields.approvedProducts | length !== 1 %}s{% endif%}  added
+                        {% if standard.fields.approvedProducts %}
+                            {{standard.fields.approvedProducts| length}} product{% if standard.fields.approvedProducts | length !== 1 %}s{% endif%}  added
                {% else %}
                         No products added.
                      {% endif %}
-                     </dd>
-                     <dd class="govuk-summary-list__actions">
-                        {% if standard.fields.approvedProducts %}
-                           <a class="govuk-link" href="/admin/standard/products/{{standard.sys.id}}">View<span class="govuk-visually-hidden"> approved products</span></a>
-                        {% endif %}
-                     </dd>
-                  </div>
-                  <div class="govuk-summary-list__row">
-                     <dt class="govuk-summary-list__key">
-               Approved products
-            </dt>
-                     <dd class="govuk-summary-list__value">
-
-                        {% if standard.fields.toleratedProducts %}
-                           {{standard.fields.toleratedProducts| length}} product{% if standard.fields.toleratedProducts | length !== 1 %}s{% endif%}  added
-               {% else %}
-                         No products added
-                        {% endif %}
                         </dd>
                         <dd class="govuk-summary-list__actions">
-                           {% if standard.fields.toleratedProducts %}
-                              <a class="govuk-link" href="/admin/standard/products/{{standard.sys.id}}">View<span class="govuk-visually-hidden"> tolerated products</span></a>
-                           {% endif %}
+                            {% if standard.fields.approvedProducts %}
+                                <a class="govuk-link" href="/admin/standard/products/{{standard.sys.id}}">View<span class="govuk-visually-hidden"> approved products</span></a>
+                            {% endif %}
                         </dd>
-                     </div>
-                  </dl>
-                  <h2 class="govuk-heading-m">Exceptions</h2>
-                  <dl class="govuk-summary-list">
-                     <div class="govuk-summary-list__row">
+                    </div>
+                    <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
-               Exceptions
+               Approved products
             </dt>
                         <dd class="govuk-summary-list__value">
 
-                           {% if standard.fields.exceptions %}
-                              {{standard.fields.exceptions| length}} exception{% if standard.fields.exceptions | length !== 1 %}s{% endif%}  added
+                            {% if standard.fields.toleratedProducts %}
+                                {{standard.fields.toleratedProducts| length}} product{% if standard.fields.toleratedProducts | length !== 1 %}s{% endif%}  added
+               {% else %}
+                         No products added
+                        {% endif %}
+                            </dd>
+                            <dd class="govuk-summary-list__actions">
+                                {% if standard.fields.toleratedProducts %}
+                                    <a class="govuk-link" href="/admin/standard/products/{{standard.sys.id}}">View<span class="govuk-visually-hidden"> tolerated products</span></a>
+                                {% endif %}
+                            </dd>
+                        </div>
+                    </dl>
+                    <h2 class="govuk-heading-m">Exceptions</h2>
+                    <dl class="govuk-summary-list">
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+               Exceptions
+            </dt>
+                            <dd class="govuk-summary-list__value">
+
+                                {% if standard.fields.exceptions %}
+                                    {{standard.fields.exceptions| length}} exception{% if standard.fields.exceptions | length !== 1 %}s{% endif%}  added
                {% else %}
                            No exceptions added
                            {% endif %}
-                           </dd>
-                           <dd class="govuk-summary-list__actions">
-                              {% if standard.fields.exceptions %}
-                                 <a class="govuk-link" href="/admin/standard/exceptions/{{standard.sys.id}}">View<span class="govuk-visually-hidden"> exceptions</span></a>
-                              {% endif %}
-                           </dd>
-                        </div>
-                     </dl>
-                     <h2 class="govuk-heading-m">Contacts</h2>
-                     <dl class="govuk-summary-list">
-                        <div class="govuk-summary-list__row">
-                           <dt class="govuk-summary-list__key">
+                                </dd>
+                                <dd class="govuk-summary-list__actions">
+                                    {% if standard.fields.exceptions %}
+                                        <a class="govuk-link" href="/admin/standard/exceptions/{{standard.sys.id}}">View<span class="govuk-visually-hidden"> exceptions</span></a>
+                                    {% endif %}
+                                </dd>
+                            </div>
+                        </dl>
+                        <h2 class="govuk-heading-m">Contacts</h2>
+                        <dl class="govuk-summary-list">
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">
                Contacts
             </dt>
-                           <dd class="govuk-summary-list__value">
+                                <dd class="govuk-summary-list__value">
 
-                              {% if standard.fields.owners or standard.fields.technicalContacts %}
+                                    {% if standard.fields.owners or standard.fields.technicalContacts %}
 
-                                 {{standard.fields.owners| length + standard.fields.technicalContacts| length}} contact{% if standard.fields.contacts | length !== 1 %}s{% endif%}  added
+                                        {{standard.fields.owners| length + standard.fields.technicalContacts| length}} contact{% if standard.fields.contacts | length !== 1 %}s{% endif%}  added
 
             
                {% else %}
                                No contacts added
                               {% endif %}
-                              </dd>
-                              <dd class="govuk-summary-list__actions">
+                                    </dd>
+                                    <dd class="govuk-summary-list__actions">
 
-                                 <a class="govuk-link" href="/admin/standard/contacts/{{standard.sys.id}}">View<span class="govuk-visually-hidden"> contacts</span></a>
+                                        <a class="govuk-link" href="/admin/standard/contacts/{{standard.sys.id}}">View<span class="govuk-visually-hidden"> contacts</span></a>
 
-                              </dd>
-                           </div>
-                        </dl>
+                                    </dd>
+                                </div>
+                            </dl>
 
-                     </div>
-                     <div class="govuk-grid-column-one-third">
-                        <h2 class="govuk-heading-m">Progress towards publishing</h2>
-                        <div class="dfe-timeline">
-                           <ol>
-                              <li class="inactive">
-                                 <h3 class="govuk-heading-s govuk-!-margin-bottom-2" id="proposal">Proposal</h3>
-                                 <p class="govuk-body-s">Proposed standard started 12&nbsp;August&nbsp;2024</p>
-                              </li>
-                              <li class="inactive">
-                                 <h3 class="govuk-heading-s govuk-!-margin-bottom-2" id="draft">Draft</h3>
-                                 <p class="govuk-body-s">Created 24 August 2024 by Andy Jones.</p>
-                              </li>
-                              <li class="inactive">
-                                 <h3 class="govuk-heading-s govuk-!-margin-bottom-2" id="review">Profession review</h3>
-                                 <p class="govuk-body-s ">Started 1 September 2024 by Andy Jones.</p>
-                                 <p class="govuk-body-s ">Completed {{x | date('DD MMMM YYYY')}} by Andy Jones.</p>
-                              </li>
-                              <li class="inactive">
-                                 <h3 class="govuk-heading-s govuk-!-margin-bottom-2" id="board">Board review</h3>
-                                 <p class="govuk-body-s ">Requested {{x | date('DD MMMM YYYY')}} by Andy Jones.</p>
-                              </li>
-                              <li class="active">
-                                 <h3 class="govuk-heading-s govuk-!-margin-bottom-2" id="outcome">Outcome</h3>
-                                 <p class="govuk-body-s  govuk-!-margin-bottom-2">Rejected {{x | date('DD MMMM YYYY')}}</p>
-                                  <p  class="govuk-body-s">
-                                 <a href="/manage/standard/moveto/review/{{standard.sys.id}}">Move back to draft</a>
-                              </p>
-                              </li>
-                              <li>
-                                 <h3 class="govuk-heading-s govuk-!-margin-bottom-2" id="published">Published</h3>
-                                 <p class="govuk-body-s">Not started</p>
-                              </li>
-                           </ol>
                         </div>
-                     </div>
-                  </div>
-                  <style>
-                     .dfe-timeline ol > li:before {
-                        top: 0;
-                     }
-                  </style>
+                        <div class="govuk-grid-column-one-third">
+                            <h2 class="govuk-heading-m">Progress towards publishing</h2>
+                            <div class="dfe-timeline">
+                                <ol>
+                                    <li class="inactive">
+                                        <h3 class="govuk-heading-s govuk-!-margin-bottom-2" id="proposal">Proposal</h3>
+                                        <p class="govuk-body-s">Proposed standard started 12&nbsp;August&nbsp;2024</p>
+                                    </li>
+                                    <li class="inactive">
+                                        <h3 class="govuk-heading-s govuk-!-margin-bottom-2" id="draft">Draft</h3>
+                                        <p class="govuk-body-s">Created 24 August 2024 by Andy Jones.</p>
+                                    </li>
+                                    <li class="inactive">
+                                        <h3 class="govuk-heading-s govuk-!-margin-bottom-2" id="review">Profession review</h3>
+                                        <p class="govuk-body-s ">Started 1 September 2024 by Andy Jones.</p>
+                                        <p class="govuk-body-s ">Completed {{x | date('DD MMMM YYYY')}} by Andy Jones.</p>
+                                    </li>
+                                    <li class="inactive">
+                                        <h3 class="govuk-heading-s govuk-!-margin-bottom-2" id="board">Board review</h3>
+                                        <p class="govuk-body-s ">Requested {{x | date('DD MMMM YYYY')}} by Andy Jones.</p>
+                                    </li>
+                                    <li class="active">
+                                        <h3 class="govuk-heading-s govuk-!-margin-bottom-2" id="outcome">Outcome</h3>
+                                        <p class="govuk-body-s  govuk-!-margin-bottom-2">Rejected {{x | date('DD MMMM YYYY')}}</p>
+                                        <p  class="govuk-body-s">
+                                            <a href="/manage/standard/moveto/review/{{standard.sys.id}}">Move back to draft</a>
+                                        </p>
+                                    </li>
+                                    <li>
+                                        <h3 class="govuk-heading-s govuk-!-margin-bottom-2" id="published">Published</h3>
+                                        <p class="govuk-body-s">Not started</p>
+                                    </li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                    <style>
+                        .dfe-timeline ol > li:before {
+                            top: 0;
+                        }
+                    </style>
 
-               {% endblock %}
+                {% endblock %}

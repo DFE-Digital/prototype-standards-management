@@ -8,49 +8,47 @@
 {% set mainClasses = "govuk-!-padding-top-1" %}
 
 {% block hero %}
-   {% include 'admin/standard/_head.html' %}
+    {% include 'admin/standard/_head.html' %}
 {% endblock %}
 
 {% block content %}
 
-   <div class="govuk-grid-row">
-      <div class="govuk-grid-column-two-thirds">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
 
-         <a href="/admin/standard/{{standard.sys.id}}" class="govuk-back-link govuk-!-margin-bottom-5">Back</a>
+            <a href="/admin/standard/{{standard.sys.id}}" class="govuk-back-link govuk-!-margin-bottom-5">Back</a>
 
-        <h2 class="govuk-heading-l">Reject standard</h2> 
+            <h2 class="govuk-heading-l">Reject standard</h2>
 
-        <p>Rejecting a standard will remove it from the list of standards awaiting approval.</p>
+            <p>Rejecting a standard will remove it from the list of standards awaiting approval.</p>
 
-        <p>The standard will be returned to the owner for further work or to be archived.</p>
-    <form action="/admin/standard/reject" method="post">
-        <div class="govuk-form-group govuk-character-count" data-module="govuk-character-count" data-maxlength="800">
-  <h1 class="govuk-label-wrapper">
-    <label class="govuk-label govuk-label--m" for="with-hint">
+            <p>The standard will be returned to the owner for further work or to be archived.</p>
+            <form action="/admin/standard/reject" method="post">
+                <div class="govuk-form-group govuk-character-count" data-module="govuk-character-count" data-maxlength="800">
+                    <h1 class="govuk-label-wrapper">
+                        <label class="govuk-label govuk-label--m" for="with-hint">
       Reason for rejection
     </label>
-  </h1>
-  <div id="with-hint-hint" class="govuk-hint">
+                    </h1>
+                    <div id="with-hint-hint" class="govuk-hint">
     Be constructive and clear in your feedback to support the owner in improving the standard.
   </div>
-  <textarea class="govuk-textarea govuk-js-character-count" id="with-hint" name="withHint" rows="15" aria-describedby="with-hint-info with-hint-hint"></textarea>
-  <div id="with-hint-info" class="govuk-hint govuk-character-count__message">
+                    <textarea class="govuk-textarea govuk-js-character-count" id="with-hint" name="withHint" rows="15" aria-describedby="with-hint-info with-hint-hint"></textarea>
+                    <div id="with-hint-info" class="govuk-hint govuk-character-count__message">
     You can enter up to 800 characters
   </div>
-</div>
-
-     
-
-            <input type="hidden" name="standard_id" value="{{standard.sys.id}}">
-  <div class="govuk-button-group">
-                    <button type="submit" class="govuk-button govuk-button--warning" data-module="govuk-button">Reject standard</button>
-  </button>
-                    <a class="govuk-link" href="/admin/standard/{{standard.sys.id}}">Cancel and return to standard</a>
                 </div>
 
-         </form>
+                <input type="hidden" name="standard_id" value="{{standard.sys.id}}">
+                <div class="govuk-button-group">
+                    <button type="submit" class="govuk-button govuk-button--warning" data-module="govuk-button">Reject standard</button>
+                </button>
+                <a class="govuk-link" href="/admin/standard/{{standard.sys.id}}">Cancel and return to standard</a>
+            </div>
 
-      </div>
-   </div>
+        </form>
+
+    </div>
+</div>
 
 {% endblock %}
