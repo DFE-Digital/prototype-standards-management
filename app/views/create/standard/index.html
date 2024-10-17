@@ -77,18 +77,18 @@
          </div>
          <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">
-               Purpose
+               Summary
             </dt>
             <dd class="govuk-summary-list__value">
                {% if data['purpose'] %}
                {{data['purpose']}}
                {% else %}
-               <a href="/create/standard/purpose" class="govuk-link">Enter purpose</a>
+               <a href="/create/standard/purpose" class="govuk-link">Enter summary</a>
             </dd>
             {% endif %}
             <dd class="govuk-summary-list__actions">
                {% if data['purpose'] %}
-               <a class="govuk-link" href="/create/standard/purpose">Change<span class="govuk-visually-hidden"> purpose</span></a>
+               <a class="govuk-link" href="/create/standard/purpose">Change<span class="govuk-visually-hidden"> summary</span></a>
                {% endif %}
             </dd>
          </div>

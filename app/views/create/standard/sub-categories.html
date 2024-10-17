@@ -20,14 +20,16 @@
             <a href="/create/standard/categories" class="govuk-back-link govuk-!-margin-bottom-5">Back</a>
 
             <form action="/create/standard/sub-categories" method="post">
-
+<h2 class="govuk-heading-l">What sub-categories apply to this standard?</h2>
                 {% for category in categories %}
                     <div class="govuk-form-group">
                         <fieldset class="govuk-fieldset">
                             <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                                {{ category.title }} (Category {{ category.number }})
+                                {{ category.title }}
                             </legend>
-
+                        <div id="categories-hint" class="govuk-hint">
+      Select all that apply. 
+    </div>
                             <div class="govuk-checkboxes" data-module="govuk-checkboxes">
                                 {% for subcategory in category.subcategories %}
                                     <div class="govuk-checkboxes__item">

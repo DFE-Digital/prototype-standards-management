@@ -7,7 +7,8 @@
 
 
 {% block content %}
-
+<div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
 <h1 class="govuk-heading-xl">{{pageName}}</h1> 
 
 <p>Use this service to draft a new DDT (Digital Data Technology) standard. You can save your draft and return to it later.</p>
@@ -34,4 +35,10 @@
 
 <h3 class="govuk-heading-s">If you need help using this service</h3>
 <p>Contact the <a href="(mailto:">Standards working group</a>.</p>
+</div>
+      <div class="govuk-grid-column-one-third">
+        <h2 class="govuk-heading-m">One-third column</h2>
+        <p class="govuk-body">This is a paragraph inside a one-third wide column</p>
+      </div>
+    </div>
 {% endblock %}
