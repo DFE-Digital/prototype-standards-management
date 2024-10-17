@@ -7,14 +7,14 @@
 {% set view = "purpose" %}
 
 {% block hero %}
-  {% include 'manage/standard/_head.html' %}
+    {% include 'manage/standard/_head.html' %}
 {% endblock %}
 
 {% block content %}
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
 
-                  {% if success %}
+            {% if success %}
                 <div class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
                     <div class="govuk-notification-banner__header">
                         <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
@@ -29,32 +29,32 @@
                     </div>
                 </div>
             {% endif %}
-     
-      <form action="/manage/standard/purpose" method="post" >
- <input type="hidden" name="standard_id" value="{{standard.sys.id}}">
-        <div class="govuk-form-group govuk-character-count" data-module="govuk-character-count" data-maxlength="10000">
-          <h2 class="govuk-label-wrapper">
-            <label class="govuk-label govuk-label--l" for="purpose-hint">
-              {{pageName}}
-            </label>
-          </h2>
-          <div id="purpose-hint-hint" class="govuk-hint">
+
+            <form action="/manage/standard/purpose" method="post" >
+                <input type="hidden" name="standard_id" value="{{standard.sys.id}}">
+                <div class="govuk-form-group govuk-character-count" data-module="govuk-character-count" data-maxlength="10000">
+                    <h2 class="govuk-label-wrapper">
+                        <label class="govuk-label govuk-label--l" for="purpose-hint">
+                            {{pageName}}
+                        </label>
+                    </h2>
+                    <div id="purpose-hint-hint" class="govuk-hint">
     This helps people to understand the purpose of the standard, quickly.
   </div>
-          <textarea class="govuk-textarea govuk-js-character-count" id="purpose-hint" name="purpose" rows="30" aria-describedby="purpose-hint-info purpose-hint-hint">{{standard.fields.purpose}}</textarea>
-          <div id="purpose-hint-info" class="govuk-hint govuk-character-count__message">
+                    <textarea class="govuk-textarea govuk-js-character-count" id="purpose-hint" name="purpose" rows="30" aria-describedby="purpose-hint-info purpose-hint-hint">{{standard.fields.purpose}}</textarea>
+                    <div id="purpose-hint-info" class="govuk-hint govuk-character-count__message">
     You can enter up to 10,000 characters
   </div>
-        </div>
+                </div>
 
-        <div class="govuk-button-group">
-          <button type="submit" class="govuk-button" data-module="govuk-button">
+                <div class="govuk-button-group">
+                    <button type="submit" class="govuk-button" data-module="govuk-button">
     Continue
   </button>
-          <a class="govuk-link" href="/create/standard">Return to tasks</a>
+                    <a class="govuk-link" href="/create/standard">Return to tasks</a>
+                </div>
+            </form>
         </div>
-      </form>
     </div>
-  </div>
 
 {% endblock %}

@@ -16,7 +16,7 @@
 
 {% block content %}
     <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
+        <div class="govuk-grid-column-three-quarters">
 
             <h2 class="govuk-heading-l">Products or services</h2>
 
@@ -38,38 +38,38 @@
                     </ul>
                 </div>
                 <div class="govuk-summary-card__content">
-   {% if approvedProducts | length %}
+                    {% if approvedProducts | length %}
 
-                <table class="govuk-table">
-                    <thead class="govuk-table__head">
-                        <tr class="govuk-table__row">
-                            <th scope="col" class="govuk-table__header">Product name</th>
-                            <th scope="col" class="govuk-table__header">Vendor</th>
-                            <th scope="col" class="govuk-table__header">Version</th>
-                            <th scope="col" class="govuk-table__header">Use-case</th>
-                            <th scope="col" class="govuk-table__header">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody class="govuk-table__body">
-                        {% for product in approvedProducts %}
-                            <tr class="govuk-table__row">
-                                <td class="govuk-table__cell">{{product.name}}</td>
-                                <td class="govuk-table__cell">{{product.vendor}}</td>
-                                <td class="govuk-table__cell">{{product.version}}</td>
-                                <td class="govuk-table__cell">{{product.usecase}}</td>
-                                <td class="govuk-table__cell">
-                                    <a href="/create/standard/remove-approved-product/{{product.id}}">Remove</a>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                        <table class="govuk-table">
+                            <thead class="govuk-table__head">
+                                <tr class="govuk-table__row">
+                                    <th scope="col" class="govuk-table__header">Product name</th>
+                                    <th scope="col" class="govuk-table__header">Vendor</th>
+                                    <th scope="col" class="govuk-table__header">Version</th>
+                                    <th scope="col" class="govuk-table__header">Use-case</th>
+                                    <th scope="col" class="govuk-table__header">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody class="govuk-table__body">
+                                {% for product in approvedProducts %}
+                                    <tr class="govuk-table__row">
+                                        <td class="govuk-table__cell">{{product.name}}</td>
+                                        <td class="govuk-table__cell">{{product.vendor}}</td>
+                                        <td class="govuk-table__cell">{{product.version}}</td>
+                                        <td class="govuk-table__cell">{{product.usecase}}</td>
+                                        <td class="govuk-table__cell">
+                                            <a href="/create/standard/remove-approved-product/{{product.id}}">Remove</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
 
-            {% else %}
-           
-                    <p class="govuk-!-margin-bottom-0">No approved products added.</p>
+                    {% else %}
 
-            {% endif %}
+                        <p class="govuk-!-margin-bottom-0">No approved products added.</p>
+
+                    {% endif %}
                 </div>
             </div>
 

@@ -13,7 +13,7 @@
 
 {% block content %}
     <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
+        <div class="govuk-grid-column-three-quarters">
 
             <a href="/manage/standard/products/{{standard.sys.id}}" class="govuk-back-link govuk-!-margin-bottom-5">Back</a>
 
@@ -22,7 +22,7 @@
             <p>The tolerated and tolerated products that are associated with this standard.</p>
 
             <form action="/manage/standard/add-tolerated-product" method="post">
- <input type="hidden" name="standard_id" value="{{standard.sys.id}}">    
+                <input type="hidden" name="standard_id" value="{{standard.sys.id}}">
 
                 <div class="govuk-form-group">
                     <label class="govuk-label" for="tolerated-name">
@@ -30,27 +30,27 @@
   </label>
                     <input class="govuk-input" id="tolerated-name" name="tolerated-name" type="text">
                 </div>
-                 <div class="govuk-form-group">
+                <div class="govuk-form-group">
                     <label class="govuk-label" for="tolerated-vendor">
     Vendor or supplier
   </label>
                     <input class="govuk-input" id="tolerated-vendor" name="tolerated-vendor" type="text">
                 </div>
-                 <div class="govuk-form-group">
+                <div class="govuk-form-group">
                     <label class="govuk-label" for="tolerated-version">
     Version
   </label>
                     <input class="govuk-input" id="tolerated-version" name="tolerated-version" type="text">
                 </div>
 
-                 <div class="govuk-form-group">
+                <div class="govuk-form-group">
                     <label class="govuk-label" for="tolerated-usecase">
     Use-case
   </label>
                     <input class="govuk-input" id="tolerated-usecase" name="tolerated-usecase" type="text">
                 </div>
 
-                 <div class="govuk-button-group">
+                <div class="govuk-button-group">
                     <button type="submit" class="govuk-button" data-module="govuk-button">
 Save
   </button>
