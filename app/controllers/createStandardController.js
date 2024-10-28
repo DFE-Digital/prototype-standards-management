@@ -1,4 +1,7 @@
 require('dotenv').config();
+const { check, validationResult } = require('express-validator');
+const { validateTitle } = require('../validation/create.js');
+
 const client = require('../middleware/contentful.js');
 const previewClient = require('../middleware/contentful-preview.js');
 const managementClient = require('../middleware/contentful-management.js');
@@ -195,7 +198,7 @@ exports.g_confirmdelete = async function (req, res) {
 
 exports.g_deleted = async function (req, res) {
 
-req.session.data = {};  
+    req.session.data = {};
 
     return res.render('create/standard/deleted');
 
@@ -294,25 +297,24 @@ exports.g_previewproducts = async function (req, res) {
 
 
 exports.g_title = async function (req, res) {
-    // Get the ID out of the session and get it from the DB, on the post we'll update the DB
-
+    // Ensure session data exists
     if (!req.session.data) {
-        req.session.data = {};
+        return res.redirect('/create/standard');
     }
 
-    let id = req.session.data['id'];
+    const id = req.session.data['id'];
 
-    if (id) {
-        try {
-            const standard = await previewClient.getEntry(id);
-            return res.render('create/standard/title', { standard });
-        } catch (error) {
-            console.error("Error fetching standard entry from Contentful:", error);
-            req.session.data['error'] = { error: 'Failed to fetch standard entry' };
-            return res.redirect('/create');
-        }
-    } else {
+    if (!id) {
         req.session.data['error'] = { error: 'No ID found in session data' };
+        return res.redirect('/create');
+    }
+
+    try {
+        const standard = await previewClient.getEntry(id);
+        return res.render('create/standard/title', { standard });
+    } catch (error) {
+        console.error("Error fetching standard entry from Contentful:", error);
+        req.session.data['error'] = { error: 'Failed to fetch standard entry' };
         return res.redirect('/create');
     }
 }
@@ -806,18 +808,51 @@ exports.g_guidance = async function (req, res) {
 
 // POSTS //
 
-exports.p_title = async function (req, res) {
+exports.p_title = [
+    validateTitle,
+    async function (req, res) {
 
-    // Update the standard entry with any changes to the title
+        const errors = validationResult(req);
 
-    const { id } = req.session.data;
+        if (!errors.isEmpty()) {
 
-    const standard = await previewClient.getEntry(id);
+            const id = req.session.data['id'];
 
-    await updateTitle(id, req.body['title']);
+            if (!id) {
+                req.session.data['error'] = { error: 'No ID found in session data' };
+                return res.redirect('/create');
+            }
 
-    return res.redirect('/create/standard/summary')
-}
+            try {
+                const standard = await previewClient.getEntry(id);
+                standard.fields.title = "";
+
+                return res.render('create/standard/title', {
+
+                    errors: errors.array(), standard
+                });
+            } catch (error) {
+                console.error("Error fetching standard entry from Contentful:", error);
+                req.session.data['error'] = { error: 'Failed to fetch standard entry' };
+                return res.redirect('/create');
+            }
+
+
+        }
+
+        // Update the standard entry with any changes to the title
+
+        const { id } = req.session.data;
+
+        const standard = await previewClient.getEntry(id);
+
+        await updateTitle(id, req.body['title']);
+
+        return res.redirect('/create/standard/summary')
+    }
+]
+
+
 
 exports.p_summary = async function (req, res) {
 
@@ -1186,14 +1221,14 @@ exports.p_confirmdelete = async function (req, res) {
 
     const { action } = req.body;
 
-        const { id } = req.session.data;
+    const { id } = req.session.data;
 
-        // Delete the standard from Contentful
-        const response = await deleteEntry(id);
+    // Delete the standard from Contentful
+    const response = await deleteEntry(id);
 
-        // Redirect to the create page
+    // Redirect to the create page
 
-        return res.redirect('/create/standard/deleted');
+    return res.redirect('/create/standard/deleted');
 
 }
 
