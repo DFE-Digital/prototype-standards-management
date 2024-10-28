@@ -5,7 +5,7 @@
 {% set seoPageName = "" %}
 {% set pageDescription = ""%}
 {% set view = "contacts" %}
-{% set mainClasses = "govuk-!-padding-top-1" %}
+{% set sidenav = 'contacts' %}
 
 {% block hero %}
     {% include 'create/standard/_head.html' %}
@@ -16,10 +16,11 @@
 {% endblock %}
 
 {% block content %}
-    <div class="govuk-grid-row">
+    <div class="govuk-grid-row">            <div class="govuk-grid-column-one-quarter">
+            {% include 'create/standard/_sidenav.html' %}
+        </div>
         <div class="govuk-grid-column-three-quarters">
 
-            <a href="/create/standard/contacts" class="govuk-back-link govuk-!-margin-bottom-5">Back</a>
 
             <h2 class="govuk-heading-l">Add a contact</h2>
 
@@ -81,9 +82,9 @@
 
                 <div class="govuk-button-group">
                     <button type="submit" class="govuk-button" data-module="govuk-button">
-Save
+Save and continue
   </button>
-                    <a class="govuk-link" href="/create/standard/contacts">Return to contacts</a>
+                    <a class="govuk-link" href="/create/standard/contacts">Cancel and return to contacts</a>
                 </div>
 
             </form>

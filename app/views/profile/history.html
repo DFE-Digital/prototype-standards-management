@@ -1,0 +1,101 @@
+{% extends "layouts/auth.html" %}
+
+{% set selectedNav = "Profile" %}
+{% set pageName = "History" %}
+{% set view = "history" %}
+
+{% block hero %}
+<div class="dfe-page-header dfe-page-header--with-sub-nav">
+    <div class="govuk-width-container dfe-width-container ">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+                <span class="govuk-caption-l">Profile</span>
+                <h1 class="govuk-heading-l">Assessor history</h1>
+                <nav class="app-sub-navigation" aria-label="Application menu">
+                    <ul class="app-sub-navigation__list">
+                        <li class="app-sub-navigation__item">
+                            <a class="app-sub-navigation__link" {% if view==='profile' %} aria-current="page" {% endif
+                                %} href="/profile">Profile</a>
+                        </li>
+                        <li class="app-sub-navigation__item">
+                            <a class="app-sub-navigation__link" {% if view==='training' %} aria-current="page" {% endif
+                                %} href="/profile/training">Training</a>
+                        </li>
+                        <li class="app-sub-navigation__item">
+                            <a class="app-sub-navigation__link" {% if view==='history' %} aria-current="page" {% endif
+                                %}href="/profile/history">History</a>
+                        </li>
+
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+
+isAssessor
+
+{% block content %}
+<div class="govuk-grid-row">
+
+    <div class="govuk-grid-column-full">
+
+
+
+        <p>As an assessor, you can <a href="/volunteer">view and volunteer</a> for an upcoming assessment or peer
+            review.</p>
+
+
+        {% if assessments | length > 0 %}
+        <table class="govuk-table">
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">Service</th>
+                    <th scope="col" class="govuk-table__header ">Phase</th>
+                    <th scope="col" class="govuk-table__header ">Type</th>
+                    <th scope="col" class="govuk-table__header ">Assessment date</th>
+                    <th scope="col" class="govuk-table__header ">Outcome</th>
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+                {% for record in assessments %}
+                {% if record.Status === 'Published' %}
+                <tr class="govuk-table__row">
+                    <th class="govuk-table__header">
+                        <a class="govuk-link govuk-link--no-visited-state "
+                            href="/assess/report/{{record.AssessmentID}}">{{record.Name}}</a>
+                    </th>
+                    <td class="govuk-table__cell">{{record.Phase}}</td>
+                    <td class="govuk-table__cell">{{record.Type}}</td>
+
+
+                    <td class="govuk-table__cell">{{record.AssessmentDateTime|date('D MMM YYYY')}}
+                    </td>
+                    <td class="govuk-table__cell">
+                        {% if record.Status == "Team Review" or record.Status
+                        == "SA Publish" or record.Status == "Published" %}
+                        <strong class="govuk-tag govuk-tag--{{record.Outcome | lower}}">{{record.Outcome}}</strong>
+                        {% else %}
+                        <strong class="govuk-tag">Unrated</strong>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>You've not completed any assessments.</p>
+        <p><a href="/volunteer">Volunteer for an upcoming assessment or peer review</a>.</p>
+        {% endif %}
+
+
+
+    </div>
+
+</div>
+
+{% endblock %}

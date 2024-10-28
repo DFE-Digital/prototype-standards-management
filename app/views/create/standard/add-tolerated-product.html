@@ -5,7 +5,7 @@
 {% set seoPageName = "" %}
 {% set pageDescription = ""%}
 {% set view = "products" %}
-{% set mainClasses = "govuk-!-padding-top-1" %}
+{% set sidenav = 'products' %}
 
 {% block hero %}
     {% include 'create/standard/_head.html' %}
@@ -16,10 +16,11 @@
 {% endblock %}
 
 {% block content %}
-    <div class="govuk-grid-row">
+    <div class="govuk-grid-row">            <div class="govuk-grid-column-one-quarter">
+            {% include 'create/standard/_sidenav.html' %}
+        </div>
         <div class="govuk-grid-column-three-quarters">
 
-            <a href="/create/standard/products" class="govuk-back-link govuk-!-margin-bottom-5">Back</a>
 
             <h2 class="govuk-heading-l">Add a tolerated product or service</h2>
 
@@ -31,33 +32,33 @@
                     <label class="govuk-label" for="tolerated-name">
     Tolerated product name
   </label>
-                    <input class="govuk-input" id="tolerated-name" name="tolerated-name" type="text">
+                    <input class="govuk-input" id="tolerated-name" name="tolerated_name" type="text">
                 </div>
                 <div class="govuk-form-group">
                     <label class="govuk-label" for="tolerated-vendor">
     Vendor or supplier
   </label>
-                    <input class="govuk-input" id="tolerated-vendor" name="tolerated-vendor" type="text">
+                    <input class="govuk-input" id="tolerated-vendor" name="tolerated_vendor" type="text">
                 </div>
                 <div class="govuk-form-group">
                     <label class="govuk-label" for="tolerated-version">
     Version
   </label>
-                    <input class="govuk-input" id="tolerated-version" name="tolerated-version" type="text">
+                    <input class="govuk-input" id="tolerated-version" name="tolerated_version" type="text">
                 </div>
 
                 <div class="govuk-form-group">
                     <label class="govuk-label" for="tolerated-usecase">
     Use-case
   </label>
-                    <input class="govuk-input" id="tolerated-usecase" name="tolerated-usecase" type="text">
+                    <input class="govuk-input" id="tolerated-usecase" name="tolerated_usecase" type="text">
                 </div>
 
                 <div class="govuk-button-group">
                     <button type="submit" class="govuk-button" data-module="govuk-button">
-Save
+Save and continue
   </button>
-                    <a class="govuk-link" href="/create/standard/products">Return to products</a>
+                    <a class="govuk-link" href="/create/standard/products">Cancel and return to products</a>
                 </div>
 
             </form>

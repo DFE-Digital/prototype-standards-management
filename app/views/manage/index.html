@@ -2,35 +2,133 @@
 {% set selectedNav = "Manage" %}
 {% set pageName = "Manage standards" %}
 {% set seoPageName = "" %}
-{% set pageDescription = ""%}
+{% set pageDescription = "" %}
+{% set sidenav = type | lower %}
+
+{% block hero %}
+    <div class="dfe-page-header">
+        <div class="govuk-width-container dfe-width-container">
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-full">
+                    <h1 class="govuk-heading-xl govuk-!-padding-top-5 govuk-!-padding-bottom-4">Manage your standards</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
 
 {% block content %}
     <div class="govuk-grid-row">
-        <div class="govuk-grid-column-three-quarters">
-
-            <h1 class="govuk-heading-xl">Dashboard</h1>
-
-            <table class="govuk-table">
-                <caption class="govuk-table__caption">Standards</caption>
-                <thead class="govuk-table__head">
-                    <tr class="govuk-table__row">
-                        <th scope="col" class="govuk-table__header">Standard</th>
-                        <th scope="col" class="govuk-table__header">Stage</th>
-                        <th scope="col" class="govuk-table__header">Number</th>
-                    </tr>
-                </thead>
-                <tbody class="govuk-table__body">
-                    {% for standard in standards %}
-                        <tr class="govuk-table__row">
-                            <td class="govuk-table__cell">
-                                <a href="/manage/standard/{{standard.sys.id}}">{{standard.fields.title}}</a>
-                            </td>
-                            <td class="govuk-table__cell">{{standard.fields.stage.fields.title}}</td>
-                            <td class="govuk-table__cell">DDTS{{standard.fields.number}}</td>
-                        </tr>
+        <div class="govuk-grid-column-one-quarter">
+            <nav class="dfe-vertical-nav">
+                <ul class="dfe-vertical-nav__section">
+                    {% for stage, stage_name in {
+                        'proposed' : 'Proposed',
+                        'draft' : 'Draft',
+                        'approval' : 'Approval',
+                        'approved' : 'Approved',
+                        'published' : 'Published',
+                        'rejected' : 'Rejected',
+                        'archived' : 'Archived'
+                    } %}
+                        <li class="dfe-vertical-nav__section-item {% if sidenav == stage %}dfe-vertical-nav__section-item--current{% endif %}">
+                            <span class="dfe-vertical-nav--count">{{ stageCounts[stage_name] }}</span>
+                            <a class="dfe-vertical-nav__link" href="/manage/{{ stage }}">{{ stage_name }}</a>
+                        </li>
                     {% endfor %}
-                </tbody>
-            </table>
+                </ul>
+            </nav>
+        </div>
+
+        <div class="govuk-grid-column-three-quarters">
+            {% set type_info = {
+                "Proposed": {
+                    "heading": "Proposed standards",
+                    "description": ["These are standards you're still working on and have not yet been moved to draft stage.", "Only you can view and edit these proposed standards."]
+                },
+                "Draft": {
+                    "heading": "Draft standards",
+                    "description": ["These are standards you're still working on and have not yet submitted to the standards board to approve.", "You and named owners and contacts can view and edit these proposed standards."]
+                },
+                "Approval": {
+                    "heading": "Standards for review",
+                    "description": ["These are standards that are waiting to be reviewed by the standards board.", "You can't make changes to these standards at this stage. You must wait for the outcome of the review board."]
+                },
+                "Approved": {
+                    "heading": "Approved standards",
+                    "description": ["These are standards that have been approved and are not yet published.", "You can publish these standards when ready.", "Changes to these standards will mean going back through the standards board for approval."]
+                },
+                "Published": {
+                    "heading": "Published standards",
+                    "description": ["These standards are published and available for anyone to view.", "Changes to these standards will mean going back through the standards board for approval."]
+                },
+                "Rejected": {
+                    "heading": "Rejected standards",
+                    "description": ["These standards have been rejected by the standards board.", "You can read the reason for the rejection and make changes before resubmitting the standard for approval to the standards board."]
+                },
+                "Archived": {
+                    "heading": "Archived standards",
+                    "description": ["These standards have been unpublished or archived. They are not available in the standards manual.", "If you need to reinstate an archived standard, you will need to submit them to the standards board for approval."]
+                }
+            } %}
+
+            {% if type in type_info %}
+                <h2 class="govuk-heading-l">{{ type_info[type].heading }}</h2>
+                {% for paragraph in type_info[type].description %}
+                    <p>{{ paragraph }}</p>
+                {% endfor %}
+            {% endif %}
+
+            {% set showtable = false %}
+
+            {% for stage, stage_name in {
+                'proposed' : 'Proposed',
+                'draft' : 'Draft',
+                'approval' : 'Approval',
+                'approved' : 'Approved',
+                'published' : 'Published',
+                'rejected' : 'Rejected',
+                'archived' : 'Archived'
+            } %}
+                {% if stageCounts[stage_name] > 0 and stage | lower === type | lower %}
+                    {% set showtable = true %}
+                {% endif %}
+            {% endfor %}
+
+            {% if showtable === true %}
+                <table class="govuk-table">
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th scope="col" class="govuk-table__header govuk-!-width-two-thirds">Standard</th>
+                            <th scope="col" class="govuk-table__header">Number</th>
+                        </tr>
+                    </thead>
+                    <tbody class="govuk-table__body">
+                        {% for standard in standards %}
+                            {% if standard.fields.stage.fields.title == type %}
+                                <tr class="govuk-table__row">
+                                    <td class="govuk-table__cell">
+                                        {% if type == "Proposed" %}
+                                            <a href="/create/getdraft/{{ standard.sys.id }}" class="govuk-link">
+                                                {{ standard.fields.title or "New" }}
+                                            </a>
+                                        {% else %}
+                                            <a href="/manage/getstandard/{{ standard.sys.id }}" class="govuk-link">
+                                                {{ standard.fields.title or "New" }}
+                                            </a>
+                                        {% endif %}
+                                    </td>
+                                    <td class="govuk-table__cell">DDTS{{ standard.fields.number }}</td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+            <div class="govuk-inset-text">
+               No standards for the selected stage.
+                </div>
+            {% endif %}
         </div>
     </div>
 {% endblock %}

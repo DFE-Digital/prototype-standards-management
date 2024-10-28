@@ -1,0 +1,86 @@
+{% extends "layouts/auth.html" %}
+
+{% set selectedNav = "Profile" %}
+{% set pageName = "Training" %}
+{% set view = "training" %}
+
+{% block hero %}
+<div class="dfe-page-header dfe-page-header--with-sub-nav">
+    <div class="govuk-width-container dfe-width-container ">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+                <span class="govuk-caption-l">Profile</span>
+                <h1 class="govuk-heading-l">Training history</h1>
+                <nav class="app-sub-navigation" aria-label="Application menu">
+                    <ul class="app-sub-navigation__list">
+                        <li class="app-sub-navigation__item">
+                            <a class="app-sub-navigation__link" {% if view==='profile' %} aria-current="page" {% endif
+                                %} href="/profile">Profile</a>
+                        </li>
+                        <li class="app-sub-navigation__item">
+                            <a class="app-sub-navigation__link" {% if view==='training' %} aria-current="page" {% endif
+                                %} href="/profile/training">Training</a>
+                        </li>
+                        <li class="app-sub-navigation__item">
+                            <a class="app-sub-navigation__link" {% if view==='history' %} aria-current="page" {% endif
+                                %}href="/profile/history">History</a>
+                        </li>
+
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+
+isAssessor
+
+{% block content %}
+<div class="govuk-grid-row">
+
+
+    <div class="govuk-grid-column-three-quarters">
+
+
+
+        <p>Contact the <a href="mailto:ServiceAssessment.PLUS@education.gov.uk?subject=Missing assessor training">Service Assessment Plus team</a> if you have completed any training, including training in other government departments, CDDO or GDS, and it's not listed.</p>
+
+        {% if training | length > 0 %}
+
+        <table class="govuk-table dfe-table--smaller">
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header">Training</th>
+                    <th scope="col" class="govuk-table__header">Provider</th>
+                    <th scope="col" class="govuk-table__header">Date</th>
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+                {% for training in training %}
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">{{training.Training}}</th>
+                    <td class="govuk-table__cell">{{training.Provider}}</td>
+                    <td class="govuk-table__cell">{{training.Date | date('D MMM YYYY')}}</td>
+                </tr>
+                {% endfor%}
+            </tbody>
+        </table>
+
+       
+
+        {% else %}
+
+        <p>There is no assessor training history on record for you.</p>
+
+        {% endif %}
+
+
+    </div>
+
+   
+</div>
+
+{% endblock %}

@@ -1,7 +1,7 @@
 require('dotenv').config();
-const client = require('../../middleware/contentful.js');
-const previewClient = require('../../middleware/contentful-preview.js');
-const managementClient = require('../../middleware/contentful-management.js');
+const client = require('../middleware/contentful.js');
+const previewClient = require('../middleware/contentful-preview.js');
+const managementClient = require('../middleware/contentful-management.js');
 
 
 const renderPreview = async (req, res, view) => {

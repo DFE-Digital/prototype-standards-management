@@ -5,7 +5,7 @@
 {% set seoPageName = "" %}
 {% set pageDescription = ""%}
 {% set view = "standard" %}
-{% set mainClasses = "govuk-!-padding-top-1" %}
+{% set sidenav = 'subcategories' %}
 
 {% block hero %}
     {% include 'create/standard/_head.html' %}
@@ -13,29 +13,54 @@
 
 {% block content %}
     <div class="govuk-grid-row">
+        <div class="govuk-grid-column-one-quarter">
+            {% include 'create/standard/_sidenav.html' %}
+        </div>
         <div class="govuk-grid-column-three-quarters">
 
-            <a href="/create/standard/categories" class="govuk-back-link govuk-!-margin-bottom-5">Back</a>
-
             <form action="/create/standard/sub-categories" method="post">
-<h2 class="govuk-heading-l">What sub-categories apply to this standard?</h2>
-                {% for category in categories %}
+                <h2 class="govuk-heading-l">What sub-categories apply to this standard?</h2>
+
+                {% if standard.fields.category | length === 1 %}
+
+                <p>As the standard has a single category, please select the sub-categories that apply to this category.</p>
+
+                {% else %}
+
+                <p>As the standard has multiple categories, please select the sub-categories that apply to each category.</p>
+
+                {% endif %}
+
+                {% for category in standard.fields.category %}
                     <div class="govuk-form-group">
                         <fieldset class="govuk-fieldset">
                             <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                                {{ category.title }}
+                                {{ category.fields.title }}
                             </legend>
-                        <div id="categories-hint" class="govuk-hint">
+                            <div id="categories-hint" class="govuk-hint">
       Select all that apply. 
     </div>
                             <div class="govuk-checkboxes" data-module="govuk-checkboxes">
-                                {% for subcategory in category.subcategories %}
-                                    <div class="govuk-checkboxes__item">
-                                        <input class="govuk-checkboxes__input" id="subcategories_{{ loop.index }}" name="subcategories" type="checkbox" value="{{ subcategory.value }}" >
-                                        <label class="govuk-label govuk-checkboxes__label" for="subcategories_{{ loop.index }}">
-                                            {{ subcategory.text }}
-                                        </label>
-                                    </div>
+                                {% for subcategory in subcategories %}
+                                    {% if subcategory.category === category.sys.id %}
+                                        <div class="govuk-checkboxes__item">
+                                            <input class="govuk-checkboxes__input" id="subcategories_{{ loop.index }}" name="subcategories" type="checkbox" value="{{ subcategory.value }}" {% set isChecked = false %}
+               {% if standard.fields.subCategory %}
+                   {% for selectedSubCategory in standard.fields.subCategory %}
+                       {% if selectedSubCategory.sys.id == subcategory.value %}
+                           {% set isChecked = true %}
+                       {% endif %}
+                   {% endfor %}
+               {% endif %}
+
+               {% if isChecked %}
+               checked
+               {% endif %}>
+                                            <label class="govuk-label govuk-checkboxes__label" for="subcategories_{{ loop.index }}">
+                                                {{ subcategory.text }}
+                                            </label>
+                                        </div>
+                                    {% endif %}
                                 {% endfor %}
                             </div>
                         </fieldset>
@@ -43,11 +68,12 @@
                 {% endfor %}
 
                 <div class="govuk-button-group">
-                    <button type="submit" class="govuk-button" data-module="govuk-button">Continue</button>
-                    <a class="govuk-link" href="/create/standard">Return to tasks</a>
+                    <button type="submit" class="govuk-button" data-module="govuk-button">Save and continue</button>
+
                 </div>
             </form>
 
         </div>
     </div>
+
 {% endblock %}

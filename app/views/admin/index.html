@@ -1,43 +1,131 @@
 {% extends "layouts/full.html" %}
 {% set selectedNav = "Admin" %}
-{% set pageName = "Administer standards" %}
+{% set pageName = "Admin" %}
 {% set seoPageName = "" %}
 {% set pageDescription = ""%}
+{% set view = "standards"%}
+{% set sidenav = type | lower %}
+
+
+{% block hero %}
+<div class="dfe-page-header dfe-page-header--with-sub-nav">
+    <div class="govuk-width-container dfe-width-container ">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+                <h1 class="govuk-heading-xl govuk-!-padding-top-5">Admin</h1>
+                <nav class="app-sub-navigation" aria-label="Application menu">
+                    <ul class="app-sub-navigation__list">
+                      
+                        <li class="app-sub-navigation__item">
+                            <a class="app-sub-navigation__link" {% if view==='standards' %} aria-current="page" {% endif
+                                %} href="/admin">Standards</a>
+                        </li>
+                        <li class="app-sub-navigation__item">
+                            <a class="app-sub-navigation__link" {% if view==='admins' %} aria-current="page" {% endif
+                                %} href="/admin/admins">Admins</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
 
 {% block content %}
     <div class="govuk-grid-row">
-        <div class="govuk-grid-column-three-quarters">
-
-            <h1 class="govuk-heading-xl">Standards to review</h1>
-
-            <table class="govuk-table">
-                <caption class="govuk-table__caption">Standards</caption>
-                <thead class="govuk-table__head">
-                    <tr class="govuk-table__row">
-                        <th scope="col" class="govuk-table__header">Standard</th>
-                        <th scope="col" class="govuk-table__header">Categories</th>
-                        <th scope="col" class="govuk-table__header">Number</th>
-                    </tr>
-                </thead>
-                <tbody class="govuk-table__body">
-                    {% for standard in standards %}
-                        <tr class="govuk-table__row">
-                            <td class="govuk-table__cell">
-                                <a href="/admin/standard/{{standard.sys.id}}">{{standard.fields.title}}</a>
-                            </td>
-                            <td class="govuk-table__cell">
-                                <ul class="govuk-list">
-                                    {% for category in standard.fields.category %}
-                                        <li>{{category.fields.title}}</li>
-                                    {% endfor %}
-                                </ul>
-                            </td>
-                            <td class="govuk-table__cell">DDTS{{standard.fields.number}}</td>
-                        </tr>
+         <div class="govuk-grid-column-one-quarter">
+            <nav class="dfe-vertical-nav">
+                <ul class="dfe-vertical-nav__section">
+                    {% for stage, stage_name in {
+                        'approval' : 'Approval',
+                        'approved' : 'Approved',
+                        'published' : 'Published',
+                        'rejected' : 'Rejected',
+                        'archived' : 'Archived'
+                    } %}
+                        <li class="dfe-vertical-nav__section-item {% if sidenav == stage %}dfe-vertical-nav__section-item--current{% endif %}">
+                            <span class="dfe-vertical-nav--count">{{ stageCounts[stage_name] }}</span>
+                            <a class="dfe-vertical-nav__link" href="/admin/{{ stage }}">{{ stage_name }}</a>
+                        </li>
                     {% endfor %}
-                </tbody>
-            </table>
+                </ul>
+            </nav>
+        </div>
+        <div class="govuk-grid-column-three-quarters">
+            {% set type_info = {
+                "Approval": {
+                    "heading": "Standards for review",
+                    "description": ["These standards are waiting on the standards board to review and approve or reject."]
+                },
+                "Approved": {
+                    "heading": "Approved standards",
+                    "description": ["These are standards that have been approved by the board and are not yet published."]
+                },
+                "Published": {
+                    "heading": "Published standards",
+                    "description": ["These standards are published and available for anyone to view."]
+                },
+                "Rejected": {
+                    "heading": "Rejected standards",
+                    "description": ["These standards have been rejected by the standards board."]
+                },
+                "Archived": {
+                    "heading": "Archived standards",
+                    "description": ["These standards have been unpublished or archived."]
+                }
+            } %}
 
+            {% if type in type_info %}
+                <h2 class="govuk-heading-l">{{ type_info[type].heading }}</h2>
+                {% for paragraph in type_info[type].description %}
+                    <p>{{ paragraph }}</p>
+                {% endfor %}
+            {% endif %}
+
+            {% set showtable = false %}
+
+            {% for stage, stage_name in {
+                'approval' : 'Approval',
+                'approved' : 'Approved',
+                'published' : 'Published',
+                'rejected' : 'Rejected',
+                'archived' : 'Archived'
+            } %}
+                {% if stageCounts[stage_name] > 0 and stage | lower === type | lower %}
+                    {% set showtable = true %}
+                {% endif %}
+            {% endfor %}
+
+            {% if showtable === true %}
+                <table class="govuk-table">
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th scope="col" class="govuk-table__header govuk-!-width-two-thirds">Standard</th>
+                            <th scope="col" class="govuk-table__header">Number</th>
+                        </tr>
+                    </thead>
+                    <tbody class="govuk-table__body">
+                        {% for standard in standards %}
+                            {% if standard.fields.stage.fields.title == type %}
+                                <tr class="govuk-table__row">
+                                    <td class="govuk-table__cell">
+                                            <a href="/admin/standard/{{ standard.sys.id }}" class="govuk-link">
+                                                {{ standard.fields.title or "New" }}
+                                            </a>
+                                    </td>
+                                    <td class="govuk-table__cell">DDTS{{ standard.fields.number }}</td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+            <div class="govuk-inset-text">
+               No standards for the selected stage.
+                </div>
+            {% endif %}
         </div>
     </div>
 {% endblock %}

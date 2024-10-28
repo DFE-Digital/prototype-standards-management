@@ -1,7 +1,7 @@
 require('dotenv').config();
-const client = require('../../middleware/contentful.js');
-const previewClient = require('../../middleware/contentful-preview.js');
-const managementClient = require('../../middleware/contentful-management.js');
+const client = require('../middleware/contentful.js');
+const previewClient = require('../middleware/contentful-preview.js');
+const managementClient = require('../middleware/contentful-management.js');
 
 // Helper function to fetch a standard entry by ID with error handling
 async function fetchStandardById(id) {
@@ -15,19 +15,51 @@ async function fetchStandardById(id) {
 
 // Dashboard: Display all standards ordered by 'number' field
 exports.g_dashboard = async function (req, res) {
+    const { id } = req.params;
+
+    // Define mapping between id and display stage titles
+    const stageMap = {
+        approval: "Approval",
+        approved: "Approved",
+        published: "Published",
+        rejected: "Rejected",
+        archived: "Archived"
+    };
+
+    let type = stageMap[id?.toLowerCase()] || "Approval";
+
+    let standards = []; // Placeholder for standards data
+    let stageCounts = {}; // Placeholder for stage counts
+
     try {
         const results = await previewClient.getEntries({
-            content_type: 'standard',
-            order: 'fields.number'
+            content_type: "standard",
+            order: "fields.number",
         });
-        const standards = results.items;
 
-        return res.render('admin/index', { standards });
+        // Set standards if results are valid
+        standards = results?.items || [];
+
+        // Initialise stageCounts with all stages set to 0
+        Object.values(stageMap).forEach(stage => {
+            stageCounts[stage] = 0;
+        });
+
+        // Count standards by stage title
+        standards.forEach(standard => {
+            const stageTitle = standard?.fields?.stage?.fields?.title;
+            if (stageCounts.hasOwnProperty(stageTitle)) {
+                stageCounts[stageTitle]++;
+            }
+        });
     } catch (error) {
-        console.error('Error fetching standards for dashboard:', error);
-        return res.status(500).send('Internal Server Error');
+        console.error("Error fetching entries from Contentful:", error);
     }
+
+    // Render the view with `standards`, `stageCounts`, and `type`
+    return res.render("admin/index", { standards, stageCounts, type });
 };
+
 
 // Manage Standard: Display the details of a single standard for management
 exports.g_manage = async function (req, res) {

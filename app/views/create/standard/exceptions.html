@@ -5,6 +5,7 @@
 {% set seoPageName = "" %}
 {% set pageDescription = ""%}
 {% set view = "exceptions" %}
+{% set sidenav = 'exceptions' %}
 
 {% block hero %}
     {% include 'create/standard/_head.html' %}
@@ -15,64 +16,56 @@
 {% endblock %}
 
 {% block content %}
-    <div class="govuk-grid-row">
+    <div class="govuk-grid-row">            <div class="govuk-grid-column-one-quarter">
+            {% include 'create/standard/_sidenav.html' %}
+        </div>
         <div class="govuk-grid-column-three-quarters">
 
             <h2 class="govuk-heading-l">Exceptions</h2>
 
-            <p>Exceptions that apply to this standard.  {% if exceptions | length %}
-                    <a href="/create/standard/add-exception">Add another exception</a>.{% endif %}
-            </p>
+            <p>Exceptions that apply to this standard.</p>
 
-            {% if exceptions | length %}
+            <p>If there are no exceptions, you can skip this question.</p>
 
-                {% for exception in exceptions %}
-
-                    <div class="govuk-summary-card">
-                        <div class="govuk-summary-card__title-wrapper">
-                            <h2 class="govuk-summary-card__title">
-      Exception
+          
+                 <div class="govuk-summary-card">
+                <div class="govuk-summary-card__title-wrapper">
+                    <h2 class="govuk-summary-card__title">
+      Exceptions
     </h2>
-                            <ul class="govuk-summary-card__actions">
-                                <li class="govuk-summary-card__action">
-                                    <a class="govuk-link" href="#">Edit <span class="govuk-visually-hidden"> exception</span></a>
-                                </li>
-                                <li class="govuk-summary-card__action">
-                                    <a class="govuk-link" href="#">Delete <span class="govuk-visually-hidden"> exception</span></a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="govuk-summary-card__content">
-                            <dl class="govuk-summary-list">
-                                <div class="govuk-summary-list__row">
-                                    <dt class="govuk-summary-list__key">
-          Exception
-        </dt>
-                                    <dd class="govuk-summary-list__value">
-                                        {{exception.exception}}
-                                    </dd>
-                                </div>
-                                <div class="govuk-summary-list__row">
-                                    <dt class="govuk-summary-list__key">
-          Details of the exception
-        </dt>
-                                    <dd class="govuk-summary-list__value">
-                                        {{exception.exceptiondetail}}
-                                    </dd>
-                                </div>
-                            </dl>
-                        </div>
-                    </div>
-
-                {% endfor %}
-
-            {% else %}
-
-                <div class="govuk-inset-text">
-                    <p>No exceptions added. <a href="/create/standard/add-exception">Add an exception</a>.</p>
+                    <ul class="govuk-summary-card__actions">
+                        <li class="govuk-summary-card__action">
+                            <a class="govuk-link" href="/create/standard/add-exception">Add <span class="govuk-visually-hidden"> exception</span></a>
+                        </li>
+                    </ul>
                 </div>
+                <div class="govuk-summary-card__content">
+                    {% if standard.fields.exceptions | length %}
 
-            {% endif %}
+                        <table class="govuk-table">
+                            <thead class="govuk-table__head">
+                                <tr class="govuk-table__row">
+                                    <th scope="col" class="govuk-table__header govuk-!-width-one-third">Summary</th>
+                                    <th scope="col" class="govuk-table__header">Details</th>
+                                </tr>
+                            </thead>
+                            <tbody class="govuk-table__body">
+                                {% for exception in standard.fields.exceptions %}
+                                    <tr class="govuk-table__row">
+                                        <td class="govuk-table__cell"><a href="/create/standard/manage-exception/{{exception.sys.id}}">{{ exception.fields.title }}</a></td>
+                                        <td class="govuk-table__cell">{{ exception.fields.details | truncate(50) }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+
+                    {% else %}
+
+                        <p class="govuk-!-margin-bottom-0">No exceptions added.</p>
+
+                    {% endif %}
+                </div>
+            </div>
 
         </div>
     </div>

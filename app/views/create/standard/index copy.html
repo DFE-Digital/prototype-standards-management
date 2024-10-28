@@ -1,0 +1,241 @@
+{% extends "layouts/full.html" %}
+{% set selectedNav = "Create" %}
+{% set pageName = "Draft a new standard" %}
+{% set seoPageName = "" %}
+{% set pageDescription = ""%}
+{% set view = "standard" %}
+{% block hero %}
+    {% include 'create/standard/_head.html' %}
+{% endblock %}
+{% block head %}
+    <meta name="robots" content="noindex, nofollow">
+{% endblock %}
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
+            <h2 class="govuk-heading-l">Standard information</h2>
+            <p>This will be used by people to find the standard. You can edit this information later.</p>
+            <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+               Title
+            </dt>
+                    <dd class="govuk-summary-list__value">
+                        {% if data['title'] %}
+                            {{data['title']}}
+                        {% else %}
+                            <a href="/create/standard/title" class="govuk-link">Enter title</a>
+                        </dd>
+                    {% endif %}
+                    <dd class="govuk-summary-list__actions">
+                        {% if data['title'] %}
+                            <a class="govuk-link" href="/create/standard/title">Change<span class="govuk-visually-hidden"> title</span></a>
+                        {% endif %}
+                    </dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+               Categories
+            </dt>
+                    <dd class="govuk-summary-list__value">
+                        {% if categories %}
+                            <ul class="govuk-list">
+                                {% for category in categories %}
+                                    <li>{{category.text}}</li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <a href="/create/standard/categories" class="govuk-link">Enter category</a>
+                        </dd>
+                    {% endif %}
+                    <dd class="govuk-summary-list__actions">
+                        {% if categories %}
+                            <a class="govuk-link" href="/create/standard/categories">Change<span class="govuk-visually-hidden"> category</span></a>
+                        {% endif %}
+                    </dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+               Sub-categories
+            </dt>
+            <dd class="govuk-summary-list__value">
+               {% if subcategories %}
+               <ul class="govuk-list">
+                  {% for category in subcategories %}
+                  <li>{{category.text}}</li>
+                  {% endfor %}
+               </ul>
+               {% else %}
+               <a href="/create/standard/sub-categories" class="govuk-link">Enter sub-categories</a>
+            </dd>
+            {% endif %}
+            <dd class="govuk-summary-list__actions">
+               {% if subcategories %}
+               <a class="govuk-link" href="/create/standard/sub-categories">Change<span class="govuk-visually-hidden"> sub-category</span></a>
+               {% endif %}
+            </dd>
+         </div>
+         <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+               Summary
+            </dt>
+            <dd class="govuk-summary-list__value">
+               {% if data['purpose'] %}
+               {{data['purpose']}}
+               {% else %}
+               <a href="/create/standard/purpose" class="govuk-link">Enter summary</a>
+            </dd>
+            {% endif %}
+            <dd class="govuk-summary-list__actions">
+               {% if data['purpose'] %}
+               <a class="govuk-link" href="/create/standard/purpose">Change<span class="govuk-visually-hidden"> summary</span></a>
+               {% endif %}
+            </dd>
+         </div>
+      </dl>
+
+            <h2 class="govuk-heading-m">Guidance</h2>
+            <dl class="govuk-summary-list">
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+               Guidance
+            </dt>
+                    <dd class="govuk-summary-list__value">
+                        {% if data['title'] %}
+                            {% if data['guidance'] %}
+               Guidance started.
+               {% else %}
+                                <a href="/create/standard/guidance" class="govuk-link">Add guidance</a>
+                            {% endif %}
+                        {% else %}
+               Cannot start yet
+            </dd>
+                    {% endif %}
+                    <dd class="govuk-summary-list__actions">
+                        {% if data['guidance'] %}
+                            <a class="govuk-link" href="/create/standard/guidance">Change<span class="govuk-visually-hidden"> guidance</span></a>
+                        {% else %}
+                        {% endif %}
+                    </dd>
+                </div>
+            </dl>
+
+            <h2 class="govuk-heading-m">Products</h2>
+            <dl class="govuk-summary-list">
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+               Approved products
+            </dt>
+                    <dd class="govuk-summary-list__value">
+                        {% if data['title'] %}
+                            {% if data['approvedProducts'] %}
+                                {{data['approvedProducts'] | length}} product{% if data['approvedProducts'] | length !== 1 %}s{% endif%}  added
+               {% else %}
+                                    <a href="/create/standard/products" class="govuk-link">Add approved products</a>
+                                {% endif %}
+                            {% else %}
+               Cannot start yet
+            </dd>
+                        {% endif %}
+                        <dd class="govuk-summary-list__actions">
+                            {% if data['approvedProducts'] %}
+                                <a class="govuk-link" href="/create/standard/products">Change<span class="govuk-visually-hidden"> approved products</span></a>
+                            {% else %}
+                            {% endif %}
+                        </dd>
+                    </div>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+               Tolerated products
+            </dt>
+                        <dd class="govuk-summary-list__value">
+                            {% if data['title'] %}
+                                {% if data['toleratedProducts'] %}
+                                    {{data['toleratedProducts'] | length}} product{% if data['toleratedProducts'] | length !== 1 %}s{% endif%}  added
+               {% else %}
+                                        <a href="/create/standard/products" class="govuk-link">Add tolerated products</a>
+                                    {% endif %}
+                                {% else %}
+               Cannot start yet
+            </dd>
+                            {% endif %}
+                            <dd class="govuk-summary-list__actions">
+                                {% if data['toleratedProducts'] %}
+                                    <a class="govuk-link" href="/create/standard/products">Change<span class="govuk-visually-hidden"> tolerated products</span></a>
+                                {% else %}
+                                {% endif %}
+                            </dd>
+                        </div>
+                    </dl>
+                    <h2 class="govuk-heading-m">Exceptions</h2>
+                    <dl class="govuk-summary-list">
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+               Exceptions
+            </dt>
+                            <dd class="govuk-summary-list__value">
+                                {% if data['title'] %}
+                                    {% if data['exceptions'] %}
+                                        {{data['exceptions'] | length}} exception{% if data['exceptions'] | length !== 1 %}s{% endif%}  added
+               {% else %}
+                                            <a href="/create/standard/exceptions" class="govuk-link">Add exception</a>
+                                        {% endif %}
+                                    {% else %}
+               Cannot start yet
+            </dd>
+                                {% endif %}
+                                <dd class="govuk-summary-list__actions">
+                                    {% if data['exceptions'] %}
+                                        <a class="govuk-link" href="/create/standard/exceptions">Change<span class="govuk-visually-hidden"> exceptions</span></a>
+                                    {% else %}
+                                    {% endif %}
+                                </dd>
+                            </div>
+                        </dl>
+                        <h2 class="govuk-heading-m">Contacts</h2>
+                        <dl class="govuk-summary-list">
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">
+               Contacts
+            </dt>
+                                <dd class="govuk-summary-list__value">
+                                    {% if data['title'] %}
+                                        {% if data['contacts'] %}
+                                            {{data['contacts'] | length}} contact{% if data['contacts'] | length !== 1 %}s{% endif%}  added
+               {% else %}
+                                                <a href="/create/standard/contacts" class="govuk-link">Add contacts</a>
+                                            {% endif %}
+                                        {% else %}
+               Cannot start yet
+            </dd>
+                                    {% endif %}
+                                    <dd class="govuk-summary-list__actions">
+                                        {% if data['contacts'] %}
+                                            <a class="govuk-link" href="/create/standard/contacts">Change<span class="govuk-visually-hidden"> contacts</span></a>
+                                        {% else %}
+                                        {% endif %}
+                                    </dd>
+                                </div>
+                            </dl>
+
+                            <h2 class="govuk-heading-m">Submit proposed standard</h2>
+                            {% if (data['contacts'] | length) and data['purpose'] and subcategories and categories and data['title']%}
+
+                                <p>Your proposed standard will move to draft stage. You can continue to add information to this standard after you submit it, and up to Standards board stage, (view standard lifecycle).</p>
+
+                                <form action="/create/standard/submit" method="post">
+                                    <button type="submit" class="govuk-button" data-module="govuk-button">
+                Submit draft
+            </button>
+                                </form>
+
+                            {% else %}
+
+                                <p>Your proposed standard cannot be submitted yet.</p>
+                                <p>Once you have completed the basic information and some contact details, you'll be able to submit it to draft stage.</p>
+
+                            {% endif %}
+
+                        </div>
+                    </div>
+                {% endblock %}

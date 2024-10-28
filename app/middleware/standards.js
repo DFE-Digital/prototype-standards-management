@@ -1,7 +1,6 @@
 const managementClient = require('./contentful-management.js');
 
 
-
 async function createStandardEntry(standardData) {
     try {
         const spaceId = process.env.spaceID;
@@ -116,7 +115,10 @@ async function createStandardEntry(standardData) {
                             id: exceptionId
                         }
                     })) : []
-                }
+                },
+                creator: {
+                    'en-US': standardData.creator
+                },
             }
         });
 

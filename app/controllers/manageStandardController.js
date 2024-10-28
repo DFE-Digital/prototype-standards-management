@@ -1,31 +1,136 @@
 require("dotenv").config();
-const client = require("../../middleware/contentful.js");
-const previewClient = require("../../middleware/contentful-preview.js");
-const managementClient = require("../../middleware/contentful-management.js");
+const client = require("../middleware/contentful.js");
+const previewClient = require("../middleware/contentful-preview.js");
+const managementClient = require("../middleware/contentful-management.js");
 
 function generateRandomId() {
     return Math.random().toString(36).substr(2, 9); // Generates a random string
 }
 
 // GETS //
-
 exports.g_dashboard = async function (req, res) {
-    const results = await previewClient.getEntries({
-        content_type: "standard",
-        order: "fields.number",
-    });
+    const { id } = req.params;
 
-    const standards = results.items;
+    // Define mapping between id and display stage titles
+    const stageMap = {
+        proposed: "Proposed",
+        draft: "Draft",
+        approval: "Approval",
+        approved: "Approved",
+        published: "Published",
+        rejected: "Rejected",
+        archived: "Archived"
+    };
 
-    return res.render("manage/index", { standards });
+    // Map `id` to display stage title, default to "Proposed" if id is missing or invalid
+    let type = stageMap[id?.toLowerCase()] || "Proposed";
+
+    let standards = []; // Placeholder for standards data
+    let stageCounts = {}; // Placeholder for stage counts
+
+    try {
+        const results = await previewClient.getEntries({
+            content_type: "standard",
+            order: "fields.number",
+        });
+
+        // Set standards if results are valid
+        standards = results?.items || [];
+
+        // Initialise stageCounts with all stages set to 0
+        Object.values(stageMap).forEach(stage => {
+            stageCounts[stage] = 0;
+        });
+
+        // Count standards by stage title
+        standards.forEach(standard => {
+            const stageTitle = standard?.fields?.stage?.fields?.title;
+            if (stageCounts.hasOwnProperty(stageTitle)) {
+                stageCounts[stageTitle]++;
+            }
+        });
+    } catch (error) {
+        console.error("Error fetching entries from Contentful:", error);
+    }
+
+    // Render the view with `standards`, `stageCounts`, and `type`
+    return res.render("manage/index", { standards, stageCounts, type });
 };
+
+
+exports.g_standard_getdraft = async function (req, res) {
+
+console.log('get draft');
+
+    req.session.data = {};
+
+    const { id } = req.params;
+
+    // Get drafts from contentful
+
+    try {
+        const draft = await previewClient.getEntry(id);
+
+        req.session.data['id'] = id;
+
+        return res.redirect('/manage/standard');
+    }
+    catch (error) {
+
+        req.session.data['error'] = { error: 'Standard not found' };
+
+        return res.redirect('/manage');
+    }
+
+}
+
 
 exports.g_manage = async function (req, res) {
-    const { id } = req.params;
-    const standard = await previewClient.getEntry(id);
+    if (!req.session.data) {
+        req.session.data = {};
+    }
 
-    return res.render("manage/standard/index", { standard });
+    let id = req.session.data['id'];
+
+    if (id) {
+        try {
+            const standard = await previewClient.getEntry(id);
+            return res.render('manage/standard/index', { standard });
+        } catch (error) {
+            console.error("Error fetching standard entry from Contentful:", error);
+            req.session.data['error'] = { error: 'Failed to fetch standard entry' };
+            return res.redirect('/create');
+        }
+    } else {
+        req.session.data['error'] = { error: 'No ID found in session data' };
+        return res.redirect('/create');
+    }
+
 };
+
+exports.g_manage_title = async function (req, res) {
+
+    if (!req.session.data) {
+        req.session.data = {};
+    }
+
+    let id = req.session.data['id'];
+
+    if (id) {
+        try {
+            const standard = await previewClient.getEntry(id);
+            return res.render('manage/standard/title', { standard });
+        } catch (error) {
+            console.error("Error fetching standard entry from Contentful:", error);
+            req.session.data['error'] = { error: 'Failed to fetch standard entry' };
+            return res.redirect('/create');
+        }
+    } else {
+        req.session.data['error'] = { error: 'No ID found in session data' };
+        return res.redirect('/create');
+    }
+
+}
 
 exports.g_manage_purpose = async function (req, res) {
     const { id } = req.params;

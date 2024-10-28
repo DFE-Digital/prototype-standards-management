@@ -1,28 +1,72 @@
 {% extends "layouts/full.html" %}
 
 {% set selectedNav = "Create" %}
-{% set pageName = "Draft a standard" %}
+{% set pageName = "Create a standard" %}
 {% set seoPageName = "" %}
 {% set pageDescription = ""%}
+{% block hero %}
+   <div class="dfe-page-header">
+      <div class="govuk-width-container dfe-width-container ">
+         <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+               <h1 class="govuk-heading-xl govuk-!-padding-top-5 govuk-!-padding-bottom-4">{{pageName}}</h1>
 
+            </div>
+         </div>
+      </div>
+   </div>
+{% endblock %}
 
 {% block content %}
 <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
-<h1 class="govuk-heading-xl">{{pageName}}</h1> 
 
-<p>Use this service to draft a new DDT (Digital Data Technology) standard. You can save your draft and return to it later.</p>
+<p>Use this service to create a new DDT (Digital Data Technology) standard. You can save your proposed standard and return to it later.</p>
 
-<p><a href="/create/standard" role="button" draggable="false" class="govuk-button govuk-button--start" data-module="govuk-button">
+<p><a href="/create/standard/create" role="button" draggable="false" class="govuk-button govuk-button--start" data-module="govuk-button">
   Start now
   <svg class="govuk-button__start-icon" xmlns="http://www.w3.org/2000/svg" width="17.5" height="19" viewBox="0 0 33 40" aria-hidden="true" focusable="false">
     <path fill="currentColor" d="M0 0h13l20 20-20 20H0l20-20z" />
   </svg>
 </a></p>
 
-<h2 class="govuk-heading-m">Drafts in progress</h2>
+<h2 class="govuk-heading-m">Standards you're proposing</h2>
 
-<p>There are [tk] drafts in progress. (with table if any)</p>
+
+{% if drafts | length%}
+
+<table class="govuk-table">
+  <thead class="govuk-table__head">
+    <tr class="govuk-table__row">
+      <th scope="col" class="govuk-table__header">Title</th>
+      <th scope="col" class="govuk-table__header">Started</th>
+    </tr>
+  </thead>
+  <tbody class="govuk-table__body">
+    {% for draft in drafts %}
+
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header"><a href="/create/getdraft/{{draft.sys.id}}" class="govuk-link">{% if draft.fields.title %}
+    {{ draft.fields.title }}
+{% else %}
+    New
+{% endif %}</a></th>
+      <td class="govuk-table__cell">{{draft.sys.createdAt | date('DD MMM YYYY')}}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+
+{% else %}
+
+<p>There are no standards in proposal stage.</p>
+
+{% endif %}
+
+<p>You can find standards you've created, are the owner, or contact on, in the <a class="govuk-link" href="/manage">manage&nbsp;section</a>.</p>
+
+
 
 <h2 class="govuk-heading-m">Before you start</h2>
  

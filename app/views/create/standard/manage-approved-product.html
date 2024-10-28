@@ -1,0 +1,74 @@
+{% extends "layouts/full.html" %}
+
+{% set selectedNav = "Create" %}
+{% set pageName = "Add an approved product" %}
+{% set seoPageName = "" %}
+{% set pageDescription = ""%}
+{% set view = "products" %}
+{% set sidenav = 'products' %}
+
+{% block hero %}
+    {% include 'create/standard/_head.html' %}
+{% endblock %}
+
+{% block head %}
+    <meta name="robots" content="noindex, nofollow">
+{% endblock %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-one-quarter">
+            {% include 'create/standard/_sidenav.html' %}
+        </div>
+        <div class="govuk-grid-column-three-quarters">
+
+            <h2 class="govuk-heading-l">Manage an approved product or service</h2>
+
+            <p>The approved and tolerated products that are associated with this standard.</p>
+
+            <form action="/create/standard/manage-approved-product" method="post">
+
+                <input type="hidden" name="approvedID" value="{{product.sys.id}}">
+
+                <div class="govuk-form-group">
+                    <label class="govuk-label" for="approved-name">
+    Approved product name
+  </label>
+                    <input class="govuk-input" id="approved-name" name="approved_name" type="text" value="{{product.fields.product}}">
+                </div>
+                <div class="govuk-form-group">
+                    <label class="govuk-label" for="approved-vendor">
+    Vendor or supplier
+  </label>
+                    <input class="govuk-input" id="approved-vendor" name="approved_vendor" type="text" value="{{product.fields.vendor}}">
+                </div>
+                <div class="govuk-form-group">
+                    <label class="govuk-label" for="approved-version">
+    Version
+  </label>
+                    <input class="govuk-input" id="approved-version" name="approved_version" type="text" value="{{product.fields.version}}">
+                </div>
+
+                <div class="govuk-form-group">
+                    <label class="govuk-label" for="approved-usecase">
+    Use-case
+  </label>
+                    <input class="govuk-input" id="approved-usecase" name="approved_usecase" type="text" value="{{product.fields.useCase}}">
+                </div>
+
+                <div class="govuk-button-group">
+                    <button type="submit" name="manage" value="save" class="govuk-button" data-module="govuk-button">
+Save and continue
+  </button>
+                    <button type="submit" name="manage" value="delete" class="govuk-button govuk-button--warning" data-module="govuk-button">
+Delete and continue
+  </button>
+                    <a class="govuk-link" href="/create/standard/products">Cancel and return to products</a>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+{% endblock %}

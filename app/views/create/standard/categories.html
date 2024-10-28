@@ -5,7 +5,7 @@
 {% set seoPageName = "" %}
 {% set pageDescription = ""%}
 {% set view = "standard" %}
-{% set mainClasses = "govuk-!-padding-top-1" %}
+{% set sidenav = 'categories' %}
 
 {% block hero %}
     {% include 'create/standard/_head.html' %}
@@ -17,9 +17,10 @@
 
 {% block content %}
     <div class="govuk-grid-row">
+        <div class="govuk-grid-column-one-quarter">
+            {% include 'create/standard/_sidenav.html' %}
+        </div>
         <div class="govuk-grid-column-three-quarters">
-
-            <a href="/create/standard/title" class="govuk-back-link govuk-!-margin-bottom-5">Back</a>
 
             <form action="/create/standard/categories" method="post" >
 
@@ -41,9 +42,20 @@
                id="categories_{{ loop.index }}" 
                name="categories" 
                type="checkbox" 
-               value="{{ category.value }}">
+               value="{{ category.value}}"        {% set isChecked = false %}
+               {% if standard.fields.category %}
+                   {% for selectedCategory in standard.fields.category %}
+                       {% if selectedCategory.sys.id == category.value %}
+                           {% set isChecked = true %}
+                       {% endif %}
+                   {% endfor %}
+               {% endif %}
+
+               {% if isChecked %}
+               checked
+               {% endif %}>
                                     <label class="govuk-label govuk-checkboxes__label" for="categories_{{ loop.index }}">
-                                        {{ category.text }}
+                                        {{ category.text }} 
                                     </label>
                                 </div>
                             {% endfor %}
@@ -54,11 +66,15 @@
 
                 <div class="govuk-button-group">
                     <button type="submit" class="govuk-button" data-module="govuk-button">
-    Continue
+    Save and continue
   </button>
-                    <a class="govuk-link" href="/create/standard">Return to tasks</a>
+
                 </div>
             </form>
+
+{{standard | dump}}
+
+{{categories | dump}}
 
         </div>
     </div>

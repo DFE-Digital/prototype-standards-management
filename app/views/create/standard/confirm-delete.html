@@ -1,0 +1,51 @@
+{% extends "layouts/full.html" %}
+
+{% set selectedNav = "Create" %}
+{% set pageName = "Are you sure you want to delete this proposed standard?" %}
+{% set seoPageName = "" %}
+{% set pageDescription = ""%}
+{% set view = "standard" %}
+
+
+{% block hero %}
+    {% include 'create/standard/_head.html' %}
+{% endblock %}
+
+
+{% block head %}
+    <meta name="robots" content="noindex, nofollow">
+{% endblock %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+                 <div class="govuk-grid-column-one-quarter">
+            <nav class="dfe-vertical-nav">
+
+                <ul class="dfe-vertical-nav__section">
+
+                    <li class="dfe-vertical-nav__section-item  dfe-vertical-nav__section-item--current">
+                        <a class="dfe-vertical-nav__link" href="/create/standard">Tasks</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <div class="govuk-grid-column-three-quarters">
+
+       <form action="/create/standard/confirm-delete" method="post">
+          
+          <h2 class="govuk-heading-l">Are you sure you want to delete this proposed standard?</h2>
+
+ <div class="govuk-button-group">
+          <button type="submit" class="govuk-button govuk-button--warning" data-module="govuk-button">
+            Delete proposed standard 
+            </button>
+               <a class="govuk-link" href="/create/standard">Cancel and return to tasks</a>
+
+    </div>
+
+          </form>
+
+        </div>
+    </div>
+
+{% endblock %}

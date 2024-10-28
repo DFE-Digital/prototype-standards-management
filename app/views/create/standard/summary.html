@@ -1,0 +1,52 @@
+{% extends "layouts/full.html" %}
+
+{% set selectedNav = "Create" %}
+{% set pageName = "Summary of the standard" %}
+{% set seoPageName = "" %}
+{% set pageDescription = ""%}
+{% set view = "standard" %}
+{% set sidenav = 'summary' %}
+
+{% block hero %}
+  {% include 'create/standard/_head.html' %}
+{% endblock %}
+
+{% block head %}
+  <meta name="robots" content="noindex, nofollow">
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+        <div class="govuk-grid-column-one-quarter">
+            {% include 'create/standard/_sidenav.html' %}
+        </div>
+    <div class="govuk-grid-column-three-quarters">
+     
+
+      <form action="/create/standard/summary" method="post" >
+
+        <div class="govuk-form-group govuk-character-count" data-module="govuk-character-count" data-maxlength="1000">
+          <h2 class="govuk-label-wrapper">
+            <label class="govuk-label govuk-label--l" for="summary-hint">
+              {{pageName}}
+            </label>
+          </h2>
+          <div id="summary-hint-hint" class="govuk-hint">
+    Add a short description to provide an overview of the standard.
+  </div>
+          <textarea class="govuk-textarea govuk-js-character-count" id="summary-hint" name="summary" rows="10" aria-describedby="summary-hint-info summary-hint-hint">{{standard.fields.summary}}</textarea>
+          <div id="summary-hint-info" class="govuk-hint govuk-character-count__message">
+    You can enter up to 1,000 characters
+  </div>
+        </div
+        <div class="govuk-button-group">
+          <button type="submit" class="govuk-button" data-module="govuk-button">
+    Save and continue
+  </button>
+         
+        </div>
+      </form>
+    </div>
+  </div>
+
+{% endblock %}

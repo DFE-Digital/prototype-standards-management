@@ -1,10 +1,11 @@
 {% extends "layouts/full.html" %}
 
 {% set selectedNav = "Create" %}
-{% set pageName = "Contacts" %}
+{% set pageName = "Owners an contacts" %}
 {% set seoPageName = "" %}
 {% set pageDescription = ""%}
 {% set view = "contacts" %}
+{% set sidenav = 'contacts' %}
 
 {% block hero %}
     {% include 'create/standard/_head.html' %}
@@ -16,71 +17,79 @@
 
 {% block content %}
     <div class="govuk-grid-row">
+        <div class="govuk-grid-column-one-quarter">
+            {% include 'create/standard/_sidenav.html' %}
+        </div>
         <div class="govuk-grid-column-three-quarters">
 
-            <h2 class="govuk-heading-l">Contacts</h2>
+                {% if message %}
 
-            <p>Contacts for this standard.{% if contacts | length %}
-                    <a href="/create/standard/add-contact">Add another contact</a>.{% endif %}
-            </p>
-
-            {% if contacts | length %}
-
-                {% for contact in contacts %}
-
-                    <div class="govuk-summary-card">
-                        <div class="govuk-summary-card__title-wrapper">
-                            <h2 class="govuk-summary-card__title">
-      Contact
+            <div class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+  <div class="govuk-notification-banner__header">
+    <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+      Success
     </h2>
-                            <ul class="govuk-summary-card__actions">
-                                <li class="govuk-summary-card__action">
-                                    <a class="govuk-link" href="#">Edit <span class="govuk-visually-hidden"> contact</span></a>
-                                </li>
-                                <li class="govuk-summary-card__action">
-                                    <a class="govuk-link" href="#">Delete <span class="govuk-visually-hidden"> contact</span></a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="govuk-summary-card__content">
-                            <dl class="govuk-summary-list">
-                                <div class="govuk-summary-list__row">
-                                    <dt class="govuk-summary-list__key">
-          Contact role
-        </dt>
-                                    <dd class="govuk-summary-list__value">
-                                        {{contact.contactType}}
-                                    </dd>
-                                </div>
-                                <div class="govuk-summary-list__row">
-                                    <dt class="govuk-summary-list__key">
-          Name
-        </dt>
-                                    <dd class="govuk-summary-list__value">
-                                        {{contact.contactName}}
-                                    </dd>
-                                </div>
-                                <div class="govuk-summary-list__row">
-                                    <dt class="govuk-summary-list__key">
-          Email
-        </dt>
-                                    <dd class="govuk-summary-list__value">
-                                        {{contact.contactEmail}}
-                                    </dd>
-                                </div>
-                            </dl>
-                        </div>
-                    </div>
-
-                {% endfor %}
-
-            {% else %}
-
-                <div class="govuk-inset-text">
-                    <p>No contacts added. <a href="/create/standard/add-contact">Add a contact</a>.</p>
-                </div>
+  </div>
+  <div class="govuk-notification-banner__content">
+  
+    <p class="govuk-body">{{message}}</p>
+  </div>
+</div>
 
             {% endif %}
+
+            <h2 class="govuk-heading-l">{{pageName}}</h2>
+
+            <p>The people who own this standard and people who can be contacted about using the standard.</p>
+
+            <div class="govuk-summary-card">
+                <div class="govuk-summary-card__title-wrapper">
+                    <h2 class="govuk-summary-card__title">
+      Contacts
+    </h2>
+                    <ul class="govuk-summary-card__actions">
+                        <li class="govuk-summary-card__action">
+                            <a class="govuk-link" href="/create/standard/add-contact">Add <span class="govuk-visually-hidden"> contact</span></a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="govuk-summary-card__content">
+                    {% if standard.fields.owners | length or standard.fields.technicalContacts | length %}
+                        <table class="govuk-table">
+                            <thead class="govuk-table__head">
+                                <tr class="govuk-table__row">
+                                    <th scope="col" class="govuk-table__header govuk-!-width-one-third">Contact</th>
+                                    <th scope="col" class="govuk-table__header">Email address</th>
+                                    <th scope="col" class="govuk-table__header">Type</th>
+                                </tr>
+                            </thead>
+                            <tbody class="govuk-table__body">
+                                {% for contact in standard.fields.owners %}
+                                    <tr class="govuk-table__row">
+                                        <td class="govuk-table__cell">
+                                            <a href="/create/standard/manage-contact/{{contact.sys.id}}">{{ contact.fields.name }}</a>
+                                        </td>   <td class="govuk-table__cell">{{contact.fields.emailAddress}}</td>
+                                        <td class="govuk-table__cell">Owner</td>
+                                    </tr>
+                                {% endfor %}
+                                {% for contact in standard.fields.technicalContacts %}
+                                    <tr class="govuk-table__row">
+                                        <td class="govuk-table__cell">
+                                            <a href="/create/standard/manage-contact/{{contact.sys.id}}">{{ contact.fields.name }}</a>
+                                        </td>
+                                        </td>   <td class="govuk-table__cell">{{contact.fields.emailAddress}}</td>
+                                        <td class="govuk-table__cell">Contact</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                      
+                           <p class="govuk-!-margin-bottom-0">No contacts added.</p>
+                       
+                    {% endif %}
+                </div>
+            </div>
 
         </div>
     </div>

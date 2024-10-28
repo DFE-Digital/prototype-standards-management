@@ -14,21 +14,33 @@ const compression = require('compression');
 const routes = require('./app/routes');
 const session = require('express-session');
 const favicon = require('serve-favicon');
-const PageIndex = require('./middleware/pageIndex');
+const PageIndex = require('./app/middleware/pageIndex');
 const pageIndex = new PageIndex(config);
+const pg = require('pg');
+const pgSession = require('connect-pg-simple')(session);
 const app = express();
 
 app.use(compression());
 
 
-app.use(
-  session({
-    secret: process.env.sessionkey,
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: false }, // Note: `secure: true` in a production environment with HTTPS
+const pgPool = new pg.Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false }
+});
+
+
+app.use(session({
+  store: new pgSession({
+    pool: pgPool,
+    tableName: 'sessions'
   }),
-);
+  secret: process.env.sessionkey,
+  resave: false,
+  rolling: true,
+  saveUninitialized: false,
+  cookie: { maxAge: 365 * 24 * 60 * 60 * 1000 }
+}));
+
 
 // Your custom middleware to automatically save form data to session
 function saveFormDataToSession(req, res, next) {
@@ -88,12 +100,12 @@ nunjuckEnv.addFilter('hyphen', function (str) {
 
 nunjuckEnv.addFilter('slugify', function (str) {
   return str
-  .toString()
-  .toLowerCase()
-  .trim()
-  .replace(/\s+/g, '-')   // Replace spaces with -
-  .replace(/[^\w\-]+/g, '')   // Remove all non-word chars
-  .replace(/\-\-+/g, '-');  // Replace multiple - with single -
+    .toString()
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, '-')   // Replace spaces with -
+    .replace(/[^\w\-]+/g, '')   // Remove all non-word chars
+    .replace(/\-\-+/g, '-');  // Replace multiple - with single -
 });
 
 app.use(forceHttps);
