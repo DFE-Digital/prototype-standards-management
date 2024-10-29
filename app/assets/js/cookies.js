@@ -811,7 +811,7 @@ function gtag() {
   function gtag() { dataLayer.push(arguments); }
   gtag('js', new Date());
 
-  gtag('config', 'G-J9EGREXSYH');
+  gtag('config', 'G-');
 
 }
 
