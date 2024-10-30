@@ -1,6 +1,6 @@
 {% extends "layouts/public.html" %}
 
-{% set pageName = "Sign in to manage your standards" %}
+{% set pageName = "Sign in to manage standards" %}
 
 
 {% block content %}
@@ -27,11 +27,9 @@
         {% endif %}
 
         <h1 class="govuk-heading-l">{{pageName}}</h1>
-        <p class="govuk-body">We only ask for your email address to sign in, we don't need you to remember a password.
+        <p class="govuk-body">We only ask for your email address to sign in.
         </p>
-        <p class="govuk-body">We'll send you a link to your email address which will sign you in
-            automatically. The link will be valid for 30 minutes, so make sure you can access your email when starting to use the service. We'll send you a link to your email address, called a 'magic link' which will sign you in
-            automatically. So make sure you can access your email.</p>
+        <p class="govuk-body">We'll email you a 'magic link' which will sign you in automatically. The link will be valid for 30 minutes, so make sure you can access your email when starting to use the service.</p>
 
 
         <form action="/sign-in" method="post" novalidate="novalidate" class="govuk-!-margin-bottom-9">

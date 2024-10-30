@@ -53,14 +53,14 @@
         <form action="/profile/change-email" method="post" novalidate="novalidate" class="govuk-!-margin-bottom-9">
             <div class="govuk-form-group {%if hasEmailError%}govuk-form-group--error{% endif%} govuk-!-margin-top-5">
 
-                <label class="govuk-label" for="emailAddress">Your email address</label>
+                <label class="govuk-label" for="emailAddress">Email address</label>
                 {% if hasEmailError %}
                 <p id="event-name-error" class="govuk-error-message">
-                    <span class="govuk-visually-hidden">Error:</span>Enter your email address.
+                    <span class="govuk-visually-hidden">Error:</span>Enter your email address
                 </p>
                 {% endif %}
                 <div id="event-name-hint" class="govuk-hint">
-                    You must have access to this email address as it is used to sign in to this service.
+                    You must have access to this email address as it is used to sign in to this service
                 </div>
                 <input class="govuk-input govuk-!-width-one-half {%if hasEmailError%} govuk-input--error{% endif%}"
                     id="emailAddress" name="emailAddress" type="email" spellcheck="false" aria-describedby="email-hint"

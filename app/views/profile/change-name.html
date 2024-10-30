@@ -55,7 +55,7 @@
 
         {% include 'partials/errorSummary.html' %}
 
-        <h2 class="govuk-heading-l">Update your name</h2>
+        <h2 class="govuk-heading-l">{%if userInfo.FirstName=="" or userInfo.LastName==""%}Add{%else%}Update{%endif%} your name</h2>
 
         <form action="/profile/change-name" method="post" novalidate="novalidate" class="govuk-!-margin-bottom-9">
 
