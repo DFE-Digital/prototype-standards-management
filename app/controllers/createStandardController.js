@@ -1126,7 +1126,7 @@ exports.p_submit = async function (req, res) {
         //Get the ID for the stage
         const stage = await client.getEntries({
             content_type: 'stage',
-            'fields.number': 30
+            'fields.number': 40
         });
 
         const stageId = stage.items[0].sys.id;
