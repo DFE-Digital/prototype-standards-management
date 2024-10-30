@@ -1,7 +1,7 @@
 {% extends "layouts/full.html" %}
 
 {% set selectedNav = "Create" %}
-{% set pageName = "What sub-categories apply to this standard?" %}
+{% set pageName = "Sub-categories that apply to standard" %}
 {% set seoPageName = "" %}
 {% set pageDescription = ""%}
 {% set view = "standard" %}
@@ -19,11 +19,11 @@
         <div class="govuk-grid-column-three-quarters">
 
             <form action="/create/standard/sub-categories" method="post">
-                <h2 class="govuk-heading-l">What sub-categories apply to this standard?</h2>
+                <h2 class="govuk-heading-l">Sub-categories that apply to standard</h2>
 
                 {% if standard.fields.category | length === 1 %}
 
-                <p>As the standard has a single category, please select the sub-categories that apply to this category.</p>
+                <p>These will be used to group standards together in specific professions or roles within the job family.</p>
 
   {% elif standard.fields.category | length === 0 %}
 
@@ -42,7 +42,7 @@
                                 {{ category.fields.title }}
                             </legend>
                             <div id="categories-hint" class="govuk-hint">
-      Select all that apply. 
+      Select all that apply 
     </div>
                             <div class="govuk-checkboxes" data-module="govuk-checkboxes">
                                 {% for subcategory in subcategories %}

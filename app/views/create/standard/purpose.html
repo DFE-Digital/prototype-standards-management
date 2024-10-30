@@ -1,7 +1,7 @@
 {% extends "layouts/full.html" %}
 
 {% set selectedNav = "Create" %}
-{% set pageName = "Purpose of the standard" %}
+{% set pageName = "Purpose of standard" %}
 {% set seoPageName = "" %}
 {% set pageDescription = ""%}
 {% set view = "standard" %}
@@ -31,7 +31,7 @@
             </label>
           </h2>
           <div id="purpose-hint-hint" class="govuk-hint">
-    Describe the purpose of the standard
+    Describe why this standard is important
   </div>
         {% include 'partials/_markdown.html' %}
           <textarea class="govuk-textarea govuk-js-character-count" id="purpose-hint" name="purpose" rows="30" aria-describedby="purpose-hint-info purpose-hint-hint">{{standard.fields.purpose}}</textarea>
