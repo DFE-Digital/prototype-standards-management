@@ -13,7 +13,7 @@ exports.g_dashboard = async function (req, res) {
 
     // Define mapping between id and display stage titles
     const stageMap = {
-        proposed: "Proposed",
+        // proposed: "Proposed",
         draft: "Draft",
         approval: "Approval",
         approved: "Approved",
@@ -23,7 +23,7 @@ exports.g_dashboard = async function (req, res) {
     };
 
     // Map `id` to display stage title, default to "Proposed" if id is missing or invalid
-    let type = stageMap[id?.toLowerCase()] || "Proposed";
+    let type = stageMap[id?.toLowerCase()] || "Draft";
 
     let standards = []; // Placeholder for standards data
     let stageCounts = {}; // Placeholder for stage counts
@@ -31,11 +31,44 @@ exports.g_dashboard = async function (req, res) {
     try {
         const results = await previewClient.getEntries({
             content_type: "standard",
-            order: "fields.number",
+            order: "fields.number"
         });
+
+        // Whats my user email?
+
+        let user = req.session.User.EmailAddress;
+
+        // Only get standards that the user has created, is a named owner or is a technical contact
 
         // Set standards if results are valid
         standards = results?.items || [];
+
+
+        // Filter standards by user email
+
+        standards = standards.filter(standard => {
+            let creator = standard?.fields?.creator;
+            let owners = standard?.fields?.owners;
+            let technicalContacts = standard?.fields?.technicalContacts;
+
+            console.log(owners);
+
+            if (creator === user) {
+                return true;
+            }
+
+            if (owners && owners.find(owner => owner.fields.emailAddress === user)) {
+                return true;
+            }
+
+            if (technicalContacts && technicalContacts.find(contact => contact.fields.emailAddress === user)) {
+                return true;
+            }
+
+            return false;
+        });
+
+
 
         // Initialise stageCounts with all stages set to 0
         Object.values(stageMap).forEach(stage => {
@@ -60,7 +93,7 @@ exports.g_dashboard = async function (req, res) {
 
 exports.g_standard_getdraft = async function (req, res) {
 
-console.log('get draft');
+    console.log('get draft');
 
     req.session.data = {};
 
@@ -385,6 +418,72 @@ exports.g_manage_index2 = async function (req, res) {
 
     return res.render("manage/standard/index2", { standard });
 };
+
+exports.g_preview = async function (req, res) {
+    if (!req.session.data) {
+        req.session.data = {};
+    }
+
+    let id = req.session.data['id'];
+
+    if (id) {
+        try {
+            const standard = await previewClient.getEntry(id);
+            return res.render('manage/standard/preview', { standard });
+        } catch (error) {
+            console.error("Error fetching standard entry from Contentful:", error);
+            req.session.data['error'] = { error: 'Failed to fetch standard entry' };
+            return res.redirect('/manage');
+        }
+    } else {
+        req.session.data['error'] = { error: 'No ID found in session data' };
+        return res.redirect('/manage');
+    }
+}
+exports.g_previewmeet = async function (req, res) {
+    if (!req.session.data) {
+        req.session.data = {};
+    }
+
+    let id = req.session.data['id'];
+
+    if (id) {
+        try {
+            const standard = await previewClient.getEntry(id);
+            return res.render('manage/standard/preview-meet', { standard });
+        } catch (error) {
+            console.error("Error fetching standard entry from Contentful:", error);
+            req.session.data['error'] = { error: 'Failed to fetch standard entry' };
+            return res.redirect('/manage');
+        }
+    } else {
+        req.session.data['error'] = { error: 'No ID found in session data' };
+        return res.redirect('/manage');
+    }
+}
+
+exports.g_previewproducts = async function (req, res) {
+    if (!req.session.data) {
+        req.session.data = {};
+    }
+
+    let id = req.session.data['id'];
+
+    if (id) {
+        try {
+            const standard = await previewClient.getEntry(id);
+            return res.render('manage/standard/preview-products', { standard });
+        } catch (error) {
+            console.error("Error fetching standard entry from Contentful:", error);
+            req.session.data['error'] = { error: 'Failed to fetch standard entry' };
+            return res.redirect('/manage');
+        }
+    } else {
+        req.session.data['error'] = { error: 'No ID found in session data' };
+        return res.redirect('/manage');
+    }
+}
+
 
 // POSTS //
 

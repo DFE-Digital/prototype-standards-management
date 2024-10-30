@@ -25,6 +25,10 @@
 
                 <p>As the standard has a single category, please select the sub-categories that apply to this category.</p>
 
+  {% elif standard.fields.category | length === 0 %}
+
+  <p>You need to select the applicable <a href="/create/standard/categories">categories</a> before you can select the sub-categories.</p>
+
                 {% else %}
 
                 <p>As the standard has multiple categories, please select the sub-categories that apply to each category.</p>
@@ -66,11 +70,12 @@
                         </fieldset>
                     </div>
                 {% endfor %}
-
+  {% if standard.fields.category | length !== 0 %}
                 <div class="govuk-button-group">
                     <button type="submit" class="govuk-button" data-module="govuk-button">Save and continue</button>
 
                 </div>
+                {% endif %}
             </form>
 
         </div>

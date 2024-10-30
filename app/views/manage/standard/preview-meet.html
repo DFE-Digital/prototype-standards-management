@@ -1,0 +1,39 @@
+{% extends "layouts/full.html" %}
+
+{% set selectedNav = "Manage" %}
+{% set pageName = "Preview" %}
+{% set seoPageName = "" %}
+{% set pageDescription = ""%}
+{% set view = "preview" %}
+{% set sidenav = 'meet' %}
+
+{% block hero %}
+    {% include 'create/standard/_previewhead.html' %}
+{% endblock %}
+
+{% block head %}
+    <meta name="robots" content="noindex, nofollow">
+{% endblock %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+            <div class="govuk-grid-column-one-quarter">
+                {% include 'manage/standard/_previewsidenav.html' %}
+            </div>
+            <div class="govuk-grid-column-three-quarters">
+
+            <h2 class="govuk-heading-l">How to meet this standard</h2>
+
+            <p>Guidance for how to meet this standard.</p>
+
+            {% markdown %}
+                {{ standard.fields.guidance}}
+            {% endmarkdown %}
+
+
+         
+
+            </div>
+        </div>
+
+    {% endblock %}

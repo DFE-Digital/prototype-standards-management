@@ -10,3 +10,17 @@ exports.validateTitle = [
             return true;
         })
 ];
+
+
+exports.validateSummary = [
+    check('summary')
+        .trim()
+        .custom((value, { req }) => {
+            if (value === '') {
+                throw new Error('Enter a summary');
+            }
+            return true;
+        })
+];
+
+

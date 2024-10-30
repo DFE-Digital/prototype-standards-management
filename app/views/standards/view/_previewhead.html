@@ -4,26 +4,27 @@
                 <div class="govuk-grid-column-full">
                     <h1 class="govuk-heading-xl govuk-!-margin-bottom-3 govuk-!-margin-top-5">{% if standard.fields.title %}{{standard.fields.title }}{% else%}New standard{% endif %}</h1>
 
-                    <table class="govuk-table  govuk-!-margin-bottom-3">
+                    <table class="govuk-table  govuk-!-margin-bottom-5">
                         <thead class="govuk-table__head">
                             <tr class="govuk-table__row">
-
-                                <th class="govuk-table__header" scope="col">Stage</th>
                                 <th class="govuk-table__header" scope="col">Reference</th>
+                                <th class="govuk-table__header" scope="col">Version</th>
+                                <th class="govuk-table__header" scope="col">Published</th>
+                                <th class="govuk-table__header" scope="col">Updated</th>
                             </tr>
                         </thead>
                         <tbody class="govuk-table__body">
                             <tr class="govuk-table__row">
-
-                                <td class="govuk-table__cell">
-                                    <strong class="govuk-tag govuk-tag--red">Draft</strong>
-                                    <td class="govuk-table__cell">Not set</td>
+                                    <td class="govuk-table__cell">DDTS{{standard.fields.number}}</td>
+                                    <td class="govuk-table__cell">{{standard.fields.version}}</td>
+                                    <td class="govuk-table__cell">{{standard.fields.firstPublishedAt | date('D MMMM YYYY') }}</td>
+                                    <td class="govuk-table__cell">{{standard.sys.updatedAt | date('D MMMM YYYY') }}</td>
                                 </tr>
                             </tbody>
                         </table>
 
-                        {% include 'create/_nav.html' %}
                     </div>
                 </div>
             </div>
         </div>
+

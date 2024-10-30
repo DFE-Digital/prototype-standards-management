@@ -3,7 +3,7 @@
 {% set selectedNav = "Create" %}
 {% set pageName = "Summary of the standard" %}
 {% set seoPageName = "" %}
-{% set pageDescription = ""%}
+{% set pageDescription = "" %}
 {% set view = "standard" %}
 {% set sidenav = 'summary' %}
 
@@ -17,36 +17,39 @@
 
 {% block content %}
   <div class="govuk-grid-row">
-        <div class="govuk-grid-column-one-quarter">
-            {% include 'create/standard/_sidenav.html' %}
-        </div>
+    <div class="govuk-grid-column-one-quarter">
+      {% include 'create/standard/_sidenav.html' %}
+    </div>
     <div class="govuk-grid-column-three-quarters">
-     
+      {% include 'partials/errorSummary.html' %}
 
-      <form action="/create/standard/summary" method="post" >
-
-        <div class="govuk-form-group govuk-character-count" data-module="govuk-character-count" data-maxlength="1000">
+      <form action="/create/standard/summary" method="post">
+        <div class="govuk-form-group govuk-character-count {% if errors %} govuk-form-group--error{% endif %}" data-module="govuk-character-count" data-maxlength="1000">
           <h2 class="govuk-label-wrapper">
             <label class="govuk-label govuk-label--l" for="summary-hint">
-              {{pageName}}
+              {{ pageName }}
             </label>
           </h2>
           <div id="summary-hint-hint" class="govuk-hint">
-    Add a short description to provide an overview of the standard.
-  </div>
-          <textarea class="govuk-textarea govuk-js-character-count" id="summary-hint" name="summary" rows="10" aria-describedby="summary-hint-info summary-hint-hint">{{standard.fields.summary}}</textarea>
+            Add a short description to provide an overview of the standard.
+          </div>
+          {% if errors %}
+            <p id="event-name-error" class="govuk-error-message">
+              <span class="govuk-visually-hidden">Error:</span>
+              {{ error }}
+            </p>
+          {% endif %}
+          <textarea class="govuk-textarea govuk-js-character-count {% if errors %} govuk-input--error{% endif %}" id="summary" name="summary" rows="10" aria-describedby="summary-hint-info summary-hint-hint">{{ standard.fields.summary }}</textarea>
           <div id="summary-hint-info" class="govuk-hint govuk-character-count__message">
-    You can enter up to 1,000 characters
-  </div>
-        </div
+            You can enter up to 1,000 characters
+          </div>
+        </div>
         <div class="govuk-button-group">
           <button type="submit" class="govuk-button" data-module="govuk-button">
-    Save and continue
-  </button>
-         
+            Save and continue
+          </button>
         </div>
       </form>
     </div>
   </div>
-
 {% endblock %}

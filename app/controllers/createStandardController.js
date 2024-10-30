@@ -1,6 +1,6 @@
 require('dotenv').config();
 const { check, validationResult } = require('express-validator');
-const { validateTitle } = require('../validation/create.js');
+const { validateTitle, validateSummary } = require('../validation/create.js');
 
 const client = require('../middleware/contentful.js');
 const previewClient = require('../middleware/contentful-preview.js');
@@ -64,7 +64,7 @@ exports.g_create = async function (req, res) {
 
     console.log(req.session.User);
 
-    const stageId = await getStageID(10);
+    const stageId = await getStageID(20);
 
     const data = await previewClient.getEntries({
         content_type: 'standard',
@@ -811,24 +811,19 @@ exports.g_guidance = async function (req, res) {
 exports.p_title = [
     validateTitle,
     async function (req, res) {
-
         const errors = validationResult(req);
+        const id = req.session.data['id'];
+
+        if (!id) {
+            req.session.data['error'] = { error: 'No ID found in session data' };
+            return res.redirect('/create');
+        }
 
         if (!errors.isEmpty()) {
-
-            const id = req.session.data['id'];
-
-            if (!id) {
-                req.session.data['error'] = { error: 'No ID found in session data' };
-                return res.redirect('/create');
-            }
-
             try {
                 const standard = await previewClient.getEntry(id);
                 standard.fields.title = "";
-
                 return res.render('create/standard/title', {
-
                     errors: errors.array(), standard
                 });
             } catch (error) {
@@ -836,34 +831,46 @@ exports.p_title = [
                 req.session.data['error'] = { error: 'Failed to fetch standard entry' };
                 return res.redirect('/create');
             }
-
-
         }
 
         // Update the standard entry with any changes to the title
-
-        const { id } = req.session.data;
-
-        const standard = await previewClient.getEntry(id);
-
         await updateTitle(id, req.body['title']);
-
-        return res.redirect('/create/standard/summary')
+        return res.redirect('/create/standard/summary');
     }
-]
+];
 
 
 
-exports.p_summary = async function (req, res) {
+exports.p_summary = [
+    validateSummary,
+    async function (req, res) {
+        const errors = validationResult(req);
+        const id = req.session.data['id'];
 
-    const { id } = req.session.data;
+        if (!id) {
+            req.session.data['error'] = { error: 'No ID found in session data' };
+            return res.redirect('/create');
+        }
 
-    const standard = await previewClient.getEntry(id);
+        if (!errors.isEmpty()) {
+            try {
+                const standard = await previewClient.getEntry(id);
+                standard.fields.summary = "";
+                return res.render('create/standard/summary', {
+                    errors: errors.array(), standard
+                });
+            } catch (error) {
+                console.error("Error fetching standard entry from Contentful:", error);
+                req.session.data['error'] = { error: 'Failed to fetch standard entry' };
+                return res.redirect('/create');
+            }
+        }
 
-    await updateSummary(id, req.body['summary']);
-
-    return res.redirect('/create/standard/categories')
-}
+        // Update the standard entry with any changes to the summary
+        await updateSummary(id, req.body['summary']);
+        return res.redirect('/create/standard/categories');
+    }
+];
 
 
 
@@ -1119,7 +1126,7 @@ exports.p_submit = async function (req, res) {
         //Get the ID for the stage
         const stage = await client.getEntries({
             content_type: 'stage',
-            'fields.number': 20
+            'fields.number': 30
         });
 
         const stageId = stage.items[0].sys.id;

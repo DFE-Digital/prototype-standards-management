@@ -121,6 +121,20 @@ exports.g_rejected = async function (req, res) {
     return res.render('admin/standard/rejected', { standard });
 };
 
+exports.g_admins  = async function (req, res) {
+
+    // Get roles
+    const results = await client.getEntries({
+        content_type: "roles",
+        order: "fields.name"
+    });
+
+    // Set standards if results are valid
+    let roles = results?.items || [];
+
+    res.render('admin/admins/index', { roles});
+};
+
 // Handle Approval Form Submission
 exports.p_approval = async function (req, res) {
     const { standard_id, approval } = req.body;

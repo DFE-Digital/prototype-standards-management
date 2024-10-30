@@ -23,7 +23,6 @@
             <nav class="dfe-vertical-nav">
                 <ul class="dfe-vertical-nav__section">
                     {% for stage, stage_name in {
-                        'proposed' : 'Proposed',
                         'draft' : 'Draft',
                         'approval' : 'Approval',
                         'approved' : 'Approved',
@@ -42,10 +41,7 @@
 
         <div class="govuk-grid-column-three-quarters">
             {% set type_info = {
-                "Proposed": {
-                    "heading": "Proposed standards",
-                    "description": ["These are standards you're still working on and have not yet been moved to draft stage.", "Only you can view and edit these proposed standards."]
-                },
+             
                 "Draft": {
                     "heading": "Draft standards",
                     "description": ["These are standards you're working on and have not yet submitted to the standards forum to review.", "You, named standard owners and contacts can view and edit the drafts."]
@@ -82,7 +78,6 @@
             {% set showtable = false %}
 
             {% for stage, stage_name in {
-                'proposed' : 'Proposed',
                 'draft' : 'Draft',
                 'approval' : 'Approval',
                 'approved' : 'Approved',
@@ -108,7 +103,7 @@
                             {% if standard.fields.stage.fields.title == type %}
                                 <tr class="govuk-table__row">
                                     <td class="govuk-table__cell">
-                                        {% if type == "Proposed" %}
+                                        {% if type == "Draft" %}
                                             <a href="/create/getdraft/{{ standard.sys.id }}" class="govuk-link">
                                                 {{ standard.fields.title or "New" }}
                                             </a>
