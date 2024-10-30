@@ -10,19 +10,21 @@
 
                                 <th class="govuk-table__header" scope="col">Stage</th>
                                 <th class="govuk-table__header" scope="col">Reference</th>
+                                <th class="govuk-table__header" scope="col">Version</th>
                             </tr>
                         </thead>
                         <tbody class="govuk-table__body">
                             <tr class="govuk-table__row">
 
                                 <td class="govuk-table__cell">
-                                    <strong class="govuk-tag govuk-tag--red">Draft</strong>
-                                    <td class="govuk-table__cell">Not set</td>
+                                    <strong class="govuk-tag govuk-tag--red">Proposal</strong>
+                                    <td class="govuk-table__cell">DDTS{{standard.fields.number}}</td>
+                                    <td class="govuk-table__cell">{{standard.fields.version}}</td>
                                 </tr>
                             </tbody>
                         </table>
 
-                        {% include 'create/_nav.html' %}
+                        {% include 'manage/_nav.html' %}
                     </div>
                 </div>
             </div>

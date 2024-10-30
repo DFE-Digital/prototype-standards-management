@@ -218,10 +218,10 @@
                                 </div>
                             </dl>
 
-                            <h2 class="govuk-heading-m">Submit proposed standard</h2>
+                            <h2 class="govuk-heading-m">Submit draft standard</h2>
                             {% if (data['contacts'] | length) and data['purpose'] and subcategories and categories and data['title']%}
 
-                                <p>Your proposed standard will move to draft stage. You can continue to add information to this standard after you submit it, and up to Standards board stage, (view standard lifecycle).</p>
+                                <p>Your draft standard will move to approval.</p>
 
                                 <form action="/create/standard/submit" method="post">
                                     <button type="submit" class="govuk-button" data-module="govuk-button">
@@ -231,8 +231,8 @@
 
                             {% else %}
 
-                                <p>Your proposed standard cannot be submitted yet.</p>
-                                <p>Once you have completed the basic information and some contact details, you'll be able to submit it to draft stage.</p>
+                                <p>Your draft standard cannot be submitted yet.</p>
+                                <p>Once you have completed the basic information and some contact details, you'll be able to submit it for approval.</p>
 
                             {% endif %}
 

@@ -65,7 +65,7 @@
                 },
                 "Published": {
                     "heading": "Published standards",
-                    "description": ["These standards are published and available for anyone to view."]
+                    "description": ["These standards are published and available for anyone to view.", "You may find it easier to use the [standards](/standards) page to filter, sort, and view published standards."]
                 },
                 "Rejected": {
                     "heading": "Rejected standards",
@@ -78,10 +78,12 @@
             } %}
 
             {% if type in type_info %}
+         
                 <h2 class="govuk-heading-l">{{ type_info[type].heading }}</h2>
                 {% for paragraph in type_info[type].description %}
-                    <p>{{ paragraph }}</p>
+                    <p>   {% markdown %}{{ paragraph }}{% endmarkdown %}</p>
                 {% endfor %}
+              
             {% endif %}
 
             {% set showtable = false %}

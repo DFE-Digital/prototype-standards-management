@@ -1,0 +1,100 @@
+{% extends "layouts/full.html" %}
+{% set selectedNav = "Admin" %}
+{% set pageName = "Standard administrators" %}
+{% set seoPageName = "" %}
+{% set pageDescription = "" %}
+{% set view = "admins" %}
+{% set sidenav = type | lower %}
+
+{% block hero %}
+    <div class="dfe-page-header dfe-page-header--with-sub-nav">
+        <div class="govuk-width-container dfe-width-container">
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-full">
+                    <h1 class="govuk-heading-xl govuk-!-padding-top-5">{{ pageName }}</h1>
+                    <nav class="app-sub-navigation" aria-label="Application menu">
+                        <ul class="app-sub-navigation__list">
+
+                            <li class="app-sub-navigation__item">
+                                <a class="app-sub-navigation__link" {% if view==='standards' %} aria-current="page" {% endif
+                                %} href="/admin">Standards</a>
+                            </li>
+                            <li class="app-sub-navigation__item">
+                                <a class="app-sub-navigation__link" {% if view==='admins' %} aria-current="page" {% endif
+                                %} href="/admin/admins">Admins</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+
+        <div class="govuk-grid-column-three-quarters">
+
+            <details class="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+      Help with administrator roles
+    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    <p>Permissions for approvers and administrators</p>
+                    <p>Approvers can:</p>
+
+                    <ul>
+                        <li>approve and reject standards</li>
+                    </ul>
+
+                    <p>Administrators can:</p>
+
+                    <ul>
+                        <li>edit standards</li>
+                        <li>approve and reject standards</li>
+                        <li>publish and archive standards</li>
+                        <li>manage users and other administrators</li>
+                    </ul>
+
+                </div>
+            </details>
+
+            <div class="govuk-summary-card">
+                <div class="govuk-summary-card__title-wrapper">
+                    <h2 class="govuk-summary-card__title">
+      People
+    </h2>
+                    <ul class="govuk-summary-card__actions">
+                        <li class="govuk-summary-card__action">
+                            <a class="govuk-link" href="/admin/admins/add">Add<span class="govuk-visually-hidden"> approver or administrator</span></a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="govuk-summary-card__content">
+                    <table class="govuk-table">
+                        <thead class="govuk-table__head">
+                            <tr class="govuk-table__row">
+                                <th scope="col" class="govuk-table__header">Name</th>
+                                <th scope="col" class="govuk-table__header">Email</th>
+                                <th scope="col" class="govuk-table__header">Role</th>
+                            </tr>
+                        </thead>
+                        <tbody class="govuk-table__body">
+                            {% for admin in roles %}
+                                <tr class="govuk-table__row">
+                                    <td class="govuk-table__cell">{{ admin.fields.name }}</td>
+                                    <td class="govuk-table__cell">{{ admin.fields.emailAddress }}</td>
+                                    <td class="govuk-table__cell">{{ admin.fields.role }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}

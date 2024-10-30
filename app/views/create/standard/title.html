@@ -3,7 +3,7 @@
 {% set selectedNav = "Create" %}
 {% set pageName = "What is the title of the standard?" %}
 {% set seoPageName = "" %}
-{% set pageDescription = ""%}
+{% set pageDescription = "" %}
 {% set view = "standard" %}
 {% set sidenav = 'title' %}
 
@@ -21,34 +21,33 @@
             {% include 'create/standard/_sidenav.html' %}
         </div>
         <div class="govuk-grid-column-three-quarters">
+            {% include 'partials/errorSummary.html' %}
 
-                 {% include 'partials/errorSummary.html' %}
-
-            <form action="/create/standard/title" method="post" >
-                <div class="govuk-form-group {%if errors %} govuk-form-group--error{% endif%}">
+            <form action="/create/standard/title" method="post">
+                <div class="govuk-form-group {% if errors %} govuk-form-group--error{% endif %}">
                     <h2 class="govuk-label-wrapper">
                         <label class="govuk-label govuk-label--l" for="title">
-                            {{pageName}}
+                            {{ pageName }}
                         </label>
                     </h2>
                     <div id="title-hint" class="govuk-hint">
-    This should help people understand what the standard is for.
-  </div>
-      {%if errors %}
-                <p id="event-name-error" class="govuk-error-message">
-                    <span class="govuk-visually-hidden">Error:</span> {{error}}
-                </p>
-                {% endif%}
-                    <input class="govuk-input {%if errors%} govuk-input--error{% endif%}" id="title" name="title" type="text" aria-describedby="title-hint" value="{{standard.fields.title}}">
+                        This should help people understand what the standard is for.
+                    </div>
+                    {% if errors %}
+                        <p id="event-name-error" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span>
+                            {{ error }}
+                        </p>
+                    {% endif %}
+                    <input class="govuk-input {% if errors %} govuk-input--error{% endif %}" id="title" name="title" type="text" aria-describedby="title-hint" value="{{ standard.fields.title }}">
                 </div>
 
                 <div class="govuk-button-group">
                     <button type="submit" class="govuk-button" data-module="govuk-button">
-    Save and continue
-  </button>
+                        Save and continue
+                    </button>
                 </div>
             </form>
         </div>
     </div>
-
 {% endblock %}

@@ -16,6 +16,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@ministryofjustice/frontend": "^3.0.0",
     "airtable": "^0.12.2",
     "analytics-node": "^6.2.0",
     "axios": "^1.7.2",
@@ -34,7 +35,7 @@
     "express-session": "^1.17.3",
     "express-validator": "^7.2.0",
     "fs": "^0.0.1-security",
-    "govuk-frontend": "^5.1.0",
+    "govuk-frontend": "^5.7.1",
     "govuk-markdown": "^0.4.0",
     "gulp-nunjucks-render": "^2.2.3",
     "gulp-webp": "^4.0.1",

@@ -1,0 +1,14 @@
+<nav class="app-sub-navigation" aria-label="Application menu">
+    <ul class="app-sub-navigation__list">
+       
+        <li class="app-sub-navigation__item">
+            <a class="app-sub-navigation__link" {% if view==='standard' %} aria-current="page" {% endif
+                                %} href="/manage/standard">Standard</a>
+        </li>
+       
+        <li class="app-sub-navigation__item">
+            <a class="app-sub-navigation__link" {% if view==='preview' %} aria-current="page" {% endif
+                                %}href="/manage/standard/preview">Preview</a>
+        </li>
+    </ul>
+</nav>

@@ -9,6 +9,7 @@ const manageController = require('./controllers/manageStandardController.js');
 const previewController = require('./controllers/previewController.js');
 const adminController = require('./controllers/adminController.js');
 const profileController = require('./controllers/profileController');
+const standardsController = require('./controllers/standardsController.js');
 
 
 function isAuthenticated(req, res, next) {
@@ -77,7 +78,6 @@ router.post('/create/standard/guidance', isAuthenticated, createController.p_gui
 router.post('/create/standard/submit', isAuthenticated, createController.p_submit);
 router.post('/create/standard/confirm-delete', isAuthenticated, createController.p_confirmdelete);
 
-
 // Manage routes for standard owners/drafters
 router.get('/manage', isAuthenticated, manageController.g_dashboard);
 
@@ -101,6 +101,9 @@ router.get('/manage/standard/add-exception/:id', isAuthenticated, manageControll
 router.get('/manage/standard/manage-exception/:id/:exceptionid', isAuthenticated, manageController.g_manage_manageexception)
 router.get('/manage/standard/moveto/review/:id', isAuthenticated, manageController.g_manage_movetoreview);
 router.get('/manage/standard/index2/:id', isAuthenticated, manageController.g_manage_index2);
+router.get('/manage/standard/preview', isAuthenticated, manageController.g_preview);
+router.get('/manage/standard/preview-meet', isAuthenticated, manageController.g_previewmeet);
+router.get('/manage/standard/preview-products', isAuthenticated, manageController.g_previewproducts);
 router.get('/manage/:id', isAuthenticated, manageController.g_dashboard);
 
 router.post('/manage/standard/purpose', isAuthenticated, manageController.p_manage_purpose);
@@ -131,6 +134,7 @@ router.get('/admin/standard/approve/:id', isAuthenticated, adminController.g_app
 router.get('/admin/standard/reject/:id', isAuthenticated, adminController.g_reject);
 router.get('/admin/standard/approved/:id', isAuthenticated, adminController.g_approved);
 router.get('/admin/standard/rejected/:id', isAuthenticated, adminController.g_rejected);
+router.get('/admin/admins', isAuthenticated, adminController.g_admins);
 router.get('/admin/:id', isAuthenticated, adminController.g_dashboard);
 
 router.post('/admin/standard/approval', isAuthenticated, adminController.p_approval);
@@ -138,7 +142,12 @@ router.post('/admin/standard/approve', isAuthenticated, adminController.p_approv
 router.post('/admin/standard/reject', isAuthenticated, adminController.p_reject);
 
 
+// Standards routes
 
+router.get('/standards', isAuthenticated, standardsController.g_dashboard);
+router.get('/standards/view/:id', isAuthenticated, standardsController.g_preview);
+router.get('/standards/view/meet/:id', isAuthenticated, standardsController.g_previewmeet);
+router.get('/standards/view/products/:id', isAuthenticated, standardsController.g_previewproducts);
 
 // PROFILE ROUTES
 router.get('/profile', isAuthenticated, profileController.g_profile);
@@ -146,5 +155,8 @@ router.get('/profile/change-name', isAuthenticated, profileController.g_changeNa
 router.get('/profile/change-email', isAuthenticated, profileController.g_changeEmail);
 router.post('/profile/change-name', isAuthenticated, profileController.p_changeName);
 router.post('/profile/change-email', isAuthenticated, profileController.p_changeEmail);
+
+
+
 
 module.exports = router

@@ -187,10 +187,10 @@
             <h2 class="govuk-heading-m">Stages</h2>
             <div class="dfe-timeline">
                 <ol>
-                    <li class="inactive">
+                    {# <li class="inactive">
                         <h3 class="govuk-heading-s govuk-!-margin-bottom-2" id="proposal">Proposed</h3>
                          <p class="govuk-body-s">Created {{standard.sys.createdAt | date('DD MMMM YYYY')}} by {{standard.fields.creator}}</p>
-                    </li>
+                    </li> #}
                     <li class="active">
                         <h3 class="govuk-heading-s govuk-!-margin-bottom-2" id="draft">Draft</h3>
                         <p class="govuk-body-s">Submitted {{standard.fields.draftCreatedAt | date('DD MMMM YYYY')}} by {{standard.fields.draftCreatedBy}}</p>

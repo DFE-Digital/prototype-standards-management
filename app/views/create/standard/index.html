@@ -194,39 +194,45 @@
                 </li>
             </ul>
 
-            <h2 class="govuk-heading-l">Turn proposed standard into a draft standard</h2>
+      
 
             {% set isSubmittable = false %}
+
 
             {% if standard.fields.title and standard.fields.summary and standard.fields.purpose and standard.fields.guidance and standard.fields.category and standard.fields.subCategory and(standard.fields.technicalContacts or standard.fields.owners) %}
 
                 {% set isSubmittable = true %}
 
+                   
+
             {% endif %}
 
             {% if isSubmittable %}
 
-                <p>You can now convert this proposed standard, to a draft standard.</p>
+                  <h2 class="govuk-heading-l">Submit draft for approval</h2>
 
-                <p>You can continue to work on it, make changes, add additional information while it is in draft, and then submit for standards panel review when ready to get it approved and published.</p>
+                <p>You can now submit this draft for review by the standards forum.</p>
+
 
             {% else %}
-
+   <h2 class="govuk-heading-l">You cannot submit this draft</h2>
                 <p>You need to complete all the required tasks before you can submit this standard for review.</p>
 
             {% endif %}
 
-            <form action="/create/standard/submit" method="post">
-                {% if isSubmittable %}
+                   <form action="/create/standard/submit" method="post">
+                      {% if isSubmittable %}
                     <button type="submit" name="action" value="Submit" class="govuk-button" data-module="govuk-button">
-                    Convert to a draft standard
-                </button>
-                {% endif %}
-                <button type="submit"  name="action" value="Delete" class="govuk-button govuk-button--warning" data-module="govuk-button">
-                    Delete proposed standard
-                </button>
+                    Submit for approval
+                </button>   {% endif %}
 
-            </form>
+                    <h2 class="govuk-heading-l">Delete draft</h2>
+                    <p>If you no longer need this draft, you can delete it.</p>
+                  <button type="submit"  name="action" value="Delete" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+                    Delete draft standard
+                </button>
+             
+                </form>
 
         </div>
     </div>
