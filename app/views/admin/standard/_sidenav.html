@@ -1,0 +1,37 @@
+<a href="/manage/standard" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-9">Back to tasks</a>
+
+<nav class="dfe-vertical-nav">
+
+    <ul class="dfe-vertical-nav__section">
+
+        <li class="dfe-vertical-nav__section-item {% if sidenav === 'title' %}dfe-vertical-nav__section-item--current{% endif %}">
+            <a class="dfe-vertical-nav__link" href="/manage/standard/title">Title</a>
+        </li>
+        {% if standard.sys.id %}
+        <li class="dfe-vertical-nav__section-item  {% if sidenav === 'summary' %}dfe-vertical-nav__section-item--current{% endif %}">
+            <a class="dfe-vertical-nav__link" href="/manage/standard/summary">Summary</a>
+        </li>
+        <li class="dfe-vertical-nav__section-item  {% if sidenav === 'categories' %}dfe-vertical-nav__section-item--current{% endif %}">
+            <a class="dfe-vertical-nav__link" href="/manage/standard/categories">Categories</a>
+        </li>
+        <li class="dfe-vertical-nav__section-item  {% if sidenav === 'subcategories' %}dfe-vertical-nav__section-item--current{% endif %}">
+            <a class="dfe-vertical-nav__link" href="/manage/standard/sub-categories">Sub-categories</a>
+        </li>
+        <li class="dfe-vertical-nav__section-item  {% if sidenav === 'purpose' %}dfe-vertical-nav__section-item--current{% endif %}">
+            <a class="dfe-vertical-nav__link" href="/manage/standard/purpose">Purpose</a>
+        </li>
+        <li class="dfe-vertical-nav__section-item  {% if sidenav === 'guidance' %}dfe-vertical-nav__section-item--current{% endif %}">
+            <a class="dfe-vertical-nav__link" href="/manage/standard/guidance">How to meet the standard</a>
+        </li>
+        <li class="dfe-vertical-nav__section-item  {% if sidenav === 'products' %}dfe-vertical-nav__section-item--current{% endif %}">
+            <a class="dfe-vertical-nav__link" href="/manage/standard/products">Approved or tolerated products</a>
+        </li>
+        <li class="dfe-vertical-nav__section-item  {% if sidenav === 'exceptions' %}dfe-vertical-nav__section-item--current{% endif %}">
+            <a class="dfe-vertical-nav__link" href="/manage/standard/exceptions">Exceptions</a>
+        </li>
+        <li class="dfe-vertical-nav__section-item  {% if sidenav === 'contacts' %}dfe-vertical-nav__section-item--current{% endif %}">
+            <a class="dfe-vertical-nav__link" href="/manage/standard/contacts">Owner and contacts</a>
+        </li>
+        {% endif %}
+    </ul>
+</nav>

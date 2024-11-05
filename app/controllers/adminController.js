@@ -3,6 +3,8 @@ const client = require('../middleware/contentful.js');
 const previewClient = require('../middleware/contentful-preview.js');
 const managementClient = require('../middleware/contentful-management.js');
 
+const { updateStatus, addStandardHistoryEntry } = require('../data/contentful/updates.js');
+
 // Helper function to fetch a standard entry by ID with error handling
 async function fetchStandardById(id) {
     try {
@@ -64,13 +66,81 @@ exports.g_dashboard = async function (req, res) {
 // Manage Standard: Display the details of a single standard for management
 exports.g_manage = async function (req, res) {
     const { id } = req.params;
+
+    if (id) {
+        try {
+            const standard = await previewClient.getEntry(id);
+
+            const history = await previewClient.getEntries({
+                content_type: "standardHistory",
+                "fields.standard.sys.id": id,
+                order: "-sys.createdAt"
+            });
+
+            let statusTemplate = [
+                { status: "Draft", actionBy: "", actionByEmail: "", actionDatetime: "", action: "" },
+                { status: "Approval", actionBy: "", actionByEmail: "", actionDatetime: "", action: "" },
+                { status: "Outcome", actionBy: "", actionByEmail: "", actionDatetime: "", action: "" },
+                { status: "Published", actionBy: "", actionByEmail: "", actionDatetime: "", action: "" }
+            ];
+
+            const actionToStatusMap = {
+                "Draft created": "Draft",
+                "Draft submitted": "Approval",
+                "Approved": "Outcome",
+                "Rejected": "Outcome",
+                "Published": "Published"
+            };
+
+            let thistory = history.items;
+
+            thistory.forEach(entry => {
+                const action = entry.fields.action;
+                const statusLabel = actionToStatusMap[action];
+
+                const statusEntry = statusTemplate.find(item => item.status === statusLabel);
+                if (statusEntry) {
+                    statusEntry.actionBy = entry.fields.actionBy || "";
+                    statusEntry.actionByEmail = entry.fields.actionByEmail || "";
+                    statusEntry.actionDatetime = entry.fields.actionDatetime || "";
+                    statusEntry.action = entry.fields.action || "";
+                }
+            });
+
+            // Find last active index with actionBy filled in
+            let lastActiveIndex = -1;
+            for (let i = statusTemplate.length - 1; i >= 0; i--) {
+                if (statusTemplate[i].actionBy) {
+                    lastActiveIndex = i;
+                    break;
+                }
+            }
+
+            return res.render('admin/standard/index', { standard, timeline: statusTemplate, lastActiveIndex });
+
+        } catch (error) {
+            console.error("Error fetching standard entry from Contentful:", error);
+            req.session.data['error'] = { error: 'Failed to fetch standard entry' };
+            return res.redirect('/admin');
+        }
+    } else {
+        req.session.data['error'] = { error: 'No ID found in session data' };
+        return res.redirect('/admin');
+    }
+};
+
+exports.g_outcome = async function (req, res) {
+    const { id } = req.params;
+
     const standard = await fetchStandardById(id);
 
     if (!standard) {
         return res.status(404).send('Standard not found');
     }
 
-    return res.render('admin/standard/index', { standard });
+    return res.render('admin/standard/approve', { standard });
+
+
 };
 
 // Approve Standard: Display approval page
@@ -84,6 +154,29 @@ exports.g_approve = async function (req, res) {
 
     return res.render('admin/standard/approve', { standard });
 };
+
+exports.g_outcomeapproved = async function (req, res) {
+    const { id } = req.params;
+    const standard = await fetchStandardById(id);
+
+    if (!standard) {
+        return res.status(404).send('Standard not found');
+    }
+
+    return res.render('admin/standard/outcome-approved', { standard });
+};
+
+exports.g_outcomerejected = async function (req, res) {
+    const { id } = req.params;
+    const standard = await fetchStandardById(id);
+
+    if (!standard) {
+        return res.status(404).send('Standard not found');
+    }
+
+    return res.render('admin/standard/outcome-rejected', { standard });
+};
+
 
 // Reject Standard: Display rejection page
 exports.g_reject = async function (req, res) {
@@ -121,7 +214,7 @@ exports.g_rejected = async function (req, res) {
     return res.render('admin/standard/rejected', { standard });
 };
 
-exports.g_admins  = async function (req, res) {
+exports.g_admins = async function (req, res) {
 
     // Get roles
     const results = await client.getEntries({
@@ -132,7 +225,7 @@ exports.g_admins  = async function (req, res) {
     // Set standards if results are valid
     let roles = results?.items || [];
 
-    res.render('admin/admins/index', { roles});
+    res.render('admin/admins/index', { roles });
 };
 
 // Handle Approval Form Submission
@@ -147,24 +240,141 @@ exports.p_approval = async function (req, res) {
 };
 
 // Handle Approval Confirmation
-exports.p_approve = async function (req, res) {
-    const { standard_id } = req.body;
-    // You might want to update the standard status in Contentful here
-    return res.redirect(`/admin/standard/approved/${standard_id}`);
-};
+exports.p_outcome = async function (req, res) {
+    const { standard_id, outcome, reason } = req.body;
 
-// Handle Rejection Confirmation
-exports.p_reject = async function (req, res) {
-    const { standard_id, withHint } = req.body;
+    //ToDo: Validate the form data
 
-    if (!withHint || withHint.trim() === '') {
-        return res.redirect(`/admin/standard/reject/${standard_id}`);
+    // Based on the selected outcome, set the status
+
+    const standard = await previewClient.getEntry(standard_id);
+
+    if (outcome === 'Approve') {
+
+        // Update the statius of the standard to 'Approved'
+
+        const stage = await client.getEntries({
+            content_type: 'stage',
+            'fields.number': 41 // appproved
+        });
+
+        const stageId = stage.items[0].sys.id;
+
+        await updateStatus(standard_id, stageId);
+
+        const historyData = {
+            action: "Approved",
+            actionBy: req.session.User.FirstName + " " + req.session.User.LastName,
+            actionByEmail: req.session.User.EmailAddress,
+            actionDatetime: new Date().toISOString(),
+            comments: ""
+        }
+
+        await addStandardHistoryEntry(standard_id, historyData);
+
+        // TODO: Send email to the creator, owner and points of contact to say it's been approved
+
+        return res.redirect(`/admin/standard/outcome-approved/${standard_id}`);
+
     }
 
-    // Save the rejection reason securely
-    req.session.data = { ...req.session.data, reason: withHint };
+    if (outcome === 'Reject') {
 
-    // Optionally, update the standard's status or add rejection reason in Contentful
+        // Update the statius of the standard to 'Approved'
 
-    return res.redirect(`/admin/standard/rejected/${standard_id}`);
+        const stage = await client.getEntries({
+            content_type: 'stage',
+            'fields.number': 42 // rejected
+        });
+
+        const stageId = stage.items[0].sys.id;
+
+        await updateStatus(standard_id, stageId);
+
+        const historyData = {
+            action: "Rejected",
+            actionBy: req.session.User.FirstName + " " + req.session.User.LastName,
+            actionByEmail: req.session.User.EmailAddress,
+            actionDatetime: new Date().toISOString(),
+            comments: reason
+        }
+
+        await addStandardHistoryEntry(standard_id, historyData);
+
+        // TODO: Send email to the creator, owner and points of contact to say it's been rejected with the reason
+
+    }
+
+    // Send submittor, owner an email with the outcome 
+
+    return res.redirect(`/admin/standard/${standard_id}`);
+};
+
+exports.p_publish = async function (req, res) {
+    const { standard_id, action } = req.body;
+
+    //ToDo: Validate the form data
+
+    // Based on the selected outcome, set the status
+
+    const spaceId = process.env.spaceID;
+    const space = await managementClient.getSpace(spaceId);
+    const environment = await space.getEnvironment(process.env.environmentID);
+
+    if (action === 'Publish') {
+
+        // Update the statius of the standard to 'Approved'
+
+        const stage = await client.getEntries({
+            content_type: 'stage',
+            'fields.number': 80 // published
+        });
+
+        const stageId = stage.items[0].sys.id;
+
+        await updateStatus(standard_id, stageId);
+
+        // Once updated, publish the standard
+        const standard = await environment.getEntry(standard_id);
+        await standard.publish();
+
+        // Send notify email to the creator, owner and points of contact to say it's been published with link to view in the standards manual
+
+        const historyData = {
+            action: "Published",
+            actionBy: req.session.User.FirstName + " " + req.session.User.LastName,
+            actionByEmail: req.session.User.EmailAddress,
+            actionDatetime: new Date().toISOString(),
+            comments: ""
+        }
+        
+        await addStandardHistoryEntry(standard_id, historyData);
+    }
+
+    if (action === 'Revert') {
+
+        // Update the statius of the standard to 'Approved'
+
+        const stage = await client.getEntries({
+            content_type: 'stage',
+            'fields.number': 20 // Back to draft
+        });
+
+        const stageId = stage.items[0].sys.id;
+
+        await updateStatus(standard_id, stageId);
+
+        const historyData = {
+            action: "Revert to draft",
+            actionBy: req.session.User.FirstName + " " + req.session.User.LastName,
+            actionByEmail: req.session.User.EmailAddress,
+            actionDatetime: new Date().toISOString(),
+            comments: ""
+        }
+
+        await addStandardHistoryEntry(standard_id, historyData);
+
+    }
+
+    return res.redirect(`/admin/standard/${standard_id}`);
 };

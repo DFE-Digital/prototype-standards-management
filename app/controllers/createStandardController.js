@@ -7,10 +7,10 @@ const previewClient = require('../middleware/contentful-preview.js');
 const managementClient = require('../middleware/contentful-management.js');
 
 const createStandardEntry = require('../middleware/standards.js');
+const updates = require('../middleware/standards.js');
 
 
-
-const { updateTitle, updateSummary, updateCategories, updatePurpose, updateGuidance, createApprovedProductEntry, updateApprovedProductsField, createToleratedProductEntry, updateToleratedProductsField, removeApprovedProductsField, updateApprovedProduct, createExceptionEntry, updateExceptionField, updateException, removeExceptionField, createPerson, updateContactField, removeContactField, updateSubCategories, updateStatus, deleteEntry, updateToDraft } = require('../data/contentful/updates.js');
+const { updateTitle, updateSummary, updateCategories, updatePurpose, updateGuidance, createApprovedProductEntry, updateApprovedProductsField, createToleratedProductEntry, updateToleratedProductsField, removeApprovedProductsField, updateApprovedProduct, createExceptionEntry, updateExceptionField, updateException, removeExceptionField, createPerson, updateContactField, removeContactField, updateSubCategories, updateStatus, deleteEntry, updateToDraft, addStandardHistoryEntry } = require('../data/contentful/updates.js');
 
 const { slugify } = require('../middleware/tools.js');
 
@@ -88,7 +88,7 @@ exports.g_standardcreate = async function (req, res) {
     // Create a new standard and put the ID into session
     const newStandard = {
         title: '',
-        stageId: await getStageID(10),
+        stageId: await getStageID(20),
         number: number,
         owners: [],
         technicalContacts: [],
@@ -109,9 +109,16 @@ exports.g_standardcreate = async function (req, res) {
         creator: req.session.User.EmailAddress,
     }
 
-
     const standard = await createStandardEntry(newStandard);
 
+    const historyData = {
+        action: "Draft created",
+        actionBy: req.session.User.FirstName + " " + req.session.User.LastName,
+        actionByEmail: req.session.User.EmailAddress,
+        actionDatetime: new Date().toISOString()
+    }
+
+    await addStandardHistoryEntry(standard, historyData);
 
     if (standard) {
         req.session.data['id'] = standard;
@@ -1134,6 +1141,15 @@ exports.p_submit = async function (req, res) {
         // Update the stage of the standard to 'Draft'
 
         await updateToDraft(id, stageId, req.session.User.EmailAddress);
+
+        const historyData = {
+            action: "Draft submitted",
+            actionBy: req.session.User.FirstName + " " + req.session.User.LastName,
+            actionByEmail: req.session.User.EmailAddress,
+            actionDatetime: new Date().toISOString()
+        }
+
+        await addStandardHistoryEntry(standard.sys.id, historyData);
 
         // Render the success view
         return res.render('create/standard/success', { id });

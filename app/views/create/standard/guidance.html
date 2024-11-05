@@ -8,45 +8,45 @@
 {% set sidenav = 'guidance' %}
 
 {% block hero %}
-    {% include 'create/standard/_head.html' %}
+  {% include 'create/standard/_head.html' %}
 {% endblock %}
 
 {% block head %}
-    <meta name="robots" content="noindex, nofollow">
+  <meta name="robots" content="noindex, nofollow">
 {% endblock %}
 
 {% block content %}
-    <div class="govuk-grid-row">
-           <div class="govuk-grid-column-one-quarter">
-            {% include 'create/standard/_sidenav.html' %}
-        </div>
-        <div class="govuk-grid-column-three-quarters">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-quarter">
+      {% include 'create/standard/_sidenav.html' %}
+    </div>
+    <div class="govuk-grid-column-three-quarters">
 
-            <h2 class="govuk-heading-l">How to meet the standard</h2>
-            <div id="guidance-hint" class="govuk-hint">
+      <h2 class="govuk-heading-l">How to meet the standard</h2>
+      <div id="guidance-hint" class="govuk-hint">
                 Include all the requirements for this standard. Detail the actions a team must take to meet the standard. Include links to guidance and support if needed
               </div>
-                {% include 'partials/_markdown.html' %}
+      {% include 'partials/_markdown.html' %}
 
-            <form action="/create/standard/guidance" method="post">
-                <div class="govuk-form-group govuk-character-count" data-module="govuk-character-count" data-maxlength="10000">
+      <form action="/create/standard/guidance" method="post">
+        <div class="govuk-form-group govuk-character-count" data-module="govuk-character-count" data-maxlength="10000">
 
-                    <textarea class="govuk-textarea govuk-js-character-count" id="guidance" name="guidance" rows="30" aria-describedby="guidance-info">{{standard.fields.guidance}}</textarea>
-                    <div id="guidance-info" class="govuk-hint govuk-character-count__message">
+          <textarea class="govuk-textarea govuk-js-character-count" id="guidance" name="guidance" rows="20" aria-describedby="guidance-info">{{standard.fields.guidance}}</textarea>
+          <div id="guidance-info" class="govuk-hint govuk-character-count__message">
    You can enter up to 10,000 characters. 
   </div>
-                </div>
+        </div>
 
-                <div class="govuk-button-group">
-                    <button type="submit" class="govuk-button" data-module="govuk-button">
-Save
+        <div class="govuk-button-group">
+          <button type="submit" class="govuk-button" data-module="govuk-button">
+Save and continue
   </button>
 
-                </div>
-
-            </form>
-
         </div>
+
+      </form>
+
     </div>
+  </div>
 
 {% endblock %}

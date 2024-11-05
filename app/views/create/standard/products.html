@@ -17,24 +17,24 @@
 
 {% block content %}
     <div class="govuk-grid-row">
-           <div class="govuk-grid-column-one-quarter">
+        <div class="govuk-grid-column-one-quarter">
             {% include 'create/standard/_sidenav.html' %}
         </div>
         <div class="govuk-grid-column-three-quarters">
 
             {% if message %}
 
-            <div class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
-  <div class="govuk-notification-banner__header">
-    <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                <div class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+                    <div class="govuk-notification-banner__header">
+                        <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
       Success
     </h2>
-  </div>
-  <div class="govuk-notification-banner__content">
-  
-    <p class="govuk-body">{{message}}</p>
-  </div>
-</div>
+                    </div>
+                    <div class="govuk-notification-banner__content">
+
+                        <p class="govuk-body">{{message}}</p>
+                    </div>
+                </div>
 
             {% endif %}
 
@@ -73,7 +73,9 @@
                             <tbody class="govuk-table__body">
                                 {% for product in standard.fields.approvedProducts %}
                                     <tr class="govuk-table__row">
-                                        <td class="govuk-table__cell"><a href="/create/standard/manage-approved-product/{{product.sys.id}}">{{ product.fields.product }}</a></td>
+                                        <td class="govuk-table__cell">
+                                            <a href="/create/standard/manage-approved-product/{{product.sys.id}}">{{ product.fields.product }}</a>
+                                        </td>
                                         <td class="govuk-table__cell">{{ product.fields.vendor }}</td>
                                         <td class="govuk-table__cell">{{ product.fields.version }}</td>
                                     </tr>
@@ -89,15 +91,13 @@
                 </div>
             </div>
 
-         
-
             <h3 class="govuk-heading-m">Tolerated products or services</h3>
 
             <p>Tolerated products or services are those that have been tested and tolerated for use with this standard.  {% if toleratedProducts | length %}
                     <a href="/create/standard/add-tolerated-product">Add another tolerated product</a>.{% endif %}
             </p>
-           
-              <div class="govuk-summary-card">
+
+            <div class="govuk-summary-card">
                 <div class="govuk-summary-card__title-wrapper">
                     <h2 class="govuk-summary-card__title">
       Tolerated products or services
@@ -111,7 +111,7 @@
                 <div class="govuk-summary-card__content">
                     {% if standard.fields.toleratedProducts | length %}
 
-                     <table class="govuk-table">
+                        <table class="govuk-table">
                             <thead class="govuk-table__head">
                                 <tr class="govuk-table__row">
                                     <th scope="col" class="govuk-table__header">Product name</th>
@@ -122,7 +122,9 @@
                             <tbody class="govuk-table__body">
                                 {% for product in standard.fields.toleratedProducts %}
                                     <tr class="govuk-table__row">
-                                        <td class="govuk-table__cell"><a href="/create/standard/manage-tolerated-product/{{product.sys.id}}">{{ product.fields.product }}</a></td>
+                                        <td class="govuk-table__cell">
+                                            <a href="/create/standard/manage-tolerated-product/{{product.sys.id}}">{{ product.fields.product }}</a>
+                                        </td>
                                         <td class="govuk-table__cell">{{ product.fields.vendor }}</td>
                                         <td class="govuk-table__cell">{{ product.fields.version }}</td>
                                     </tr>
@@ -137,6 +139,14 @@
                     {% endif %}
                 </div>
             </div>
+
+            <form action="/create/standard/exceptions" method="get">
+                <div class="govuk-button-group">
+                    <button type="submit" class="govuk-button" data-module="govuk-button">Continue</button>
+
+                </div>
+
+            </form>
 
         </div>
     </div>

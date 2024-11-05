@@ -104,6 +104,8 @@ router.get('/manage/standard/index2/:id', isAuthenticated, manageController.g_ma
 router.get('/manage/standard/preview', isAuthenticated, manageController.g_preview);
 router.get('/manage/standard/preview-meet', isAuthenticated, manageController.g_previewmeet);
 router.get('/manage/standard/preview-products', isAuthenticated, manageController.g_previewproducts);
+router.get('/manage/standard/published/:id', isAuthenticated, manageController.g_published);
+router.get('/manage/standard/reverted/:id', isAuthenticated, manageController.g_reverted);
 router.get('/manage/:id', isAuthenticated, manageController.g_dashboard);
 
 router.post('/manage/standard/purpose', isAuthenticated, manageController.p_manage_purpose);
@@ -115,6 +117,7 @@ router.post('/manage/standard/manage-exception', isAuthenticated, manageControll
 router.post('/manage/standard/add-contact', isAuthenticated, manageController.p_manage_addcontact);
 router.post('/manage/standard/add-approved-product', isAuthenticated, manageController.p_manage_addapprovedproduct);
 router.post('/manage/standard/move-stage', isAuthenticated, manageController.p_manage_movestage);
+router.post('/manage/standard/publish', isAuthenticated, manageController.p_publish);
 
 
 
@@ -129,17 +132,19 @@ router.get('/preview/exceptions/:id', isAuthenticated, previewController.g_previ
 
 // Admin routes for standard board stuff
 router.get('/admin', isAuthenticated, adminController.g_dashboard);
-router.get('/admin/standard/:id', isAuthenticated, adminController.g_manage);
+router.get('/admin/standard/outcome-approved/:id', isAuthenticated, adminController.g_outcomeapproved);
+router.get('/admin/standard/outcome-rejected/:id', isAuthenticated, adminController.g_outcomerejected);
 router.get('/admin/standard/approve/:id', isAuthenticated, adminController.g_approve);
+router.get('/admin/standard/task/outcome/:id', isAuthenticated, adminController.g_outcome);
 router.get('/admin/standard/reject/:id', isAuthenticated, adminController.g_reject);
 router.get('/admin/standard/approved/:id', isAuthenticated, adminController.g_approved);
 router.get('/admin/standard/rejected/:id', isAuthenticated, adminController.g_rejected);
 router.get('/admin/admins', isAuthenticated, adminController.g_admins);
 router.get('/admin/:id', isAuthenticated, adminController.g_dashboard);
+router.get('/admin/standard/:id', isAuthenticated, adminController.g_manage);
 
-router.post('/admin/standard/approval', isAuthenticated, adminController.p_approval);
-router.post('/admin/standard/approve', isAuthenticated, adminController.p_approve);
-router.post('/admin/standard/reject', isAuthenticated, adminController.p_reject);
+router.post('/admin/standard/outcome', isAuthenticated, adminController.p_outcome);
+router.post('/admin/standard/publish', isAuthenticated, adminController.p_publish);
 
 
 // Standards routes

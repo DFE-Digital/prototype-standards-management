@@ -17,14 +17,14 @@
                         <tr class="govuk-table__row">
 
                             <td class="govuk-table__cell">
-                                <strong class="govuk-tag govuk-tag--yellow">{{standard.fields.stage.fields.title}}</strong>
+                                <strong class="govuk-tag govuk-tag--{% if standard.fields.stage.fields.title === 'Rejected' %}red{% else %}yellow{% endif %}">{{standard.fields.stage.fields.title}}</strong>
                                 <td class="govuk-table__cell">DDTS{{standard.fields.number}}</td>
                                 <td class="govuk-table__cell">V{{standard.fields.version}}</td>
                             </tr>
                         </tbody>
                     </table>
 
-                    {% include 'manage/standard/_nav.html' %}
+                    {% include 'admin/standard/_nav.html' %}
                 </div>
             </div>
         </div>

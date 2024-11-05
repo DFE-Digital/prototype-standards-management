@@ -3,9 +3,13 @@ const client = require("../middleware/contentful.js");
 const previewClient = require("../middleware/contentful-preview.js");
 const managementClient = require("../middleware/contentful-management.js");
 
+const { updateStatus, addStandardHistoryEntry } = require('../data/contentful/updates.js');
+
 function generateRandomId() {
     return Math.random().toString(36).substr(2, 9); // Generates a random string
 }
+
+
 
 // GETS //
 exports.g_dashboard = async function (req, res) {
@@ -104,6 +108,7 @@ exports.g_standard_getdraft = async function (req, res) {
     try {
         const draft = await previewClient.getEntry(id);
 
+
         req.session.data['id'] = id;
 
         return res.redirect('/manage/standard');
@@ -117,7 +122,6 @@ exports.g_standard_getdraft = async function (req, res) {
 
 }
 
-
 exports.g_manage = async function (req, res) {
     if (!req.session.data) {
         req.session.data = {};
@@ -127,8 +131,37 @@ exports.g_manage = async function (req, res) {
 
     if (id) {
         try {
+            // Retrieve the standard entry
             const standard = await previewClient.getEntry(id);
-            return res.render('manage/standard/index', { standard });
+
+            // Retrieve the history in date descending order
+            const historyResponse = await previewClient.getEntries({
+                content_type: "standardHistory",
+                "fields.standard.sys.id": id,
+                order: "-sys.createdAt"
+            });
+
+            // Extract history items
+            const history = historyResponse.items;
+
+            // Check for the latest "Rejected" action
+            const latestRejected = history.find(entry => entry.fields.action === "Rejected");
+
+            // If "Rejected" exists, capture relevant data, else set to null
+            const rejectionDetails = latestRejected ? {
+                actionBy: latestRejected.fields.actionBy,
+                actionByEmail: latestRejected.fields.actionByEmail,
+                actionDatetime: latestRejected.fields.actionDatetime,
+                comments: latestRejected.fields.comments
+            } : null;
+
+            // Render the page with the full history and the latest rejection details if available
+            return res.render('manage/standard/index', {
+                standard,
+                history,
+                rejectionDetails
+            });
+
         } catch (error) {
             console.error("Error fetching standard entry from Contentful:", error);
             req.session.data['error'] = { error: 'Failed to fetch standard entry' };
@@ -138,8 +171,11 @@ exports.g_manage = async function (req, res) {
         req.session.data['error'] = { error: 'No ID found in session data' };
         return res.redirect('/create');
     }
-
 };
+
+
+
+
 
 exports.g_manage_title = async function (req, res) {
 
@@ -485,6 +521,52 @@ exports.g_previewproducts = async function (req, res) {
 }
 
 
+exports.g_published = async function (req, res) {
+
+    if (!req.session.data) {
+        req.session.data = {};
+    }
+
+    let id = req.session.data['id'];
+
+    if (id) {
+        try {
+            const standard = await previewClient.getEntry(id);
+            return res.render('manage/standard/published', { standard });
+        } catch (error) {
+            console.error("Error fetching standard entry from Contentful:", error);
+            req.session.data['error'] = { error: 'Failed to fetch standard entry' };
+            return res.redirect('/manage');
+        }
+    } else {
+        req.session.data['error'] = { error: 'No ID found in session data' };
+        return res.redirect('/manage');
+    }
+}
+
+exports.g_reverted = async function (req, res) {
+
+    if (!req.session.data) {
+        req.session.data = {};
+    }
+
+    let id = req.session.data['id'];
+
+    if (id) {
+        try {
+            const standard = await previewClient.getEntry(id);
+            return res.render('manage/standard/reverted', { standard });
+        } catch (error) {
+            console.error("Error fetching standard entry from Contentful:", error);
+            req.session.data['error'] = { error: 'Failed to fetch standard entry' };
+            return res.redirect('/manage');
+        }
+    } else {
+        req.session.data['error'] = { error: 'No ID found in session data' };
+        return res.redirect('/manage');
+    }
+}
+
 // POSTS //
 
 exports.p_manage_purpose = async function (req, res) {
@@ -673,6 +755,80 @@ exports.p_manage_movestage = async function (req, res) {
 
     return res.redirect("/manage/standard/index2/" + standard_id);
 };
+
+exports.p_publish = async function (req, res) {
+    const { standard_id, action } = req.body;
+
+    //ToDo: Validate the form data
+
+    // Based on the selected outcome, set the status
+
+    const spaceId = process.env.spaceID;
+    const space = await managementClient.getSpace(spaceId);
+    const environment = await space.getEnvironment(process.env.environmentID);
+
+    if (action === 'Publish') {
+
+        // Update the statius of the standard to 'Approved'
+
+        const stage = await client.getEntries({
+            content_type: 'stage',
+            'fields.number': 80 // published
+        });
+
+        const stageId = stage.items[0].sys.id;
+
+        await updateStatus(standard_id, stageId);
+
+        // Once updated, publish the standard
+        const standard = await environment.getEntry(standard_id);
+        await standard.publish();
+
+        // Send notify email to the creator, owner and points of contact to say it's been published with link to view in the standards manual
+
+        const historyData = {
+            action: "Published",
+            actionBy: req.session.User.FirstName + " " + req.session.User.LastName,
+            actionByEmail: req.session.User.EmailAddress,
+            actionDatetime: new Date().toISOString(),
+            comments: ""
+        }
+
+        await addStandardHistoryEntry(standard_id, historyData);
+
+        return res.redirect(`/manage/standard/published/${standard_id}`);
+    }
+
+    if (action === 'Revert') {
+
+        // Update the statius of the standard to 'Approved'
+
+        const stage = await client.getEntries({
+            content_type: 'stage',
+            'fields.number': 20 // Back to draft
+        });
+
+        const stageId = stage.items[0].sys.id;
+
+        await updateStatus(standard_id, stageId);
+
+        const historyData = {
+            action: "Revert to draft",
+            actionBy: req.session.User.FirstName + " " + req.session.User.LastName,
+            actionByEmail: req.session.User.EmailAddress,
+            actionDatetime: new Date().toISOString(),
+            comments: ""
+        }
+
+        await addStandardHistoryEntry(standard_id, historyData);
+
+        return res.redirect(`/manage/standard/reverted/${standard_id}`);
+
+    }
+
+    
+};
+
 
 
 async function getSpaceAndEnvironment() {

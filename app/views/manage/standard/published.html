@@ -1,0 +1,35 @@
+{% extends "layouts/full.html" %}
+
+{% set selectedNav = "Manage" %}
+{% set pageName = "Standard published" %}
+{% set seoPageName = "" %}
+{% set pageDescription = ""%}
+{% set view = "standard" %}
+{% set mainClasses = "govuk-!-padding-top-9" %}
+
+{% block head %}
+    <meta name="robots" content="noindex, nofollow">
+{% endblock %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
+
+            <div class="govuk-panel govuk-panel--confirmation">
+                <h1 class="govuk-panel__title">
+    Standard published
+  </h1>
+
+            </div>
+
+            <h2 class="govuk-heading-l">What happens next</h2>
+
+            <p>We've sent you, the owners, and named contacts an email confirming the standard is now published.</p>
+            
+            <p>You can view the standard in the external <a href="https://standards.education.gov.uk/standard/{{standard.fields.number}}">Standards manual</a>.</p>
+
+
+        </div>
+    </div>
+
+{% endblock %}

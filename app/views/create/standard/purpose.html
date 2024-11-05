@@ -33,8 +33,8 @@
           <div id="purpose-hint-hint" class="govuk-hint">
     Describe why this standard is important
   </div>
-        {% include 'partials/_markdown.html' %}
-          <textarea class="govuk-textarea govuk-js-character-count" id="purpose-hint" name="purpose" rows="30" aria-describedby="purpose-hint-info purpose-hint-hint">{{standard.fields.purpose}}</textarea>
+          {% include 'partials/_markdown.html' %}
+          <textarea class="govuk-textarea govuk-js-character-count" id="purpose-hint" name="purpose" rows="20" aria-describedby="purpose-hint-info purpose-hint-hint">{{standard.fields.purpose}}</textarea>
           <div id="purpose-hint-info" class="govuk-hint govuk-character-count__message">
     You can enter up to 10,000 characters
   </div>
@@ -42,7 +42,7 @@
 
         <div class="govuk-button-group">
           <button type="submit" class="govuk-button" data-module="govuk-button">
-    Continue
+    Save and continue
   </button>
 
         </div>

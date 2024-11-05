@@ -38,6 +38,7 @@ async function createEntry(entryType, fields) {
     }
 }
 
+
 async function deleteEntry(entryId) {
 
     try {
@@ -50,6 +51,29 @@ async function deleteEntry(entryId) {
         handleError(`deleting entry ${entryId}`, error);
     }
 }
+
+async function addStandardHistoryEntry(standardId, historyData) {
+    try {
+        const environment = await getSpaceAndEnvironment();
+
+        const historyEntry = await environment.createEntry('standardHistory', {
+            fields: {
+                action: { 'en-US': historyData.action },
+                standard: { 'en-US': { sys: { type: "Link", linkType: "Entry", id: standardId } } },
+                actionBy: { 'en-US': historyData.actionBy },
+                actionByEmail: { 'en-US': historyData.actionByEmail },
+                actionDatetime: { 'en-US': historyData.actionDatetime || new Date().toISOString() },
+                comments: { 'en-US': historyData.comments }
+            }
+        });
+      
+        await historyEntry.publish();
+
+    } catch (error) {
+        handleError('adding standard history entry', error);
+    }
+}
+
 
 
 
@@ -119,7 +143,7 @@ async function updateToDraft(entryId, value, email) {
             "en-US": email
         };
 
-     
+
 
         const updatedEntry = await entry.update();
 
@@ -525,4 +549,4 @@ async function removeContactField(entryId, newPersonEntryId, previousRole) {
 
 
 
-module.exports = { updateTitle, updateSummary, updateCategories, updatePurpose, updateGuidance, createApprovedProductEntry, updateApprovedProductsField, createToleratedProductEntry, updateToleratedProductsField, removeApprovedProductsField, updateApprovedProduct, createExceptionEntry, updateExceptionField, updateException, removeExceptionField, createPerson, updateContactField, removeContactField, updateSubCategories, updateStatus, deleteEntry, updateToDraft };
+module.exports = { updateTitle, updateSummary, updateCategories, updatePurpose, updateGuidance, createApprovedProductEntry, updateApprovedProductsField, createToleratedProductEntry, updateToleratedProductsField, removeApprovedProductsField, updateApprovedProduct, createExceptionEntry, updateExceptionField, updateException, removeExceptionField, createPerson, updateContactField, removeContactField, updateSubCategories, updateStatus, deleteEntry, updateToDraft, addStandardHistoryEntry };

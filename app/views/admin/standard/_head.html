@@ -11,17 +11,15 @@
                             <th class="govuk-table__header govuk-!-width-one-quarter" scope="col">Stage</th>
                             <th class="govuk-table__header govuk-!-width-one-quarter" scope="col">Reference</th>
                             <th class="govuk-table__header govuk-!-width-one-quarter" scope="col">Version</th>
-                            <th class="govuk-table__header govuk-!-width-one-quarter" scope="col">Preview</th>
                         </tr>
                     </thead>
                     <tbody class="govuk-table__body">
                         <tr class="govuk-table__row">
 
                             <td class="govuk-table__cell">
-                                <strong class="govuk-tag govuk-tag--yellow">Board review</strong>
+                                <strong class="govuk-tag govuk-tag--{% if standard.fields.stage.fields.title === 'Rejected' %}red{% else %}yellow{% endif%}">{{standard.fields.stage.fields.title}}</strong>
                                 <td class="govuk-table__cell">DDTS{{standard.fields.number}}</td>
                                 <td class="govuk-table__cell">V{{standard.fields.version}}</td>
-                                <td class="govuk-table__cell"><a href="/preview/{{standard.sys.id}}" target="_blank">Preview standard</a></td>
                             </tr>
                         </tbody>
                     </table>
