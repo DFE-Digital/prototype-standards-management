@@ -2,8 +2,6 @@ const { check, validationResult } = require('express-validator');
 const { validateChangeName, validateChangeEmail } = require('../validation/profile');
 const { getBasicUserDetails, updateName, updateEmail } = require('../data/user');
 
-const e = require('express');
-const { get } = require('browser-sync');
 
 exports.g_profile = async (req, res, next) => {
     try {
