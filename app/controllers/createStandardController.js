@@ -6,6 +6,9 @@ const client = require('../middleware/contentful.js');
 const previewClient = require('../middleware/contentful-preview.js');
 const managementClient = require('../middleware/contentful-management.js');
 
+
+const { sendNotifyEmail } = require('../middleware/notify');
+
 const { createStandardEntry, updateTitle, updateSummary, updateCategories, updatePurpose, updateGuidance, createApprovedProductEntry, updateApprovedProductsField, createToleratedProductEntry, updateToleratedProductsField, removeApprovedProductsField, updateApprovedProduct, createExceptionEntry, updateExceptionField, updateException, removeExceptionField, createPerson, updateContactField, removeContactField, updateSubCategories, updateStatus, deleteEntry, updateToDraft, addStandardHistoryEntry } = require('../data/contentful/updates.js');
 
 const { slugify } = require('../middleware/tools.js');
@@ -999,24 +1002,28 @@ exports.p_purpose = [
 
 
 exports.p_contacts = async function (req, res) {
-
     const { id } = req.session.data;
 
-    // Get the list of contacts, is there at least one owner?
-    const standard = await previewClient.getEntry(id);
-    const owners = standard.fields.owners || [];
-
-    if (owners.length === 0) {
-
-        let errors = [{ msg: 'You must have at least one owner' }];
-
-        return res.render('create/standard/contacts', { errors, standard });
+    if (!id) {
+        req.session.data['error'] = { error: 'No ID found in session data' };
+        return res.redirect('/create');
     }
 
-    // Return to tasks
+    try {
+        const standard = await previewClient.getEntry(id);
+        const owners = standard.fields.owners || [];
 
-    return res.redirect("/create/standard");
+        if (owners.length === 0) {
+            const errors = [{ msg: 'You must have at least one owner' }];
+            return res.render('create/standard/contacts', { errors, standard });
+        }
 
+        return res.redirect("/create/standard");
+    } catch (error) {
+        console.error("Error fetching standard entry from Contentful:", error);
+        req.session.data['error'] = { error: 'Failed to fetch standard entry' };
+        return res.redirect('/create');
+    }
 }
 
 
@@ -1078,38 +1085,61 @@ exports.p_addapprovedproduct = [
 
 
 
-exports.p_addtoleratedproduct = async function (req, res) {
+exports.p_addtoleratedproduct = [
+    ...validateApprovedFields, // Assuming you have validation setup for tolerated products
 
+    async function (req, res) {
+        const errors = validationResult(req);
+        const { id } = req.session.data;
 
-    const { id } = req.session.data;
+        if (!id) {
+            req.session.data['error'] = { error: 'No ID found in session data' };
+            return res.redirect('/create');
+        }
 
-    const {
-        tolerated_name,
-        tolerated_vendor,
-        tolerated_version,
-        tolerated_usecase,
-    } = req.body;
+        // If validation errors exist, re-render the page with errors
+        if (!errors.isEmpty()) {
+            try {
+                const standard = await previewClient.getEntry(id);
 
-    console.log(req.body);
+                // Render the form with validation errors and the standard data
+                return res.render('create/standard/add-tolerated-product', {
+                    errors: errors.array(),
+                    standard,
+                    formData: req.body // Include form data to populate fields
+                });
+            } catch (error) {
+                console.error("Error fetching standard entry from Contentful:", error);
+                req.session.data['error'] = { error: 'Failed to fetch standard entry' };
+                return res.redirect('/create');
+            }
+        }
 
+        const { tolerated_name, tolerated_vendor, tolerated_version, tolerated_usecase } = req.body;
 
-    const newProductEntry = await createToleratedProductEntry(
-        tolerated_name,
-        tolerated_vendor,
-        tolerated_version,
-        tolerated_usecase,
-    );
+        try {
+            // Create a new tolerated product entry
+            const newProductEntry = await createToleratedProductEntry(
+                tolerated_name,
+                tolerated_vendor,
+                tolerated_version,
+                tolerated_usecase
+            );
 
-    if (newProductEntry) {
-        // Update the standard to link the new product entry
-        const updatedStandard = await updateToleratedProductsField(
-            id,
-            newProductEntry.sys.id,
-        );
+            if (newProductEntry) {
+                // Update the standard to link the new product entry
+                await updateToleratedProductsField(id, newProductEntry.sys.id);
 
-        return res.redirect("/create/standard/products");
+                // Redirect upon successful entry creation and update
+                return res.redirect("/create/standard/products");
+            }
+        } catch (error) {
+            console.error("Error adding tolerated product:", error);
+            req.session.data['error'] = { error: 'Failed to add tolerated product' };
+            return res.redirect('/create');
+        }
     }
-}
+];
 
 
 exports.p_addexception = [
@@ -1281,146 +1311,176 @@ exports.p_guidance = [
 
 
 exports.p_submit = async function (req, res) {
-
     const { action } = req.body;
 
     // Check if the session data exists
     if (!req.session.data) {
+        req.session.data = { error: 'Session data not found' };
         return res.redirect('/create/standard');
     }
 
-    // Get the data from the session including from drafts
-
     const { id } = req.session.data;
 
-    const standard = await previewClient.getEntry(id);
+    try {
+        const standard = await previewClient.getEntry(id);
 
-    // current UTC time
-    const now = new Date().toISOString();
-
-    if (action === 'Submit') {
-        //Get the ID for the stage
-        const stage = await client.getEntries({
-            content_type: 'stage',
-            'fields.number': 40
-        });
-
-        const stageId = stage.items[0].sys.id;
-
-        // Update the stage of the standard to 'Draft'
-
-        await updateToDraft(id, stageId, req.session.User.EmailAddress);
-
-        const historyData = {
-            action: "Draft submitted",
-            actionBy: req.session.User.FirstName + " " + req.session.User.LastName,
-            actionByEmail: req.session.User.EmailAddress,
-            actionDatetime: new Date().toISOString()
+        if (!standard) {
+            req.session.data['error'] = { error: 'Standard entry not found' };
+            return res.redirect('/create/standard');
         }
 
-        await addStandardHistoryEntry(standard.sys.id, historyData);
+        if (action === 'Submit') {
+            // Get the ID for the stage
+            const stageResponse = await client.getEntries({
+                content_type: 'stage',
+                'fields.number': 40
+            });
 
-        // Render the success view
-        return res.render('create/standard/success', { id });
+            if (stageResponse.items.length === 0) {
+                req.session.data['error'] = { error: 'Stage not found' };
+                return res.redirect('/create/standard');
+            }
 
+            const stageId = stageResponse.items[0].sys.id;
+
+            // Update the stage of the standard to 'Draft'
+            await updateToDraft(id, stageId, req.session.User.EmailAddress);
+
+            const historyData = {
+                action: "Draft submitted",
+                actionBy: `${req.session.User.FirstName} ${req.session.User.LastName}`,
+                actionByEmail: req.session.User.EmailAddress,
+                actionDatetime: new Date().toISOString()
+            };
+
+            await addStandardHistoryEntry(standard.sys.id, historyData);
+
+            // Send notify email to submittor, owners
+
+            const owners = standard.fields.owners || [];
+            const otherContacts = standard.fields.technicalContacts || [];
+            const creatorEmail = standard.fields.creator;
+
+            // create a list of all the emails to send to from the owners
+
+            const publishersList = [];
+            const awarenessList = [];
+
+            publishersList.push(creatorEmail);
+
+            owners.forEach(owner => {
+                publishersList.push(owner.fields.emailAddress);
+            });
+
+            otherContacts.forEach(contact => {
+                awarenessList.push(contact.fields.emailAddress);
+            });
+
+            // remove any duplicates
+            const uniquePublishersList = [...new Set(publishersList)];
+            const uniqueawarenessList = [...new Set(awarenessList)];
+
+            // send the email
+
+            const templateParams = {
+                standardName: standard.fields.title
+            };
+
+            uniquePublishersList.forEach(email => {
+                sendNotifyEmail(process.env.email_standardSubmittedPublishers, email, templateParams);
+            });
+
+            uniqueawarenessList.forEach(email => {
+                sendNotifyEmail(process.env.email_standardSubmittedAwareness, email, templateParams);
+            });
+   
+            // Render the success view
+            return res.render('create/standard/success', { id });
+        }
+
+        if (action === 'Delete') {
+            return res.redirect('/create/standard/confirm-delete');
+        }
+
+        req.session.data['error'] = { error: 'Invalid action' };
+        return res.redirect('/create/standard');
+    } catch (error) {
+        console.error("Error handling submit action:", error);
+        req.session.data['error'] = { error: 'Failed to handle submit action' };
+        return res.redirect('/create/standard');
     }
-
-    if (action === 'Delete') {
-        return res.redirect('/create/standard/confirm-delete');
-    }
-
-}
+};
 
 exports.p_manageApprovedProduct = async function (req, res) {
-
     const { approvedID, approved_name, approved_vendor, approved_version, approved_usecase, manage } = req.body;
     const { id } = req.session.data;
 
-    console.log(manage)
-
-    if (manage === 'save') {
-
-        // Update the approved product in the standard
-
-
-        const result = await updateApprovedProduct(approvedID, approved_name, approved_vendor, approved_version, approved_usecase);
-        req.session.data['success'] = "Changes saved.";
-
+    try {
+        if (manage === 'save') {
+            await updateApprovedProduct(approvedID, approved_name, approved_vendor, approved_version, approved_usecase);
+            req.session.data['success'] = "Changes saved.";
+        } else if (manage === 'delete') {
+            await removeApprovedProductsField(id, approvedID);
+            req.session.data['success'] = "Approved product removed.";
+        }
+        return res.redirect('/create/standard/products');
+    } catch (error) {
+        console.error("Error managing approved product:", error);
+        req.session.data['error'] = { error: 'Failed to manage approved product' };
+        return res.redirect('/create/standard/products');
     }
-
-    if (manage === 'delete') {
-
-        // Delete the approved product from the standard, don't delete the approved product though
-
-        const result = await removeApprovedProductsField(id, approvedID);
-
-
-        req.session.data['success'] = "Changes saved.";
-
-    }
-
-    return res.redirect('/create/standard/products');
 };
 
 exports.p_manageException = async function (req, res) {
-
     const { exceptionID, exception, exceptiondetail, manage } = req.body;
     const { id } = req.session.data;
 
-    console.log(manage)
-
-    if (manage === 'save') {
-
-        // Update the exception in the standard
-        const result = await updateException(exceptionID, exception, exceptiondetail);
-        req.session.data['success'] = "Changes saved.";
+    try {
+        if (manage === 'save') {
+            await updateException(exceptionID, exception, exceptiondetail);
+            req.session.data['success'] = "Changes saved.";
+        } else if (manage === 'delete') {
+            await removeExceptionField(id, exceptionID);
+            req.session.data['success'] = "Exception removed.";
+        }
+        return res.redirect('/create/standard/exceptions');
+    } catch (error) {
+        console.error("Error managing exception:", error);
+        req.session.data['error'] = { error: 'Failed to manage exception' };
+        return res.redirect('/create/standard/exceptions');
     }
-
-    if (manage === 'delete') {
-
-        // Delete the exception from the standard, don't delete the exception though
-        const result = await removeExceptionField(id, exceptionID);
-
-    }
-
-    return res.redirect('/create/standard/exceptions');
-
 };
 
 exports.p_manageContact = async function (req, res) {
-
     const { contactID, contactType, manage, previousRole } = req.body;
     const { id } = req.session.data;
 
-    console.log(manage)
-
-    if (manage === 'delete') {
-        // Delete the contact from the standard, don't delete the contact though
-        const result = await removeContactField(id, contactID, previousRole);
-        req.session.data['success'] = "Changes saved.";
+    try {
+        if (manage === 'delete') {
+            await removeContactField(id, contactID, previousRole);
+            req.session.data['success'] = "Contact removed.";
+        } else if (manage === 'save') {
+            await updateContactField(id, contactID, contactType);
+            req.session.data['success'] = "Changes saved.";
+        }
+        return res.redirect('/create/standard/contacts');
+    } catch (error) {
+        console.error("Error managing contact:", error);
+        req.session.data['error'] = { error: 'Failed to manage contact' };
+        return res.redirect('/create/standard/contacts');
     }
-
-    if (manage === 'save') {
-        // Update the contact in the standard
-        const result = await updateContactField(id, contactID, contactType);
-        req.session.data['success'] = "Changes saved.";
-    }
-
-    return res.redirect('/create/standard/contacts');
-}
+};
 
 exports.p_confirmdelete = async function (req, res) {
-
-    const { action } = req.body;
-
     const { id } = req.session.data;
 
-    // Delete the standard from Contentful
-    const response = await deleteEntry(id);
-
-    // Redirect to the create page
-
-    return res.redirect('/create/standard/deleted');
-
-}
-
+    try {
+        await deleteEntry(id);
+        req.session.data = {}; // Clear session data after deletion
+        return res.redirect('/create/standard/deleted');
+    } catch (error) {
+        console.error("Error deleting standard:", error);
+        req.session.data['error'] = { error: 'Failed to delete standard' };
+        return res.redirect('/create/standard');
+    }
+};
