@@ -5,6 +5,8 @@ const managementClient = require('../middleware/contentful-management.js');
 
 const { updateStatus, addStandardHistoryEntry } = require('../data/contentful/updates.js');
 
+const { sendNotifyEmail } = require('../middleware/notify');
+
 // Helper function to fetch a standard entry by ID with error handling
 async function fetchStandardById(id) {
     try {
@@ -320,6 +322,26 @@ exports.p_outcome = async function (req, res) {
 
     const standard = await previewClient.getEntry(standard_id);
 
+    const owners = standard.fields.owners || [];
+    const creatorEmail = standard.fields.creator;
+
+    // create a list of all the emails to send to from the owners
+
+    const publishersList = [];
+    publishersList.push(creatorEmail);
+
+    owners.forEach(owner => {
+        publishersList.push(owner.fields.emailAddress);
+    });
+
+    const uniquePublishersList = [...new Set(publishersList)];
+
+    // send the email
+
+    const templateParams = {
+        standardName: standard.fields.title
+    };
+
     if (outcome === 'Approve') {
 
         // Update the statius of the standard to 'Approved'
@@ -344,6 +366,15 @@ exports.p_outcome = async function (req, res) {
         await addStandardHistoryEntry(standard_id, historyData);
 
         // TODO: Send email to the creator, owner and points of contact to say it's been approved
+
+
+        const templateParams = {
+            standardName: standard.fields.title
+        };
+
+        uniquePublishersList.forEach(email => {
+            sendNotifyEmail(process.env.email_forumApproved, email, templateParams);
+        });
 
         return res.redirect(`/admin/standard/outcome-approved/${standard_id}`);
 
@@ -373,6 +404,16 @@ exports.p_outcome = async function (req, res) {
         await addStandardHistoryEntry(standard_id, historyData);
 
         // TODO: Send email to the creator, owner and points of contact to say it's been rejected with the reason
+
+        const templateParams = {
+            standardName: standard.fields.title,
+            reason: reason
+        };
+
+        uniquePublishersList.forEach(email => {
+            sendNotifyEmail(process.env.email_forumRejected, email, templateParams);
+        });
+
 
     }
 
@@ -418,7 +459,7 @@ exports.p_publish = async function (req, res) {
             actionDatetime: new Date().toISOString(),
             comments: ""
         }
-        
+
         await addStandardHistoryEntry(standard_id, historyData);
     }
 
