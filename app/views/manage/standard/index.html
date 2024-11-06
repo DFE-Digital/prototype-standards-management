@@ -23,15 +23,15 @@
                     </div>
                     <div class="govuk-notification-banner__content">
                         <p class="govuk-notification-banner__heading">
-    This standard is with the standards forum for review.
+    This standard is with the standards forum to&nbsp;be&nbsp;reviewed.
     </p>
 
                         <form action="/manage/standard/publish" method="post">
                             <input type="hidden" name="standard_id" value="{{standard.sys.id}}">
 
-                            <p>You will get an email when the forum have approved or rejected the standard.</p>
+                            <p>You will recieve an email when they have approved or rejected it.</p>
 
-                            <p>You will get a reason for any rejection and you will be able to make changes and resubit, or, delete the standard if you choose to not proceed with it.</p>
+                            <p>If the standard is rejected, the forum will provide a reason. You can then make changes and resubmit or, delete the standard if you choose to not proceed.</p>
 
 
                         </div>
@@ -278,7 +278,7 @@
 
                 {% else %}
 
-<p>You cannot make changes to this standard while the standard forum are reviewing it. You can <a href="/manage/standard/preview" class="govuk-link">preview the standard</a>.<p>
+<p>You cannot make changes to the standard while the standard forum are reviewing it. You can <a href="/manage/standard/preview" class="govuk-link">preview&nbsp;the&nbsp;standard</a>.<p>
 
 <ul class="govuk-task-list">
     <li class="govuk-task-list__item govuk-task-list__item--with-link">
