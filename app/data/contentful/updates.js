@@ -91,6 +91,14 @@ async function updateTitle(entryId, value) {
     });
 }
 
+async function updateVersion(entryId, value) {
+    return await updateEntry(entryId, {
+        version: { "en-US": value },
+    });
+}
+
+
+
 async function updateSummary(entryId, value) {
     return await updateEntry(entryId, {
         summary: { "en-US": value },
@@ -549,4 +557,4 @@ async function removeContactField(entryId, newPersonEntryId, previousRole) {
 
 
 
-module.exports = { updateTitle, updateSummary, updateCategories, updatePurpose, updateGuidance, createApprovedProductEntry, updateApprovedProductsField, createToleratedProductEntry, updateToleratedProductsField, removeApprovedProductsField, updateApprovedProduct, createExceptionEntry, updateExceptionField, updateException, removeExceptionField, createPerson, updateContactField, removeContactField, updateSubCategories, updateStatus, deleteEntry, updateToDraft, addStandardHistoryEntry };
+module.exports = { updateTitle, updateSummary, updateCategories, updatePurpose, updateGuidance, createApprovedProductEntry, updateApprovedProductsField, createToleratedProductEntry, updateToleratedProductsField, removeApprovedProductsField, updateApprovedProduct, createExceptionEntry, updateExceptionField, updateException, removeExceptionField, createPerson, updateContactField, removeContactField, updateSubCategories, updateStatus, deleteEntry, updateToDraft, addStandardHistoryEntry, updateVersion };

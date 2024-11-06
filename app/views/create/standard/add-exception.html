@@ -3,7 +3,7 @@
 {% set selectedNav = "Create" %}
 {% set pageName = "Add an exception" %}
 {% set seoPageName = "" %}
-{% set pageDescription = ""%}
+{% set pageDescription = "" %}
 {% set view = "exceptions" %}
 {% set sidenav = 'exceptions' %}
 
@@ -22,33 +22,51 @@
         </div>
         <div class="govuk-grid-column-three-quarters">
 
+        {% include 'partials/errorSummary.html' %}
+
             <h2 class="govuk-heading-l">Add an exception</h2>
 
             <p>Details of the exception you want to add.</p>
 
+            {% set exception_error = null %}
+            {% set exceptiondetail_error = null %}
+
+            {% for error in errors %}
+                {% if error.path == "exception" %}
+                    {% set exception_error = error.msg %}
+                {% elif error.path == "exceptiondetail" %}
+                    {% set exceptiondetail_error = error.msg %}
+                {% endif %}
+            {% endfor %}
+
             <form action="/create/standard/add-exception" method="post">
 
-                <div class="govuk-form-group">
-                    <label class="govuk-label" for="exception">
-    Exception summary
-  </label>
-                    <input class="govuk-input" id="exception" name="exception" type="text">
+                <div class="govuk-form-group {% if exception_error %}govuk-form-group--error{% endif %}">
+                    <label class="govuk-label" for="exception">Exception summary</label>
+                    {% if exception_error %}
+                        <span class="govuk-error-message">{{ exception_error }}</span>
+                    {% endif %}
+                    <input class="govuk-input {% if exception_error %}govuk-input--error{% endif %}" 
+                           id="exception" name="exception" type="text" value="{{ formData['exception'] | escape }}">
                 </div>
 
-                <div class="govuk-form-group govuk-character-count" data-module="govuk-character-count" data-maxlength="1000">
-                    <label class="govuk-label" for="exceptiondetail">
-   Details of the exception
-  </label>
-                    <textarea class="govuk-textarea govuk-js-character-count" id="exceptiondetail" name="exceptiondetail" rows="15" aria-describedby="exceptiondetail-info"></textarea>
+                <div class="govuk-form-group govuk-character-count {% if exceptiondetail_error %}govuk-form-group--error{% endif %}" 
+                     data-module="govuk-character-count" data-maxlength="1000">
+                    <label class="govuk-label" for="exceptiondetail">Details of the exception</label>
+                    {% if exceptiondetail_error %}
+                        <span class="govuk-error-message">{{ exceptiondetail_error }}</span>
+                    {% endif %}
+                    <textarea class="govuk-textarea govuk-js-character-count {% if exceptiondetail_error %}govuk-textarea--error{% endif %}" 
+                              id="exceptiondetail" name="exceptiondetail" rows="15" aria-describedby="exceptiondetail-info">
+                        {{ formData['exceptiondetail'] | escape }}
+                    </textarea>
                     <div id="exceptiondetail-info" class="govuk-hint govuk-character-count__message">
-    You can enter up to 1,00 characters
-  </div>
+                        You can enter up to 1,000 characters
+                    </div>
                 </div>
 
                 <div class="govuk-button-group">
-                    <button type="submit" class="govuk-button" data-module="govuk-button">
-Save and continue
-  </button>
+                    <button type="submit" class="govuk-button" data-module="govuk-button">Save and continue</button>
                     <a class="govuk-link" href="/create/standard/exceptions">Cancel and return to exceptions</a>
                 </div>
 

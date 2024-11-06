@@ -3,7 +3,7 @@ const client = require("../middleware/contentful.js");
 const previewClient = require("../middleware/contentful-preview.js");
 const managementClient = require("../middleware/contentful-management.js");
 
-const { updateStatus, addStandardHistoryEntry } = require('../data/contentful/updates.js');
+const { updateStatus, addStandardHistoryEntry, updateVersion } = require('../data/contentful/updates.js');
 
 function generateRandomId() {
     return Math.random().toString(36).substr(2, 9); // Generates a random string
@@ -779,6 +779,8 @@ exports.p_publish = async function (req, res) {
         const stageId = stage.items[0].sys.id;
 
         await updateStatus(standard_id, stageId);
+
+        await updateVersion(standard_id, 1.0);
 
         // Once updated, publish the standard
         const standard = await environment.getEntry(standard_id);

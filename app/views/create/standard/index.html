@@ -146,8 +146,11 @@
                     </div>
                     <div class="govuk-task-list__status" id="standard-details-5-status">
                         {% if standard.fields.title %}
-                            {% if standard.fields.products %}
-                                Complete
+                             {% if standard.fields.approvedProducts or standard.fields.toleratedProducts %}
+                                
+                                {% set number = standard.fields.approvedProducts | length + standard.fields.toleratedProducts | length %}
+
+                                {{ number }} product{% if number > 1 %}s{% endif %}
                             {% else %}
                                 <strong class="govuk-tag govuk-tag--blue">Optional</strong>
                             {% endif %}
@@ -165,7 +168,8 @@
                     <div class="govuk-task-list__status" id="standard-details-5-status">
                         {% if standard.fields.title %}
                             {% if standard.fields.exceptions %}
-                                Complete
+                                 
+                                {{ standard.fields.exceptions | length }} exception{% if standard.fields.exceptions | length > 1 %}s{% endif %}
                             {% else %}
                                 <strong class="govuk-tag govuk-tag--blue">Optional</strong>
                             {% endif %}
@@ -183,7 +187,12 @@
                     <div class="govuk-task-list__status" id="standard-details-5-status">
                         {% if standard.fields.title %}
                             {% if standard.fields.owners or standard.fields.technicalContacts %}
-                                Complete
+                                
+                                {% set number = standard.fields.owners | length + standard.fields.technicalContacts | length %}
+
+                                {{ number }} contact{% if number > 1 %}s{% endif %}
+
+
                             {% else %}
                                 <strong class="govuk-tag govuk-tag--blue">Incomplete</strong>
                             {% endif %}

@@ -60,6 +60,7 @@ router.get('/create/standard/deleted', isAuthenticated, createController.g_delet
 router.get('/create/standard/preview', isAuthenticated, createController.g_preview);
 router.get('/create/standard/preview-meet', isAuthenticated, createController.g_previewmeet);
 router.get('/create/standard/preview-products', isAuthenticated, createController.g_previewproducts);
+router.get('/create/standard/guidance', isAuthenticated, createController.g_guidance);
 
 router.post('/create/standard/title', isAuthenticated, createController.p_title);
 router.post('/create/standard/summary', isAuthenticated, createController.p_summary);
@@ -71,9 +72,9 @@ router.post('/create/standard/manage-approved-product', isAuthenticated, createC
 router.post('/create/standard/manage-exception', isAuthenticated, createController.p_manageException);
 router.post('/create/standard/manage-contact', isAuthenticated, createController.p_manageContact);
 router.post('/create/standard/purpose', isAuthenticated, createController.p_purpose);
+router.post('/create/standard/contacts', isAuthenticated, createController.p_contacts);
 router.post('/create/standard/add-tolerated-product', isAuthenticated, createController.p_addtoleratedproduct);
 router.post('/create/standard/add-contact', isAuthenticated, createController.p_addcontact);
-router.get('/create/standard/guidance', isAuthenticated, createController.g_guidance);
 router.post('/create/standard/guidance', isAuthenticated, createController.p_guidance);
 router.post('/create/standard/submit', isAuthenticated, createController.p_submit);
 router.post('/create/standard/confirm-delete', isAuthenticated, createController.p_confirmdelete);
@@ -139,6 +140,9 @@ router.get('/admin/standard/task/outcome/:id', isAuthenticated, adminController.
 router.get('/admin/standard/reject/:id', isAuthenticated, adminController.g_reject);
 router.get('/admin/standard/approved/:id', isAuthenticated, adminController.g_approved);
 router.get('/admin/standard/rejected/:id', isAuthenticated, adminController.g_rejected);
+router.get('/admin/standard/preview', isAuthenticated, adminController.g_preview);
+router.get('/admin/standard/preview-meet', isAuthenticated, adminController.g_previewmeet);
+router.get('/admin/standard/preview-products', isAuthenticated, adminController.g_previewproducts);
 router.get('/admin/admins', isAuthenticated, adminController.g_admins);
 router.get('/admin/:id', isAuthenticated, adminController.g_dashboard);
 router.get('/admin/standard/:id', isAuthenticated, adminController.g_manage);

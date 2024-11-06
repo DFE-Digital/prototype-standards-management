@@ -24,7 +24,9 @@
 
             <form action="/create/standard/categories" method="post" >
 
-                <div class="govuk-form-group">
+                {% include 'partials/errorSummary.html' %}
+
+                <div class="govuk-form-group  {% if errors %} govuk-form-group--error{% endif %}">
                     <fieldset class="govuk-fieldset" aria-describedby="categories-hint">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                             <h2 class="govuk-fieldset__heading">
@@ -34,6 +36,14 @@
                         <div id="categories-hint" class="govuk-hint">
       These will be used to group standards together in the same job family. Select all that apply 
     </div>
+                        {% if errors %}
+                            <p id="categories-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">Error:</span>
+                                {% for err in errors %}
+                                    {{ err.msg }}
+                                {% endfor %}
+                            </p>
+                        {% endif %}
                         <div class="govuk-checkboxes" data-module="govuk-checkboxes">
 
                             {% for category in categories %}

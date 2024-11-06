@@ -22,19 +22,22 @@
         </div>
         <div class="govuk-grid-column-three-quarters">
 
-                {% if message %}
 
-            <div class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
-  <div class="govuk-notification-banner__header">
-    <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                {% include 'partials/errorSummary.html' %}
+
+            {% if message %}
+
+                <div class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+                    <div class="govuk-notification-banner__header">
+                        <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
       Success
     </h2>
-  </div>
-  <div class="govuk-notification-banner__content">
-  
-    <p class="govuk-body">{{message}}</p>
-  </div>
-</div>
+                    </div>
+                    <div class="govuk-notification-banner__content">
+
+                        <p class="govuk-body">{{message}}</p>
+                    </div>
+                </div>
 
             {% endif %}
 
@@ -68,7 +71,8 @@
                                     <tr class="govuk-table__row">
                                         <td class="govuk-table__cell">
                                             <a href="/create/standard/manage-contact/{{contact.sys.id}}">{{ contact.fields.name }}</a>
-                                        </td>   <td class="govuk-table__cell">{{contact.fields.emailAddress}}</td>
+                                        </td>
+                                        <td class="govuk-table__cell">{{contact.fields.emailAddress}}</td>
                                         <td class="govuk-table__cell">Owner</td>
                                     </tr>
                                 {% endfor %}
@@ -77,30 +81,31 @@
                                         <td class="govuk-table__cell">
                                             <a href="/create/standard/manage-contact/{{contact.sys.id}}">{{ contact.fields.name }}</a>
                                         </td>
-                                        </td>   <td class="govuk-table__cell">{{contact.fields.emailAddress}}</td>
-                                        <td class="govuk-table__cell">Contact</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    {% else %}
-                      
-                           <p class="govuk-!-margin-bottom-0">No contacts added.</p>
-                       
-                    {% endif %}
-                </div>
+                                    </td>
+                                    <td class="govuk-table__cell">{{contact.fields.emailAddress}}</td>
+                                    <td class="govuk-table__cell">Contact</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+
+                    <p class="govuk-!-margin-bottom-0">No contacts added.</p>
+
+                {% endif %}
             </div>
-            
-
-                    <form action="/create/standard" method="get">
-                <div class="govuk-button-group">
-                    <button type="submit" class="govuk-button" data-module="govuk-button">Continue</button>
-
-                </div>
-
-            </form>
-
         </div>
+
+        <form action="/create/standard/contacts" method="post">
+
+            <div class="govuk-button-group">
+                <button type="submit" class="govuk-button" data-module="govuk-button">Continue</button>
+
+            </div>
+
+        </form>
+
     </div>
+</div>
 
 {% endblock %}
