@@ -18,25 +18,27 @@
         </div>
         <div class="govuk-grid-column-three-quarters">
 
+            {% include 'partials/errorSummary.html' %}
+
             <form action="/create/standard/sub-categories" method="post">
                 <h2 class="govuk-heading-l">Sub-categories that apply to standard</h2>
 
                 {% if standard.fields.category | length === 1 %}
 
-                <p>These will be used to group standards together in specific professions or roles within the job family.</p>
+                    <p>These will be used to group standards together in specific professions or roles within the job family.</p>
 
-  {% elif standard.fields.category | length === 0 %}
+                {% elif standard.fields.category | length === 0 %}
 
-  <p>You need to select the applicable <a href="/create/standard/categories">categories</a> before you can select the sub-categories.</p>
+                    <p>You need to select the applicable <a href="/create/standard/categories">categories</a> before you can select the sub-categories.</p>
 
                 {% else %}
 
-                <p>As the standard has multiple categories, please select the sub-categories that apply to each category.</p>
+                    <p>As the standard has multiple categories, please select the sub-categories that apply to each category.</p>
 
                 {% endif %}
 
                 {% for category in standard.fields.category %}
-                    <div class="govuk-form-group">
+                    <div class="govuk-form-group {% if errors %}govuk-form-group--error{% endif %}">
                         <fieldset class="govuk-fieldset">
                             <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                                 {{ category.fields.title }}
@@ -44,6 +46,14 @@
                             <div id="categories-hint" class="govuk-hint">
       Select all that apply 
     </div>
+                            {% if errors %}
+                                <p id="categories-error" class="govuk-error-message">
+                                    <span class="govuk-visually-hidden">Error:</span>
+                                    {% for err in errors %}
+                                        {{ err.msg }}
+                                    {% endfor %}
+                                </p>
+                            {% endif %}
                             <div class="govuk-checkboxes" data-module="govuk-checkboxes">
                                 {% for subcategory in subcategories %}
                                     {% if subcategory.category === category.sys.id %}
@@ -70,11 +80,11 @@
                         </fieldset>
                     </div>
                 {% endfor %}
-  {% if standard.fields.category | length !== 0 %}
-                <div class="govuk-button-group">
-                    <button type="submit" class="govuk-button" data-module="govuk-button">Save and continue</button>
+                {% if standard.fields.category | length !== 0 %}
+                    <div class="govuk-button-group">
+                        <button type="submit" class="govuk-button" data-module="govuk-button">Save and continue</button>
 
-                </div>
+                    </div>
                 {% endif %}
             </form>
 

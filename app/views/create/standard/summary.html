@@ -36,7 +36,9 @@
           {% if errors %}
             <p id="event-name-error" class="govuk-error-message">
               <span class="govuk-visually-hidden">Error:</span>
-              {{ error }}
+                {% for err in errors %}
+                                        {{ err.msg }}
+                                    {% endfor %}
             </p>
           {% endif %}
           <textarea class="govuk-textarea govuk-js-character-count {% if errors %} govuk-input--error{% endif %}" id="summary" name="summary" rows="10" aria-describedby="summary-hint-info summary-hint-hint">{{ standard.fields.summary }}</textarea>

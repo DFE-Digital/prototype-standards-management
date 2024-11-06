@@ -1,16 +1,12 @@
 require('dotenv').config();
 const { check, validationResult } = require('express-validator');
-const { validateTitle, validateSummary } = require('../validation/create.js');
+const { validateTitle, validateSummary, validateCategory, validateSubCategories, validatePurpose, validateGuidance, validateApprovedFields, validateExceptionFields, validateContactFields } = require('../validation/create.js');
 
 const client = require('../middleware/contentful.js');
 const previewClient = require('../middleware/contentful-preview.js');
 const managementClient = require('../middleware/contentful-management.js');
 
-const createStandardEntry = require('../middleware/standards.js');
-const updates = require('../middleware/standards.js');
-
-
-const { updateTitle, updateSummary, updateCategories, updatePurpose, updateGuidance, createApprovedProductEntry, updateApprovedProductsField, createToleratedProductEntry, updateToleratedProductsField, removeApprovedProductsField, updateApprovedProduct, createExceptionEntry, updateExceptionField, updateException, removeExceptionField, createPerson, updateContactField, removeContactField, updateSubCategories, updateStatus, deleteEntry, updateToDraft, addStandardHistoryEntry } = require('../data/contentful/updates.js');
+const { createStandardEntry, updateTitle, updateSummary, updateCategories, updatePurpose, updateGuidance, createApprovedProductEntry, updateApprovedProductsField, createToleratedProductEntry, updateToleratedProductsField, removeApprovedProductsField, updateApprovedProduct, createExceptionEntry, updateExceptionField, updateException, removeExceptionField, createPerson, updateContactField, removeContactField, updateSubCategories, updateStatus, deleteEntry, updateToDraft, addStandardHistoryEntry } = require('../data/contentful/updates.js');
 
 const { slugify } = require('../middleware/tools.js');
 
@@ -19,42 +15,54 @@ function generateRandomId() {
 }
 
 async function getNextStandardNumber() {
-    // Get the last standard number from the database and increment it by 1
+    try {
+        // Get the last standard number from the database and increment it by 1
+        const response = await previewClient.getEntries({
+            content_type: 'standard',
+            order: '-fields.number',
+            limit: 1
+        });
 
-    const response = await previewClient.getEntries({
-        content_type: 'standard',
-        order: '-fields.number',
-        limit: 1
-    });
+        if (response.items.length === 0) {
+            throw new Error('No standards found in the database.');
+        }
 
-    const lastStandard = response.items[0];
+        const lastStandard = response.items[0];
+        let newNumber = 0;
 
-    let newNumber = 0;
+        if (lastStandard) {
+            newNumber = parseInt(lastStandard.fields.number, 10) + 1;
+        }
 
-    if (lastStandard) {
-        newNumber = parseInt(lastStandard.fields.number) + 1;
+        console.log(newNumber);
+        return newNumber;
+    } catch (error) {
+        console.error('Error fetching the next standard number:', error);
+        throw new Error('Failed to fetch the next standard number.');
     }
-
-    console.log(newNumber)
-
-    return newNumber
-
 }
 
 async function getStageID(stageNumber) {
+    try {
+        const stage = await client.getEntries({
+            content_type: 'stage',
+            'fields.number': stageNumber
+        });
 
-    const stage = await client.getEntries({
-        content_type: 'stage',
-        'fields.number': stageNumber
-    });
+        if (stage.items.length === 0) {
+            throw new Error(`Stage with number ${stageNumber} not found.`);
+        }
 
-    return stage.items[0].sys.id;
+        return stage.items[0].sys.id;
+    } catch (error) {
+        console.error(`Error fetching stage ID for stage number ${stageNumber}:`, error);
+        throw new Error('Failed to fetch stage ID.');
+    }
 }
 
 // GETS //
 
 exports.g_create = async function (req, res) {
-
     let error = "";
 
     if (req.session.data && req.session.data['error']) {
@@ -62,19 +70,25 @@ exports.g_create = async function (req, res) {
         req.session.data['error'] = "";
     }
 
-    console.log(req.session.User);
+    try {
+        console.log(req.session.User);
 
-    const stageId = await getStageID(20);
+        const stageId = await getStageID(20);
 
-    const data = await previewClient.getEntries({
-        content_type: 'standard',
-        'fields.stage.sys.id': stageId,
-        'fields.creator': req.session.User.EmailAddress
-    });
+        const data = await previewClient.getEntries({
+            content_type: 'standard',
+            'fields.stage.sys.id': stageId,
+            'fields.creator': req.session.User.EmailAddress
+        });
 
-    let drafts = data.items;
+        let drafts = data.items;
 
-    res.render('create/index', { drafts, error });
+        res.render('create/index', { drafts, error });
+    } catch (err) {
+        console.error("Error fetching drafts:", err);
+        req.session.data['error'] = { error: 'Failed to fetch drafts' };
+        res.redirect('/create');
+    }
 }
 
 exports.g_standardcreate = async function (req, res) {
@@ -620,197 +634,168 @@ exports.g_addtoleratedproduct = async function (req, res) {
 
 
 exports.g_removeapprovedproduct = async function (req, res) {
-
     const { id } = req.params;
 
-    // Get the approed products from the session
-    const approvedProducts = req.session.data.approvedProducts || [];
+    if (!req.session.data) {
+        req.session.data = {};
+    }
 
-    // Find the index of the product to remove
+    let approvedProducts = req.session.data.approvedProducts || [];
+
     const index = approvedProducts.findIndex(product => product.id === id);
-
-    // Remove the product from the array
 
     if (index > -1) {
         approvedProducts.splice(index, 1);
+        req.session.data.approvedProducts = approvedProducts;
+        return res.redirect('/create/standard/products');
+    } else {
+        req.session.data['error'] = { error: 'Approved product not found' };
+        return res.redirect('/create/standard/products');
     }
-
-    // Update the session data
-    req.session.data.approvedProducts = approvedProducts;
-
-    return res.render('create/standard/products')
-
-}
+};
 
 exports.g_removeatoleratedproduct = async function (req, res) {
-
     const { id } = req.params;
 
-    // Get the approed products from the session
+    if (!req.session.data) {
+        return res.redirect('/create/standard');
+    }
 
     const toleratedProducts = req.session.data.toleratedProducts || [];
-
-    // Find the index of the product to remove
-
     const index = toleratedProducts.findIndex(product => product.id === id);
 
-    // Remove the product from the array
-
     if (index > -1) {
-
         toleratedProducts.splice(index, 1);
     }
 
-    // Update the session data
-
     req.session.data.toleratedProducts = toleratedProducts;
 
-    return res.render('create/standard/products')
-
-}
+    return res.render('create/standard/products');
+};
 
 exports.g_exceptions = async function (req, res) {
-
     if (!req.session.data) {
         return res.redirect('/create/standard');
     }
 
-    let id = req.session.data['id'];
+    const id = req.session.data['id'];
 
-    if (id) {
-        try {
-            const standard = await previewClient.getEntry(id);
-            return res.render('create/standard/exceptions', { standard });
-        } catch (error) {
-            console.error("Error fetching standard entry from Contentful:", error);
-            req.session.data['error'] = { error: 'Failed to fetch standard entry' };
-            return res.redirect('/create');
-        }
-    } else {
+    if (!id) {
         req.session.data['error'] = { error: 'No ID found in session data' };
         return res.redirect('/create');
     }
-}
+
+    try {
+        const standard = await previewClient.getEntry(id);
+        return res.render('create/standard/exceptions', { standard });
+    } catch (error) {
+        console.error("Error fetching standard entry from Contentful:", error);
+        req.session.data['error'] = { error: 'Failed to fetch standard entry' };
+        return res.redirect('/create');
+    }
+};
 
 exports.g_addexception = async function (req, res) {
-
     if (!req.session.data) {
         return res.redirect('/create/standard');
     }
 
-    let id = req.session.data['id'];
+    const id = req.session.data['id'];
 
-    if (id) {
-        try {
-            const standard = await previewClient.getEntry(id);
-            return res.render('create/standard/add-exception', { standard });
-        } catch (error) {
-            console.error("Error fetching standard entry from Contentful:", error);
-            req.session.data['error'] = { error: 'Failed to fetch standard entry' };
-            return res.redirect('/create');
-        }
-    } else {
+    if (!id) {
         req.session.data['error'] = { error: 'No ID found in session data' };
         return res.redirect('/create');
     }
-}
 
+    try {
+        const standard = await previewClient.getEntry(id);
+        return res.render('create/standard/add-exception', { standard });
+    } catch (error) {
+        console.error("Error fetching standard entry from Contentful:", error);
+        req.session.data['error'] = { error: 'Failed to fetch standard entry' };
+        return res.redirect('/create');
+    }
+};
 
 exports.g_contacts = async function (req, res) {
-
     if (!req.session.data) {
         return res.redirect('/create/standard');
     }
 
-    let message = req.session.data['success'];
-
+    const message = req.session.data['success'];
     req.session.data['success'] = "";
 
+    const id = req.session.data['id'];
 
-    let id = req.session.data['id'];
-
-    if (id) {
-        try {
-            const standard = await previewClient.getEntry(id);
-            return res.render('create/standard/contacts', { standard, message });
-        } catch (error) {
-            console.error("Error fetching standard entry from Contentful:", error);
-            req.session.data['error'] = { error: 'Failed to fetch standard entry' };
-            return res.redirect('/create');
-        }
-    } else {
+    if (!id) {
         req.session.data['error'] = { error: 'No ID found in session data' };
         return res.redirect('/create');
     }
-}
+
+    try {
+        const standard = await previewClient.getEntry(id);
+        return res.render('create/standard/contacts', { standard, message });
+    } catch (error) {
+        console.error("Error fetching standard entry from Contentful:", error);
+        req.session.data['error'] = { error: 'Failed to fetch standard entry' };
+        return res.redirect('/create');
+    }
+};
 
 exports.g_addcontact = async function (req, res) {
-
     if (!req.session.data) {
         return res.redirect('/create/standard');
     }
 
-    let id = req.session.data['id'];
+    const id = req.session.data['id'];
 
-    if (id) {
-        try {
-            const standard = await previewClient.getEntry(id);
-            // Get people from contentful
-
-            const response = await client.getEntries({
-                content_type: 'person',
-                order: 'fields.name',
-                select: 'fields.name,fields.emailAddress'
-            });
-
-            const people = response.items.map(item => {
-                return {
-                    text: item.fields.name,
-                    value: item.fields.emailAddress
-                }
-            });
-
-            console.log(people)
-            return res.render('create/standard/add-contact', { people, standard })
-        } catch (error) {
-            console.error("Error fetching standard entry from Contentful:", error);
-            req.session.data['error'] = { error: 'Failed to fetch standard entry' };
-            return res.redirect('/create');
-        }
-    } else {
+    if (!id) {
         req.session.data['error'] = { error: 'No ID found in session data' };
         return res.redirect('/create');
     }
 
+    try {
+        const standard = await previewClient.getEntry(id);
+        const response = await client.getEntries({
+            content_type: 'person',
+            order: 'fields.name',
+            select: 'fields.name,fields.emailAddress'
+        });
 
+        const people = response.items.map(item => ({
+            text: item.fields.name,
+            value: item.fields.emailAddress
+        }));
 
-}
+        return res.render('create/standard/add-contact', { people, standard });
+    } catch (error) {
+        console.error("Error fetching standard entry or people list from Contentful:", error);
+        req.session.data['error'] = { error: 'Failed to fetch necessary data' };
+        return res.redirect('/create');
+    }
+};
 
 exports.g_guidance = async function (req, res) {
-
     if (!req.session.data) {
         return res.redirect('/create/standard');
     }
 
-    let id = req.session.data['id'];
+    const id = req.session.data['id'];
 
-    if (id) {
-        try {
-            const standard = await previewClient.getEntry(id);
-            return res.render('create/standard/guidance', { standard });
-        } catch (error) {
-            console.error("Error fetching standard entry from Contentful:", error);
-            req.session.data['error'] = { error: 'Failed to fetch standard entry' };
-            return res.redirect('/create');
-        }
-    } else {
+    if (!id) {
         req.session.data['error'] = { error: 'No ID found in session data' };
         return res.redirect('/create');
     }
-}
 
-
-
+    try {
+        const standard = await previewClient.getEntry(id);
+        return res.render('create/standard/guidance', { standard });
+    } catch (error) {
+        console.error("Error fetching standard entry from Contentful:", error);
+        req.session.data['error'] = { error: 'Failed to fetch standard entry' };
+        return res.redirect('/create');
+    }
+};
 
 
 // POSTS //
@@ -881,10 +866,43 @@ exports.p_summary = [
 
 
 
-exports.p_categories = async function (req, res) {
+exports.p_categories = [validateCategory, async function (req, res) {
     try {
-        const { id } = req.session.data; // The standard entry ID
-        const standard = await previewClient.getEntry(id);
+        const errors = validationResult(req);
+        const id = req.session.data['id'];
+
+        if (!id) {
+            req.session.data['error'] = { error: 'No ID found in session data' };
+            return res.redirect('/create');
+        }
+
+        if (!errors.isEmpty()) {
+            try {
+
+                const response = await client.getEntries({
+                    content_type: 'category',
+                    order: 'fields.title',
+                    select: 'fields.title,fields.number',
+                    'fields.active': true
+                });
+
+                const categories = response.items.map(item => {
+                    return {
+                        text: item.fields.title,
+                        value: item.sys.id
+                    }
+                });
+
+                const standard = await previewClient.getEntry(id);
+                return res.render('create/standard/categories', {
+                    errors: errors.array(), standard, categories
+                });
+            } catch (error) {
+                console.error("Error fetching standard entry from Contentful:", error);
+                req.session.data['error'] = { error: 'Failed to fetch standard entry' };
+                return res.redirect('/create');
+            }
+        }
 
         const selectedCategories = req.body['categories'];
 
@@ -901,70 +919,163 @@ exports.p_categories = async function (req, res) {
         console.error("Error updating categories:", error);
         return res.status(500).send("Error updating categories");
     }
-};
+}];
 
-exports.p_subcategories = async function (req, res) {
+exports.p_subcategories = [
+    validateSubCategories,
+    async function (req, res) {
+        try {
+            const errors = validationResult(req);
+            const id = req.session.data['id'];
 
-    const { id } = req.session.data; // The standard entry ID
-    const standard = await previewClient.getEntry(id);
+            if (!id) {
+                req.session.data['error'] = { error: 'No ID found in session data' };
+                return res.redirect('/create');
+            }
 
-    const selectedSubcategories = req.body['subcategories'];
+            if (!errors.isEmpty()) {
+                const response = await client.getEntries({
+                    content_type: 'subCategory',
+                    order: 'fields.title'
+                });
 
-    const selectedSubCategoriesArray = Array.isArray(selectedSubcategories) ? selectedSubcategories : [selectedSubcategories];
+                const subcategories = response.items.map(item => ({
+                    text: item.fields.title,
+                    value: item.sys.id,
+                    category: item.fields.category.sys.id
+                }));
 
-    await updateSubCategories(id, selectedSubCategoriesArray);
+                const standard = await previewClient.getEntry(id);
+                return res.render('create/standard/sub-categories', {
+                    errors: errors.array(), standard, subcategories
+                });
+            }
 
-    // Redirect to the next step in the flow
-    return res.redirect('/create/standard/purpose');
-};
+            const selectedSubcategories = req.body['subcategories'];
+            const selectedSubCategoriesArray = Array.isArray(selectedSubcategories) ? selectedSubcategories : [selectedSubcategories];
+            await updateSubCategories(id, selectedSubCategoriesArray);
 
-
-exports.p_purpose = async function (req, res) {
-
-    const { id } = req.session.data;
-
-    const standard = await previewClient.getEntry(id);
-
-    await updatePurpose(id, req.body['purpose']);
-
-    return res.redirect('/create/standard/guidance')
-}
-
-
-
-
-
-exports.p_addapprovedproduct = async function (req, res) {
-
-    const { id } = req.session.data;
-
-    const {
-        approved_name,
-        approved_vendor,
-        approved_version,
-        approved_usecase,
-    } = req.body;
-
-    console.log(req.body);
-
-
-    const newProductEntry = await createApprovedProductEntry(
-        approved_name,
-        approved_vendor,
-        approved_version,
-        approved_usecase,
-    );
-
-    if (newProductEntry) {
-        // Update the standard to link the new product entry
-        const updatedStandard = await updateApprovedProductsField(
-            id,
-            newProductEntry.sys.id,
-        );
-
-        return res.redirect("/create/standard/products/");
+            // Redirect to the next step in the flow
+            return res.redirect('/create/standard/purpose');
+        } catch (error) {
+            console.error("Error updating categories:", error);
+            return res.status(500).send("Error updating categories");
+        }
     }
+];
+
+
+exports.p_purpose = [
+    validatePurpose,
+    async function (req, res) {
+
+        const errors = validationResult(req);
+        const id = req.session.data['id'];
+
+        if (!id) {
+            req.session.data['error'] = { error: 'No ID found in session data' };
+            return res.redirect('/create');
+        }
+
+        if (!errors.isEmpty()) {
+            try {
+                const standard = await previewClient.getEntry(id);
+                standard.fields.purpose = "";
+                return res.render('create/standard/purpose', {
+                    errors: errors.array(), standard
+                });
+            } catch (error) {
+                console.error("Error fetching standard entry from Contentful:", error);
+                req.session.data['error'] = { error: 'Failed to fetch standard entry' };
+                return res.redirect('/create');
+            }
+        }
+
+        // Update the standard entry with any changes to the title
+        await updatePurpose(id, req.body['purpose']);
+        return res.redirect('/create/standard/guidance');
+    }
+];
+
+
+exports.p_contacts = async function (req, res) {
+
+    const { id } = req.session.data;
+
+    // Get the list of contacts, is there at least one owner?
+    const standard = await previewClient.getEntry(id);
+    const owners = standard.fields.owners || [];
+
+    if (owners.length === 0) {
+
+        let errors = [{ msg: 'You must have at least one owner' }];
+
+        return res.render('create/standard/contacts', { errors, standard });
+    }
+
+    // Return to tasks
+
+    return res.redirect("/create/standard");
+
 }
+
+
+exports.p_addapprovedproduct = [
+    ...validateApprovedFields,
+
+    async function (req, res) {
+        const errors = validationResult(req);
+        const id = req.session.data['id'];
+
+        if (!id) {
+            req.session.data['error'] = { error: 'No ID found in session data' };
+            return res.redirect('/create');
+        }
+
+        // If validation errors exist, re-render the page with errors
+        if (!errors.isEmpty()) {
+            try {
+                const standard = await previewClient.getEntry(id);
+
+                // Render the form with validation errors and the standard data
+                return res.render('create/standard/add-approved-product', {
+                    errors: errors.array(),
+                    standard,
+                    formData: req.body // Include form data to populate fields
+                });
+            } catch (error) {
+                console.error("Error fetching standard entry from Contentful:", error);
+                req.session.data['error'] = { error: 'Failed to fetch standard entry' };
+                return res.redirect('/create');
+            }
+        }
+
+        // If no validation errors, proceed with the main functionality
+        const { approved_name, approved_vendor, approved_version, approved_usecase } = req.body;
+
+        try {
+            // Create a new approved product entry
+            const newProductEntry = await createApprovedProductEntry(
+                approved_name,
+                approved_vendor,
+                approved_version,
+                approved_usecase
+            );
+
+            if (newProductEntry) {
+                // Update the standard to link the new product entry
+                await updateApprovedProductsField(id, newProductEntry.sys.id);
+
+                // Redirect upon successful entry creation and update
+                return res.redirect("/create/standard/products");
+            }
+        } catch (error) {
+            console.error("Error adding approved product:", error);
+            return res.status(500).send("Failed to add approved product.");
+        }
+    }
+];
+
 
 
 exports.p_addtoleratedproduct = async function (req, res) {
@@ -1001,115 +1112,173 @@ exports.p_addtoleratedproduct = async function (req, res) {
 }
 
 
-exports.p_addexception = async function (req, res) {
+exports.p_addexception = [
+    // Run the validation middlewares (assuming you have a validation setup for `exception` and `exceptiondetail`)
+    validateExceptionFields,
 
-    const { id } = req.session.data;
+    async function (req, res) {
+        const errors = validationResult(req);
+        const { id } = req.session.data;
 
-    const {
-        exception,
-        exceptiondetail,
-    } = req.body;
-
-    console.log(req.body);
-
-
-    const newExceptionEntry = await createExceptionEntry(
-        exception,
-        exceptiondetail
-    );
-
-    if (newExceptionEntry) {
-        // Update the standard to link the new product entry
-        const updatedStandard = await updateExceptionField(
-            id,
-            newExceptionEntry.sys.id,
-        );
-
-        return res.redirect("/create/standard/exceptions");
-    }
-
-
-}
-
-exports.p_addcontact = async function (req, res) {
-
-    // Check if req.session.data.contacts exists, if not, create it
-    if (!req.session.data) {
-        req.session.data = {};
-    }
-
-    const { id } = req.session.data;
-
-    const { contactType, people, contactEmail, contactName } = req.body;
-
-    // Case 1: Use contactEmail and contactName if both are provided
-    if (contactEmail && contactName) {
-
-        // Create a contact in Contentful
-
-        try {
-
-            const person = await createPerson(
-
-                contactName, contactEmail
-            );
-
-            // Update the standard to link the new person entry
-
-            const updatedStandard = await updateContactField(
-                id,
-                person.sys.id,
-                contactType
-            );
-
-            return res.redirect('/create/standard/contacts');
-
-        } catch (error) {
-            console.error("Error creating person in Contentful:", error);
-            // Handle Contentful API failure
+        if (!id) {
+            req.session.data['error'] = { error: 'No ID found in session data' };
+            return res.redirect('/create');
         }
 
-    }
+        // If there are validation errors, re-render the page with errors
+        if (!errors.isEmpty()) {
+            try {
+                const standard = await previewClient.getEntry(id);
 
-    // Case 2: If contactEmail and contactName are empty, use 'people' to fetch contact details from Contentful
-    if (people) {
+                // Render the form with validation errors and the current form data
+                return res.render('create/standard/add-exception', {
+                    errors: errors.array(),
+                    standard,
+                    formData: req.body // Include form data to repopulate fields
+                });
+            } catch (error) {
+                console.error("Error fetching standard entry from Contentful:", error);
+                req.session.data['error'] = { error: 'Failed to fetch standard entry' };
+                return res.redirect('/create');
+            }
+        }
+
+        // If no validation errors, proceed with creating the exception entry
+        const { exception, exceptiondetail } = req.body;
+
         try {
-            const response = await client.getEntries({
-                content_type: 'person',
-                'fields.emailAddress': people // Query by email
-            });
+            // Create a new exception entry
+            const newExceptionEntry = await createExceptionEntry(
+                exception,
+                exceptiondetail
+            );
 
-            const person = response.items[0]; // Get the first result
-
-            if (person) {
-
-                const updatedStandard = await updateContactField(
+            if (newExceptionEntry) {
+                // Update the standard to link the new exception entry
+                await updateExceptionField(
                     id,
-                    person.sys.id,
-                    contactType
+                    newExceptionEntry.sys.id
                 );
 
+                return res.redirect("/create/standard/exceptions");
             }
         } catch (error) {
-            console.error("Error fetching person from Contentful:", error);
-            // Handle Contentful API failure or person not found
+            console.error("Error adding exception:", error);
+            return res.status(500).send("Failed to add exception.");
         }
     }
+];
 
-    // Redirect if nothing was added
-    return res.redirect('/create/standard/contacts');
-};
 
-exports.p_guidance = async function (req, res) {
 
-    const { id } = req.session.data;
+exports.p_addcontact = [
+    validateContactFields,
 
-    const standard = await previewClient.getEntry(id);
+    async function (req, res) {
+        const errorsArray = validationResult(req).array();
+        const errors = {};
+        errorsArray.forEach(error => {
+            errors[error.path] = error.msg; // Mapping error messages by field name
+        });
+        const { id } = req.session.data;
 
-    await updateGuidance(id, req.body['guidance']);
+        // Re-render the form with errors if validation fails
+        if (errorsArray.length > 0) {
+            try {
+                const standard = await previewClient.getEntry(id);
 
-    return res.redirect('/create/standard/products')
-}
+                // Fetch the list of existing people for the dropdown
+                const response = await client.getEntries({
+                    content_type: 'person',
+                    order: 'fields.name',
+                    select: 'fields.name,fields.emailAddress'
+                });
+
+                const people = response.items.map(item => ({
+                    text: item.fields.name,
+                    value: item.fields.emailAddress
+                }));
+
+                return res.render('create/standard/add-contact', {
+                    errorsArray, // Pass errorsArray for the summary
+                    errors,      // Pass errors object for inline field messages
+                    standard,
+                    formData: req.body,
+                    people
+                });
+            } catch (error) {
+                console.error("Error fetching standard or people list:", error);
+                req.session.data['error'] = { error: 'Failed to fetch necessary data' };
+                return res.redirect('/create');
+            }
+        }
+
+        const { contactType, people, contactEmail, contactName } = req.body;
+
+        try {
+            // Case 1: Use `contactEmail` and `contactName` if both are provided
+            if (contactEmail && contactName) {
+                const person = await createPerson(contactName, contactEmail);
+                await updateContactField(id, person.sys.id, contactType);
+                return res.redirect('/create/standard/contacts');
+            }
+
+            // Case 2: If `contactEmail` and `contactName` are empty, use `people` to fetch contact details
+            if (people) {
+                const response = await client.getEntries({
+                    content_type: 'person',
+                    'fields.emailAddress': people
+                });
+                const person = response.items[0];
+                if (person) {
+                    await updateContactField(id, person.sys.id, contactType);
+                }
+            }
+
+            // Redirect if successful
+            return res.redirect('/create/standard/contacts');
+        } catch (error) {
+            console.error("Error handling contact addition:", error);
+            return res.status(500).send("Failed to add contact.");
+        }
+    }
+];
+
+
+
+exports.p_guidance = [
+    validateGuidance,
+    async function (req, res) {
+
+        const errors = validationResult(req);
+        const id = req.session.data['id'];
+
+        if (!id) {
+            req.session.data['error'] = { error: 'No ID found in session data' };
+            return res.redirect('/create');
+        }
+
+        if (!errors.isEmpty()) {
+            try {
+                const standard = await previewClient.getEntry(id);
+                standard.fields.purpose = "";
+                return res.render('create/standard/guidance', {
+                    errors: errors.array(), standard
+                });
+            } catch (error) {
+                console.error("Error fetching standard entry from Contentful:", error);
+                req.session.data['error'] = { error: 'Failed to fetch standard entry' };
+                return res.redirect('/create');
+            }
+        }
+
+        // Update the standard entry with any changes to the title
+        await updateGuidance(id, req.body['guidance']);
+        return res.redirect('/create/standard/products');
+    }
+];
+
+
 
 exports.p_submit = async function (req, res) {
 

@@ -36,7 +36,9 @@
                     {% if errors %}
                         <p id="event-name-error" class="govuk-error-message">
                             <span class="govuk-visually-hidden">Error:</span>
-                            {{ error }}
+                             {% for err in errors %}
+                                        {{ err.msg }}
+                                    {% endfor %}
                         </p>
                     {% endif %}
                     <input class="govuk-input {% if errors %} govuk-input--error{% endif %}" id="title" name="title" type="text" aria-describedby="title-hint" value="{{ standard.fields.title }}">

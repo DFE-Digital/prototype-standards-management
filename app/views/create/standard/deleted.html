@@ -1,5 +1,4 @@
 {% extends "layouts/full.html" %}
-
 {% set selectedNav = "Create" %}
 {% set pageName = "Deleted" %}
 {% set seoPageName = "" %}
@@ -8,24 +7,20 @@
 {% set mainClasses = "govuk-!-padding-top-9" %}
 
 {% block head %}
-    <meta name="robots" content="noindex, nofollow">
+<meta name="robots" content="noindex, nofollow">
 {% endblock %}
 
 {% block content %}
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-three-quarters">
-
-            <div class="govuk-panel govuk-panel--confirmation">
-                <h1 class="govuk-panel__title">
-    Your draft standard has been deleted.
-  </h1>
-
-            </div>
-
-            <p>
-                <a href="/create">Start a new standard</a>.</p>
-
-        </div>
-    </div>
-
+<div class="govuk-grid-row">
+   <div class="govuk-grid-column-three-quarters">
+      <div class="govuk-panel govuk-panel--confirmation">
+         <h1 class="govuk-panel__title">
+            Your draft standard has been deleted.
+         </h1>
+      </div>
+      <p>
+         <a href="/create" class="govuk-link">Start a new standard</a>.
+      </p>
+   </div>
+</div>
 {% endblock %}

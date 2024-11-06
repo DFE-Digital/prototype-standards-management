@@ -228,6 +228,77 @@ exports.g_admins = async function (req, res) {
     res.render('admin/admins/index', { roles });
 };
 
+
+exports.g_preview = async function (req, res) {
+    if (!req.session.data) {
+        req.session.data = {};
+    }
+
+    let id = req.session.data['id'];
+
+    if (id) {
+        try {
+            const standard = await previewClient.getEntry(id);
+            return res.render('admin/standard/preview', { standard });
+        } catch (error) {
+            console.error("Error fetching standard entry from Contentful:", error);
+            req.session.data['error'] = { error: 'Failed to fetch standard entry' };
+            return res.redirect('/admin');
+        }
+    } else {
+        req.session.data['error'] = { error: 'No ID found in session data' };
+        return res.redirect('/admin');
+    }
+}
+exports.g_previewmeet = async function (req, res) {
+    if (!req.session.data) {
+        req.session.data = {};
+    }
+
+    let id = req.session.data['id'];
+
+    if (id) {
+        try {
+            const standard = await previewClient.getEntry(id);
+            return res.render('admin/standard/preview-meet', { standard });
+        } catch (error) {
+            console.error("Error fetching standard entry from Contentful:", error);
+            req.session.data['error'] = { error: 'Failed to fetch standard entry' };
+            return res.redirect('/admin');
+        }
+    } else {
+        req.session.data['error'] = { error: 'No ID found in session data' };
+        return res.redirect('/admin');
+    }
+}
+
+exports.g_previewproducts = async function (req, res) {
+    if (!req.session.data) {
+        req.session.data = {};
+    }
+
+    let id = req.session.data['id'];
+
+    if (id) {
+        try {
+            const standard = await previewClient.getEntry(id);
+            return res.render('admin/standard/preview-products', { standard });
+        } catch (error) {
+            console.error("Error fetching standard entry from Contentful:", error);
+            req.session.data['error'] = { error: 'Failed to fetch standard entry' };
+            return res.redirect('/admin');
+        }
+    } else {
+        req.session.data['error'] = { error: 'No ID found in session data' };
+        return res.redirect('/admin');
+    }
+}
+
+
+
+
+
+
 // Handle Approval Form Submission
 exports.p_approval = async function (req, res) {
     const { standard_id, approval } = req.body;

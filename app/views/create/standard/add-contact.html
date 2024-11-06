@@ -3,7 +3,7 @@
 {% set selectedNav = "Create" %}
 {% set pageName = "Add a contact" %}
 {% set seoPageName = "" %}
-{% set pageDescription = ""%}
+{% set pageDescription = "" %}
 {% set view = "contacts" %}
 {% set sidenav = 'contacts' %}
 
@@ -16,74 +16,101 @@
 {% endblock %}
 
 {% block content %}
-    <div class="govuk-grid-row">            <div class="govuk-grid-column-one-quarter">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-one-quarter">
             {% include 'create/standard/_sidenav.html' %}
         </div>
         <div class="govuk-grid-column-three-quarters">
 
+             {% if errorsArray.length %}
+<div class="govuk-error-summary" data-module="govuk-error-summary">
+    <div role="alert">
+        <h2 class="govuk-error-summary__title">There is a problem</h2>
+        <div class="govuk-error-summary__body">
+            <ul class="govuk-list govuk-error-summary__list">
+                {% for error in errorsArray %}
+                <li>
+                    <a href="#{{error.path}}">{{error.msg}}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endif %}
 
             <h2 class="govuk-heading-l">Add a contact</h2>
 
             <form action="/create/standard/add-contact" method="post">
 
-                <div class="govuk-form-group">
+
+                <!-- Contact Type Selection -->
+                <div class="govuk-form-group {% if errors.contactType %}govuk-form-group--error{% endif %}">
                     <fieldset class="govuk-fieldset" aria-describedby="contactType-hint">
                         <legend class="govuk-fieldset__legend">
-     What type of contact is being added?
-    </legend>
-
+                            What type of contact is being added?
+                        </legend>
+                        {% if errors.contactType %}
+                            <span class="govuk-error-message">{{ errors.contactType }}</span>
+                        {% endif %}
                         <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="contactType" name="contactType" type="radio" value="Owner">
+                                <input class="govuk-radios__input" id="contactType" name="contactType" type="radio" value="Owner" {% if formData.contactType == "Owner" %}checked{% endif %}>
                                 <label class="govuk-label govuk-radios__label" for="contactType">
-          Owner
-        </label>
+                                    Owner
+                                </label>
                             </div>
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="contactType-2" name="contactType" type="radio" value="General contact">
+                                <input class="govuk-radios__input" id="contactType-2" name="contactType" type="radio" value="General contact" {% if formData.contactType == "General contact" %}checked{% endif %}>
                                 <label class="govuk-label govuk-radios__label" for="contactType-2">
-        General contact
-        </label>
+                                    General contact
+                                </label>
                             </div>
                         </div>
                     </fieldset>
                 </div>
 
-                <div class="govuk-form-group {%if roleError%}govuk-form-group--error{% endif%}">
+                <!-- Existing People Selection -->
+                <div class="govuk-form-group {% if errors.people %}govuk-form-group--error{% endif %}">
                     <legend class="govuk-fieldset__legend" for="people">
-                            Search existing people
-                        </legend>
-
+                        Search existing people
+                    </legend>
+                    {% if errors.people %}
+                        <span class="govuk-error-message">{{ errors.people }}</span>
+                    {% endif %}
                     <select class="govuk-select govuk-!-width-one-half peoplelist" id="people" name="people">
                         <option value=""></option>
                         {% for person in people %}
-                            <option value="{{ person.value }}">{{ person.text }}</option>
+                            <option value="{{ person.value }}" {% if formData.people == person.value %}selected{% endif %}>{{ person.text }}</option>
                         {% endfor %}
                     </select>
                 </div>
 
                 <p>If the person you want to add is not in the list, you can add a new contact.</p>
+                <p>If you add details of a new contact and have selected an existing person, the new contact details will be used, and the existing contact will be ignored.</p>
 
-                <p>If you add details of a new contact and have selected an existing person, the new contact details will be used, and existing contact ignored.</p>
-
-                <div class="govuk-form-group">
-                    <label class="govuk-label" for="contact-name">
-    Contact name
-  </label>
-                    <input class="govuk-input" id="contact-name" name="contactName" type="text">
+                <!-- Contact Name -->
+                <div class="govuk-form-group {% if errors.contactName %}govuk-form-group--error{% endif %}">
+                    <label class="govuk-label" for="contactName">Contact name</label>
+                    {% if errors.contactName %}
+                        <span class="govuk-error-message">{{ errors.contactName }}</span>
+                    {% endif %}
+                    <input class="govuk-input {% if errors.contactName %}govuk-input--error{% endif %}" 
+                           id="contactName" name="contactName" type="text" value="{{ formData.contactName | escape }}">
                 </div>
 
-                <div class="govuk-form-group">
-                    <label class="govuk-label" for="contact-email">
-    Contact email
-  </label>
-                    <input class="govuk-input" id="contact-email" name="contactEmail" type="text">
+                <!-- Contact Email -->
+                <div class="govuk-form-group {% if errors.contactEmail %}govuk-form-group--error{% endif %}">
+                    <label class="govuk-label" for="contactEmail">Contact email</label>
+                    {% if errors.contactEmail %}
+                        <span class="govuk-error-message">{{ errors.contactEmail }}</span>
+                    {% endif %}
+                    <input class="govuk-input {% if errors.contactEmail %}govuk-input--error{% endif %}" 
+                           id="contactEmail" name="contactEmail" type="text" value="{{ formData.contactEmail | escape }}">
                 </div>
 
                 <div class="govuk-button-group">
-                    <button type="submit" class="govuk-button" data-module="govuk-button">
-Save and continue
-  </button>
+                    <button type="submit" class="govuk-button" data-module="govuk-button">Save and continue</button>
                     <a class="govuk-link" href="/create/standard/contacts">Cancel and return to contacts</a>
                 </div>
 
@@ -91,7 +118,6 @@ Save and continue
 
         </div>
     </div>
-
 {% endblock %}
 
 {% block scripts %}

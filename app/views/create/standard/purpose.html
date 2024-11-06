@@ -22,11 +22,13 @@
     </div>
     <div class="govuk-grid-column-three-quarters">
 
+      {% include 'partials/errorSummary.html' %}
+
       <form action="/create/standard/purpose" method="post" >
 
-        <div class="govuk-form-group govuk-character-count" data-module="govuk-character-count" data-maxlength="10000">
+        <div class="govuk-form-group govuk-character-count {% if errors %} govuk-form-group--error{% endif %}" data-module="govuk-character-count" data-maxlength="10000">
           <h2 class="govuk-label-wrapper">
-            <label class="govuk-label govuk-label--l" for="purpose-hint">
+            <label class="govuk-label govuk-label--l" for="purpose">
               {{pageName}}
             </label>
           </h2>
@@ -34,7 +36,15 @@
     Describe why this standard is important
   </div>
           {% include 'partials/_markdown.html' %}
-          <textarea class="govuk-textarea govuk-js-character-count" id="purpose-hint" name="purpose" rows="20" aria-describedby="purpose-hint-info purpose-hint-hint">{{standard.fields.purpose}}</textarea>
+           {% if errors %}
+            <p id="event-name-error" class="govuk-error-message">
+              <span class="govuk-visually-hidden">Error:</span>
+                {% for err in errors %}
+                                        {{ err.msg }}
+                                    {% endfor %}
+            </p>
+          {% endif %}
+          <textarea class="govuk-textarea govuk-js-character-count {% if errors %} govuk-input--error{% endif %}" id="purpose" name="purpose" rows="20" aria-describedby="purpose-hint-info purpose-hint-hint">{{standard.fields.purpose}}</textarea>
           <div id="purpose-hint-info" class="govuk-hint govuk-character-count__message">
     You can enter up to 10,000 characters
   </div>
