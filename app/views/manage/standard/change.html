@@ -1,0 +1,60 @@
+{% extends "layouts/full.html" %}
+{% set selectedNav = "Manage" %}
+{% set pageName = "Change this standard" %}
+{% set seoPageName = "" %}
+{% set pageDescription = ""%}
+{% set view = "standard" %}
+
+{% block hero %}
+    {% include 'partials/_head.html' %}
+{% endblock %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
+
+            <h1 class="govuk-heading-xl">Change this standard</h1>
+
+            <form action="/manage/standard/change" method="post">
+                <input type="hidden" name="standard_id" value="{{standard.sys.id}}">
+
+                <div class="govuk-form-group">
+                    <fieldset class="govuk-fieldset" aria-describedby="signIn-hint">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                            <h1 class="govuk-fieldset__heading">What do you want to do with this standard?</h1>
+                        </legend>
+                        <div class="govuk-radios" data-module="govuk-radios">
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="signIn" name="signIn" type="radio" value="government-gateway" aria-describedby="signIn-item-hint">
+                                <label class="govuk-label govuk-radios__label" for="signIn">
+          Make a change
+        </label>
+                                <div id="signIn-item-hint" class="govuk-hint govuk-radios__hint">
+          This includes making changes to the content, adding or removing products, exceptions, and contacts.
+        </div>
+                            </div>
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="signIn-2" name="signIn" type="radio" value="govuk-one-login" aria-describedby="signIn-2-item-hint">
+                                <label class="govuk-label govuk-radios__label" for="signIn-2">
+          Unpublish
+        </label>
+                                <div id="signIn-2-item-hint" class="govuk-hint govuk-radios__hint">
+            If the standard is no longer relevant, you can unpublish it. This will remove it from the list of standards.
+        </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <div class="govuk-button-group">
+                    <button type="submit" class="govuk-button" data-module="govuk-button">
+    Continue
+  </button>
+                    <a class="govuk-link" href="/manage/standard/{{standard.sys.id}}">Cancel and return to standard</a>
+                </div>
+            </form>
+        </div>
+        <div class="govuk-grid-column-one-quarter"></div>
+    </div>
+
+{% endblock %}

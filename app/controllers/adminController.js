@@ -236,7 +236,7 @@ exports.g_preview = async function (req, res) {
         req.session.data = {};
     }
 
-    let id = req.session.data['id'];
+    const { id } = req.params;
 
     if (id) {
         try {
@@ -257,7 +257,7 @@ exports.g_previewmeet = async function (req, res) {
         req.session.data = {};
     }
 
-    let id = req.session.data['id'];
+    const { id } = req.params;
 
     if (id) {
         try {
@@ -279,7 +279,7 @@ exports.g_previewproducts = async function (req, res) {
         req.session.data = {};
     }
 
-    let id = req.session.data['id'];
+    const { id } = req.params;
 
     if (id) {
         try {

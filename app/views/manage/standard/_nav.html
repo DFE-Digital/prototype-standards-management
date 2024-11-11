@@ -1,14 +1,18 @@
 <nav class="app-sub-navigation" aria-label="Application menu">
     <ul class="app-sub-navigation__list">
-       
+
         <li class="app-sub-navigation__item">
             <a class="app-sub-navigation__link" {% if view==='standard' %} aria-current="page" {% endif
-                                %} href="/manage/standard">Standard</a>
+                                %} href="/manage/standard/{{standard.sys.id}}">Standard</a>
         </li>
-       
+
         <li class="app-sub-navigation__item">
             <a class="app-sub-navigation__link" {% if view==='preview' %} aria-current="page" {% endif
-                                %}href="/manage/standard/preview">Preview</a>
+                                %}href="/manage/standard/preview/{{standard.sys.id}}">Preview</a>
+        </li>
+        <li class="app-sub-navigation__item">
+            <a class="app-sub-navigation__link" {% if view==='history' %} aria-current="page" {% endif
+                                %}href="/manage/standard/history/{{standard.sys.id}}">History</a>
         </li>
     </ul>
 </nav>

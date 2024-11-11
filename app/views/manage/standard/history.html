@@ -1,0 +1,25 @@
+{% extends "layouts/full.html" %}
+{% set selectedNav = "Manage" %}
+{% set pageName = "History" %}
+{% set seoPageName = "" %}
+{% set pageDescription = ""%}
+{% set view = "history" %}
+
+{% block hero %}
+    {% include 'partials/_head.html' %}
+{% endblock %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
+
+            <h1 class="govuk-heading-xl">History</h1>
+
+            {{history | dump}}
+
+      
+        </div>
+        <div class="govuk-grid-column-one-quarter"></div>
+    </div>
+
+{% endblock %}

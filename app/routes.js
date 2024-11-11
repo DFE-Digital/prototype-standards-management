@@ -84,6 +84,8 @@ router.get('/manage', isAuthenticated, manageController.g_dashboard);
 
 router.get('/manage/getstandard/:id', isAuthenticated, manageController.g_standard_getdraft);
 router.get('/manage/standard', isAuthenticated, manageController.g_manage);
+
+router.get('/manage/standard/:id', isAuthenticated, manageController.g_manage);
 router.get('/manage/standard/title', isAuthenticated, manageController.g_manage_title);
 router.get('/manage/standard/purpose/:id', isAuthenticated, manageController.g_manage_purpose);
 router.get('/manage/standard/guidance/:id', isAuthenticated, manageController.g_manage_guidance);
@@ -102,11 +104,12 @@ router.get('/manage/standard/add-exception/:id', isAuthenticated, manageControll
 router.get('/manage/standard/manage-exception/:id/:exceptionid', isAuthenticated, manageController.g_manage_manageexception)
 router.get('/manage/standard/moveto/review/:id', isAuthenticated, manageController.g_manage_movetoreview);
 router.get('/manage/standard/index2/:id', isAuthenticated, manageController.g_manage_index2);
-router.get('/manage/standard/preview', isAuthenticated, manageController.g_preview);
-router.get('/manage/standard/preview-meet', isAuthenticated, manageController.g_previewmeet);
-router.get('/manage/standard/preview-products', isAuthenticated, manageController.g_previewproducts);
+router.get('/manage/standard/preview/:id', isAuthenticated, manageController.g_preview);
+router.get('/manage/standard/preview-meet/:id', isAuthenticated, manageController.g_previewmeet);
+router.get('/manage/standard/preview-products/:id', isAuthenticated, manageController.g_previewproducts);
 router.get('/manage/standard/published/:id', isAuthenticated, manageController.g_published);
 router.get('/manage/standard/reverted/:id', isAuthenticated, manageController.g_reverted);
+router.get('/manage/standard/history/:id', isAuthenticated, manageController.g_history);
 router.get('/manage/:id', isAuthenticated, manageController.g_dashboard);
 
 router.post('/manage/standard/purpose', isAuthenticated, manageController.p_manage_purpose);
@@ -140,9 +143,9 @@ router.get('/admin/standard/task/outcome/:id', isAuthenticated, adminController.
 router.get('/admin/standard/reject/:id', isAuthenticated, adminController.g_reject);
 router.get('/admin/standard/approved/:id', isAuthenticated, adminController.g_approved);
 router.get('/admin/standard/rejected/:id', isAuthenticated, adminController.g_rejected);
-router.get('/admin/standard/preview', isAuthenticated, adminController.g_preview);
-router.get('/admin/standard/preview-meet', isAuthenticated, adminController.g_previewmeet);
-router.get('/admin/standard/preview-products', isAuthenticated, adminController.g_previewproducts);
+router.get('/admin/standard/preview/:id', isAuthenticated, adminController.g_preview);
+router.get('/admin/standard/preview-meet/:id', isAuthenticated, adminController.g_previewmeet);
+router.get('/admin/standard/preview-products/:id', isAuthenticated, adminController.g_previewproducts);
 router.get('/admin/admins', isAuthenticated, adminController.g_admins);
 router.get('/admin/:id', isAuthenticated, adminController.g_dashboard);
 router.get('/admin/standard/:id', isAuthenticated, adminController.g_manage);

@@ -97,6 +97,11 @@ async function updateVersion(entryId, value) {
     });
 }
 
+async function updatePreviousVersion(entryId, value) {
+    return await updateEntry(entryId, {
+        previousVersion: { "en-US": value },
+    });
+}
 
 
 async function updateSummary(entryId, value) {
@@ -689,4 +694,4 @@ async function createStandardEntry(standardData) {
 
 
 
-module.exports = { createStandardEntry, updateTitle, updateSummary, updateCategories, updatePurpose, updateGuidance, createApprovedProductEntry, updateApprovedProductsField, createToleratedProductEntry, updateToleratedProductsField, removeApprovedProductsField, updateApprovedProduct, createExceptionEntry, updateExceptionField, updateException, removeExceptionField, createPerson, updateContactField, removeContactField, updateSubCategories, updateStatus, deleteEntry, updateToDraft, addStandardHistoryEntry, updateVersion };
+module.exports = { createStandardEntry, updateTitle, updateSummary, updateCategories, updatePurpose, updateGuidance, createApprovedProductEntry, updateApprovedProductsField, createToleratedProductEntry, updateToleratedProductsField, removeApprovedProductsField, updateApprovedProduct, createExceptionEntry, updateExceptionField, updateException, removeExceptionField, createPerson, updateContactField, removeContactField, updateSubCategories, updateStatus, deleteEntry, updateToDraft, addStandardHistoryEntry, updateVersion, updatePreviousVersion };

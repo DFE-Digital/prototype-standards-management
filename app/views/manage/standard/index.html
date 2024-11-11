@@ -6,7 +6,7 @@
 {% set view = "standard" %}
 
 {% block hero %}
-       {% include 'partials/_head.html' %}
+    {% include 'partials/_head.html' %}
 {% endblock %}
 
 {% block content %}
@@ -33,407 +33,429 @@
 
                             <p>If the standard is rejected, the forum will provide a reason. You can then make changes and resubmit or, delete the standard if you choose to not proceed.</p>
 
-
                         </div>
                     </div>
 
                 {% endif %}
 
-            {% if standard.fields.stage.fields.title === 'Approved' %}
+                {% if standard.fields.stage.fields.title === 'Approved' %}
 
-                <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
-                    <div class="govuk-notification-banner__header">
-                        <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                    <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+                        <div class="govuk-notification-banner__header">
+                            <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
       Standard approved
     </h2>
-                    </div>
-                    <div class="govuk-notification-banner__content">
-                        <p class="govuk-notification-banner__heading">
+                        </div>
+                        <div class="govuk-notification-banner__content">
+                            <p class="govuk-notification-banner__heading">
      You can now publish this standard.
     </p>
 
-                        <form action="/manage/standard/publish" method="post">
-                            <input type="hidden" name="standard_id" value="{{standard.sys.id}}">
+                            <form action="/manage/standard/publish" method="post">
+                                <input type="hidden" name="standard_id" value="{{standard.sys.id}}">
 
-                            <p>If you publish the standard it will become publicly visible in the Standard manual.</p>
+                                <p>If you publish the standard it will become publicly visible in the Standard manual.</p>
 
-                            <p>If you need to make changes to the standard before publishing, you will need to revert it to draft and resubmit it for approval.</p>
+                                <p>If you need to make changes to the standard before publishing, you will need to revert it to draft and resubmit it for approval.</p>
 
-                            <div class="govuk-button-group">
-                                <button type="submit" class="govuk-button" name="action" value="Publish" data-module="govuk-button">Approve</button>
-                                <button type="submit" class="govuk-button govuk-button--secondary" name="action" value="Revert" data-module="govuk-button">Revert to draft</button>
+                                <div class="govuk-button-group">
+                                    <button type="submit" class="govuk-button" name="action" value="Publish" data-module="govuk-button">Approve</button>
+                                    <button type="submit" class="govuk-button govuk-button--secondary" name="action" value="Revert" data-module="govuk-button">Revert to draft</button>
+                                </div>
+
                             </div>
-
                         </div>
-                    </div>
 
-                {% endif %}
+                    {% endif %}
 
-                   {% if standard.fields.stage.fields.title === 'Rejected' %}
+                    {% if standard.fields.stage.fields.title === 'Rejected' %}
 
-                <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
-                    <div class="govuk-notification-banner__header">
-                        <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                        <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+                            <div class="govuk-notification-banner__header">
+                                <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
       Standard rejected
     </h2>
-                    </div>
-                    <div class="govuk-notification-banner__content">
-                        <p class="govuk-notification-banner__heading">
+                            </div>
+                            <div class="govuk-notification-banner__content">
+                                <p class="govuk-notification-banner__heading">
      The standard was rejected by the standards forum for the following reason:
     </p>
 
-                        <form action="/manage/standard/publish" method="post">
-                            <input type="hidden" name="standard_id" value="{{standard.sys.id}}">
+                                <form action="/manage/standard/publish" method="post">
+                                    <input type="hidden" name="standard_id" value="{{standard.sys.id}}">
 
-                            <p>{{rejectionDetails.comments}}</p>
+                                    <p>{{rejectionDetails.comments}}</p>
 
-                            <p>You can make changes and resubmit by reverting the standard to draft stage.</p>
+                                    <p>You can make changes and resubmit by reverting the standard to draft stage.</p>
 
-                              <p>You can delete the draft if you do not want to proceed with the standard.</p>
+                                    <p>You can delete the draft if you do not want to proceed with the standard.</p>
 
-                            <div class="govuk-button-group">
-                                <button type="submit" class="govuk-button" name="action" value="revert" data-module="govuk-button">Revert to draft</button>
-                                    <button type="submit" class="govuk-button govuk-button--secondary" name="action" value="delete" data-module="govuk-button">Delete draft</button>
+                                    <div class="govuk-button-group">
+                                        <button type="submit" class="govuk-button" name="action" value="Revert" data-module="govuk-button">Revert to draft</button>
+                                        <button type="submit" class="govuk-button govuk-button--secondary" name="action" value="Delete" data-module="govuk-button">Delete draft</button>
+                                    </div>
+
+                                </div>
                             </div>
 
-                        </div>
-                    </div>
+                        {% endif %}
 
-                {% endif %}
+                        {% if standard.fields.stage.fields.title === 'Published' %}
 
-                
+                            <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+                                <div class="govuk-notification-banner__header">
+                                    <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+      Standard published
+    </h2>
+                                </div>
+                                <div class="govuk-notification-banner__content">
+                                    <p class="govuk-notification-banner__heading">
+    The standard is published. 
+    </p>
 
+                                    <form action="/manage/standard/publish" method="post">
+                                        <input type="hidden" name="standard_id" value="{{standard.sys.id}}">
 
-                <h2 class="govuk-heading-l">Tasks</h2>
+                                        <p>You can make changes by creating a new version of the standard and submitting for approval.</p>
 
-                {% if standard.fields.stage.fields.title === 'Draft' %}
+                                        <p>You can also unpublish this standard if it is no longer required.</p>
 
-                <ul class="govuk-task-list">
-                    <li class="govuk-task-list__item govuk-task-list__item--with-link">
-                        <div class="govuk-task-list__name-and-hint">
-                            <a class="govuk-link govuk-task-list__link" href="/manage/standard/title" aria-describedby="standard-details-1-status">
+                                        <p>This version of the standard will remain published until the new version is approved.</p>
+
+                                        <div class="govuk-button-group">
+                                            <button type="submit" class="govuk-button" name="action" value="Revert" data-module="govuk-button">Change or unpublish</button>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            {% endif %}
+
+                            <h2 class="govuk-heading-l">Tasks</h2>
+
+                            {% if standard.fields.stage.fields.title === 'Draft' %}
+
+                                <ul class="govuk-task-list">
+                                    <li class="govuk-task-list__item govuk-task-list__item--with-link">
+                                        <div class="govuk-task-list__name-and-hint">
+                                            <a class="govuk-link govuk-task-list__link" href="/manage/standard/title" aria-describedby="standard-details-1-status">
         Standard name
       </a>
-                        </div>
-                        <div class="govuk-task-list__status" id="standard-details-1-status">
-                            {% if standard.fields.title %}
+                                        </div>
+                                        <div class="govuk-task-list__status" id="standard-details-1-status">
+                                            {% if standard.fields.title %}
                         Complete
                         {% else %}
-                                <strong class="govuk-tag govuk-tag--blue">Incomplete</strong>
-                            {% endif %}
-                        </div>
-                    </li>
-                    <li class="govuk-task-list__item govuk-task-list__item--with-link">
-                        <div class="govuk-task-list__name-and-hint">
-                            <a class="govuk-link govuk-task-list__link" href="/manage/standard/summary" aria-describedby="standard-details-4-summary">
+                                                <strong class="govuk-tag govuk-tag--blue">Incomplete</strong>
+                                            {% endif %}
+                                        </div>
+                                    </li>
+                                    <li class="govuk-task-list__item govuk-task-list__item--with-link">
+                                        <div class="govuk-task-list__name-and-hint">
+                                            <a class="govuk-link govuk-task-list__link" href="/manage/standard/summary" aria-describedby="standard-details-4-summary">
         Summary
       </a>
-                        </div>
-                        <div class="govuk-task-list__status" id="standard-details-4-summary">
-                            {% if standard.fields.title %}
-                                {% if standard.fields.summary %}
+                                        </div>
+                                        <div class="govuk-task-list__status" id="standard-details-4-summary">
+                                            {% if standard.fields.title %}
+                                                {% if standard.fields.summary %}
                                 Complete
                             {% else %}
-                                    <strong class="govuk-tag govuk-tag--blue">Incomplete</strong>
-                                {% endif %}
-                            {% else %}
-                                <strong class="govuk-tag govuk-tag--grey">Cannot start yet</strong>
-                            {% endif %}
-                        </div>
-                    </li>
-                    <li class="govuk-task-list__item govuk-task-list__item--with-link">
-                        <div class="govuk-task-list__name-and-hint">
-                            <a class="govuk-link govuk-task-list__link" href="/manage/standard/categories" aria-describedby="standard-details-2-status">
+                                                    <strong class="govuk-tag govuk-tag--blue">Incomplete</strong>
+                                                {% endif %}
+                                            {% else %}
+                                                <strong class="govuk-tag govuk-tag--grey">Cannot start yet</strong>
+                                            {% endif %}
+                                        </div>
+                                    </li>
+                                    <li class="govuk-task-list__item govuk-task-list__item--with-link">
+                                        <div class="govuk-task-list__name-and-hint">
+                                            <a class="govuk-link govuk-task-list__link" href="/manage/standard/categories" aria-describedby="standard-details-2-status">
         Categories
       </a>
-                        </div>
-                        <div class="govuk-task-list__status" id="standard-details-2-status">
+                                        </div>
+                                        <div class="govuk-task-list__status" id="standard-details-2-status">
 
-                            {% if standard.fields.title %}
-                                {% if standard.fields.category %}
+                                            {% if standard.fields.title %}
+                                                {% if standard.fields.category %}
                                 Complete
                             {% else %}
-                                    <strong class="govuk-tag govuk-tag--blue">Incomplete</strong>
-                                {% endif %}
-                            {% else %}
-                                <strong class="govuk-tag govuk-tag--grey">Cannot start yet</strong>
-                            {% endif %}
+                                                    <strong class="govuk-tag govuk-tag--blue">Incomplete</strong>
+                                                {% endif %}
+                                            {% else %}
+                                                <strong class="govuk-tag govuk-tag--grey">Cannot start yet</strong>
+                                            {% endif %}
 
-                        </div>
+                                        </div>
 
-                    </li>
-                    <li class="govuk-task-list__item govuk-task-list__item--with-link">
-                        <div class="govuk-task-list__name-and-hint">
-                            <a class="govuk-link govuk-task-list__link" href="/manage/standard/sub-categories" aria-describedby="standard-details-3-hint standard-details-3-status">
+                                    </li>
+                                    <li class="govuk-task-list__item govuk-task-list__item--with-link">
+                                        <div class="govuk-task-list__name-and-hint">
+                                            <a class="govuk-link govuk-task-list__link" href="/manage/standard/sub-categories" aria-describedby="standard-details-3-hint standard-details-3-status">
         Sub-categories
       </a>
-                        </div>
-                        <div class="govuk-task-list__status" id="standard-details-3-status">
-                            {% if standard.fields.title %}
-                                {% if standard.fields.subCategory %}
+                                        </div>
+                                        <div class="govuk-task-list__status" id="standard-details-3-status">
+                                            {% if standard.fields.title %}
+                                                {% if standard.fields.subCategory %}
                                 Complete
                             {% else %}
-                                    {% if standard.fields.category %}
-                                        <strong class="govuk-tag govuk-tag--blue">Incomplete</strong>
-                                    {% else %}
-                                        <strong class="govuk-tag govuk-tag--grey">Cannot start yet</strong>
-                                    {% endif %}
-                                {% endif %}
-                            {% else %}
-                                <strong class="govuk-tag govuk-tag--grey">Cannot start yet</strong>
-                            {% endif %}
-                        </div>
-                    </li>
-                    <li class="govuk-task-list__item govuk-task-list__item--with-link">
-                        <div class="govuk-task-list__name-and-hint">
-                            <a class="govuk-link govuk-task-list__link" href="/manage/standard/purpose" aria-describedby="standard-details-4-status">
+                                                    {% if standard.fields.category %}
+                                                        <strong class="govuk-tag govuk-tag--blue">Incomplete</strong>
+                                                    {% else %}
+                                                        <strong class="govuk-tag govuk-tag--grey">Cannot start yet</strong>
+                                                    {% endif %}
+                                                {% endif %}
+                                            {% else %}
+                                                <strong class="govuk-tag govuk-tag--grey">Cannot start yet</strong>
+                                            {% endif %}
+                                        </div>
+                                    </li>
+                                    <li class="govuk-task-list__item govuk-task-list__item--with-link">
+                                        <div class="govuk-task-list__name-and-hint">
+                                            <a class="govuk-link govuk-task-list__link" href="/manage/standard/purpose" aria-describedby="standard-details-4-status">
         Purpose
       </a>
-                        </div>
-                        <div class="govuk-task-list__status" id="standard-details-4-status">
-                            {% if standard.fields.title %}
-                                {% if standard.fields.purpose %}
+                                        </div>
+                                        <div class="govuk-task-list__status" id="standard-details-4-status">
+                                            {% if standard.fields.title %}
+                                                {% if standard.fields.purpose %}
                                 Complete
                             {% else %}
-                                    <strong class="govuk-tag govuk-tag--blue">Incomplete</strong>
-                                {% endif %}
-                            {% else %}
-                                <strong class="govuk-tag govuk-tag--grey">Cannot start yet</strong>
-                            {% endif %}
-                        </div>
-                    </li>
-                    <li class="govuk-task-list__item govuk-task-list__item--with-link">
-                        <div class="govuk-task-list__name-and-hint">
-                            <a class="govuk-link govuk-task-list__link" href="/manage/standard/guidance" aria-describedby="standard-details-4-status">
+                                                    <strong class="govuk-tag govuk-tag--blue">Incomplete</strong>
+                                                {% endif %}
+                                            {% else %}
+                                                <strong class="govuk-tag govuk-tag--grey">Cannot start yet</strong>
+                                            {% endif %}
+                                        </div>
+                                    </li>
+                                    <li class="govuk-task-list__item govuk-task-list__item--with-link">
+                                        <div class="govuk-task-list__name-and-hint">
+                                            <a class="govuk-link govuk-task-list__link" href="/manage/standard/guidance" aria-describedby="standard-details-4-status">
         How to meet the standard
       </a>
-                        </div>
-                        <div class="govuk-task-list__status" id="standard-details-4-status">
-                            {% if standard.fields.title %}
-                                {% if standard.fields.guidance %}
+                                        </div>
+                                        <div class="govuk-task-list__status" id="standard-details-4-status">
+                                            {% if standard.fields.title %}
+                                                {% if standard.fields.guidance %}
                                 Complete
                             {% else %}
-                                    <strong class="govuk-tag govuk-tag--blue">Incomplete</strong>
-                                {% endif %}
-                            {% else %}
-                                <strong class="govuk-tag govuk-tag--grey">Cannot start yet</strong>
-                            {% endif %}
-                        </div>
-                    </li>
-                    <li class="govuk-task-list__item govuk-task-list__item--with-link">
-                        <div class="govuk-task-list__name-and-hint">
-                            <a class="govuk-link govuk-task-list__link" href="/manage/standard/products" aria-describedby="standard-details-5-status">
+                                                    <strong class="govuk-tag govuk-tag--blue">Incomplete</strong>
+                                                {% endif %}
+                                            {% else %}
+                                                <strong class="govuk-tag govuk-tag--grey">Cannot start yet</strong>
+                                            {% endif %}
+                                        </div>
+                                    </li>
+                                    <li class="govuk-task-list__item govuk-task-list__item--with-link">
+                                        <div class="govuk-task-list__name-and-hint">
+                                            <a class="govuk-link govuk-task-list__link" href="/manage/standard/products" aria-describedby="standard-details-5-status">
         Approved or tolerated products
       </a>
-                        </div>
-                        <div class="govuk-task-list__status" id="standard-details-5-status">
-                            {% if standard.fields.title %}
-                                {% if standard.fields.products %}
+                                        </div>
+                                        <div class="govuk-task-list__status" id="standard-details-5-status">
+                                            {% if standard.fields.title %}
+                                                {% if standard.fields.products %}
                                 Complete
                             {% else %}
-                                    <strong class="govuk-tag govuk-tag--blue">Optional</strong>
-                                {% endif %}
-                            {% else %}
-                                <strong class="govuk-tag govuk-tag--grey">Cannot start yet</strong>
-                            {% endif %}
-                        </div>
-                    </li>
-                    <li class="govuk-task-list__item govuk-task-list__item--with-link">
-                        <div class="govuk-task-list__name-and-hint">
-                            <a class="govuk-link govuk-task-list__link" href="/manage/standard/exceptions" aria-describedby="standard-details-5-status">
+                                                    <strong class="govuk-tag govuk-tag--blue">Optional</strong>
+                                                {% endif %}
+                                            {% else %}
+                                                <strong class="govuk-tag govuk-tag--grey">Cannot start yet</strong>
+                                            {% endif %}
+                                        </div>
+                                    </li>
+                                    <li class="govuk-task-list__item govuk-task-list__item--with-link">
+                                        <div class="govuk-task-list__name-and-hint">
+                                            <a class="govuk-link govuk-task-list__link" href="/manage/standard/exceptions" aria-describedby="standard-details-5-status">
         Exceptions
       </a>
-                        </div>
-                        <div class="govuk-task-list__status" id="standard-details-5-status">
-                            {% if standard.fields.title %}
-                                {% if standard.fields.exceptions %}
+                                        </div>
+                                        <div class="govuk-task-list__status" id="standard-details-5-status">
+                                            {% if standard.fields.title %}
+                                                {% if standard.fields.exceptions %}
                                 Complete
                             {% else %}
-                                    <strong class="govuk-tag govuk-tag--blue">Optional</strong>
-                                {% endif %}
-                            {% else %}
-                                <strong class="govuk-tag govuk-tag--grey">Cannot start yet</strong>
-                            {% endif %}
-                        </div>
-                    </li>
-                    <li class="govuk-task-list__item govuk-task-list__item--with-link">
-                        <div class="govuk-task-list__name-and-hint">
-                            <a class="govuk-link govuk-task-list__link" href="/manage/standard/contacts" aria-describedby="standard-details-5-status">
+                                                    <strong class="govuk-tag govuk-tag--blue">Optional</strong>
+                                                {% endif %}
+                                            {% else %}
+                                                <strong class="govuk-tag govuk-tag--grey">Cannot start yet</strong>
+                                            {% endif %}
+                                        </div>
+                                    </li>
+                                    <li class="govuk-task-list__item govuk-task-list__item--with-link">
+                                        <div class="govuk-task-list__name-and-hint">
+                                            <a class="govuk-link govuk-task-list__link" href="/manage/standard/contacts" aria-describedby="standard-details-5-status">
         Owner and contacts
       </a>
-                        </div>
-                        <div class="govuk-task-list__status" id="standard-details-5-status">
-                            {% if standard.fields.title %}
-                                {% if standard.fields.owners or standard.fields.technicalContacts %}
+                                        </div>
+                                        <div class="govuk-task-list__status" id="standard-details-5-status">
+                                            {% if standard.fields.title %}
+                                                {% if standard.fields.owners or standard.fields.technicalContacts %}
                                 Complete
                             {% else %}
-                                    <strong class="govuk-tag govuk-tag--blue">Incomplete</strong>
-                                {% endif %}
+                                                    <strong class="govuk-tag govuk-tag--blue">Incomplete</strong>
+                                                {% endif %}
+                                            {% else %}
+                                                <strong class="govuk-tag govuk-tag--grey">Cannot start yet</strong>
+                                            {% endif %}
+                                        </div>
+                                    </li>
+                                </ul>
+
                             {% else %}
-                                <strong class="govuk-tag govuk-tag--grey">Cannot start yet</strong>
-                            {% endif %}
-                        </div>
-                    </li>
-                </ul>
 
-                {% else %}
-
-<p>You cannot make changes to the standard while the standard forum are reviewing it. You can <a href="/manage/standard/preview" class="govuk-link">preview&nbsp;the&nbsp;standard</a>.<p>
-
-<ul class="govuk-task-list">
-    <li class="govuk-task-list__item govuk-task-list__item--with-link">
-        <div class="govuk-task-list__name-and-hint">
+                                        <ul class="govuk-task-list">
+                                            <li class="govuk-task-list__item govuk-task-list__item--with-link">
+                                                <div class="govuk-task-list__name-and-hint">
             Standard name
         </div>
-        <div class="govuk-task-list__status" id="standard-details-1-status">
-            {% if standard.fields.title %}
+                                                <div class="govuk-task-list__status" id="standard-details-1-status">
+                                                    {% if standard.fields.title %}
                 Complete
             {% else %}
-                <strong class="govuk-tag govuk-tag--blue">Incomplete</strong>
-            {% endif %}
-        </div>
-    </li>
-    <li class="govuk-task-list__item govuk-task-list__item--with-link">
-        <div class="govuk-task-list__name-and-hint">
+                                                        <strong class="govuk-tag govuk-tag--blue">Incomplete</strong>
+                                                    {% endif %}
+                                                </div>
+                                            </li>
+                                            <li class="govuk-task-list__item govuk-task-list__item--with-link">
+                                                <div class="govuk-task-list__name-and-hint">
             Summary
         </div>
-        <div class="govuk-task-list__status" id="standard-details-4-summary">
-            {% if standard.fields.title %}
-                {% if standard.fields.summary %}
+                                                <div class="govuk-task-list__status" id="standard-details-4-summary">
+                                                    {% if standard.fields.title %}
+                                                        {% if standard.fields.summary %}
                     Complete
                 {% else %}
-                    <strong class="govuk-tag govuk-tag--blue">Incomplete</strong>
-                {% endif %}
-            {% else %}
-                <strong class="govuk-tag govuk-tag--grey">Cannot start yet</strong>
-            {% endif %}
-        </div>
-    </li>
-    <li class="govuk-task-list__item govuk-task-list__item--with-link">
-        <div class="govuk-task-list__name-and-hint">
+                                                            <strong class="govuk-tag govuk-tag--blue">Incomplete</strong>
+                                                        {% endif %}
+                                                    {% else %}
+                                                        <strong class="govuk-tag govuk-tag--grey">Cannot start yet</strong>
+                                                    {% endif %}
+                                                </div>
+                                            </li>
+                                            <li class="govuk-task-list__item govuk-task-list__item--with-link">
+                                                <div class="govuk-task-list__name-and-hint">
             Categories
         </div>
-        <div class="govuk-task-list__status" id="standard-details-2-status">
-            {% if standard.fields.title %}
-                {% if standard.fields.category %}
+                                                <div class="govuk-task-list__status" id="standard-details-2-status">
+                                                    {% if standard.fields.title %}
+                                                        {% if standard.fields.category %}
                     Complete
                 {% else %}
-                    <strong class="govuk-tag govuk-tag--blue">Incomplete</strong>
-                {% endif %}
-            {% else %}
-                <strong class="govuk-tag govuk-tag--grey">Cannot start yet</strong>
-            {% endif %}
-        </div>
-    </li>
-    <li class="govuk-task-list__item govuk-task-list__item--with-link">
-        <div class="govuk-task-list__name-and-hint">
+                                                            <strong class="govuk-tag govuk-tag--blue">Incomplete</strong>
+                                                        {% endif %}
+                                                    {% else %}
+                                                        <strong class="govuk-tag govuk-tag--grey">Cannot start yet</strong>
+                                                    {% endif %}
+                                                </div>
+                                            </li>
+                                            <li class="govuk-task-list__item govuk-task-list__item--with-link">
+                                                <div class="govuk-task-list__name-and-hint">
             Sub-categories
         </div>
-        <div class="govuk-task-list__status" id="standard-details-3-status">
-            {% if standard.fields.title %}
-                {% if standard.fields.subCategory %}
+                                                <div class="govuk-task-list__status" id="standard-details-3-status">
+                                                    {% if standard.fields.title %}
+                                                        {% if standard.fields.subCategory %}
                     Complete
                 {% else %}
-                    {% if standard.fields.category %}
-                        <strong class="govuk-tag govuk-tag--blue">Incomplete</strong>
-                    {% else %}
-                        <strong class="govuk-tag govuk-tag--grey">Cannot start yet</strong>
-                    {% endif %}
-                {% endif %}
-            {% else %}
-                <strong class="govuk-tag govuk-tag--grey">Cannot start yet</strong>
-            {% endif %}
-        </div>
-    </li>
-    <li class="govuk-task-list__item govuk-task-list__item--with-link">
-        <div class="govuk-task-list__name-and-hint">
+                                                            {% if standard.fields.category %}
+                                                                <strong class="govuk-tag govuk-tag--blue">Incomplete</strong>
+                                                            {% else %}
+                                                                <strong class="govuk-tag govuk-tag--grey">Cannot start yet</strong>
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    {% else %}
+                                                        <strong class="govuk-tag govuk-tag--grey">Cannot start yet</strong>
+                                                    {% endif %}
+                                                </div>
+                                            </li>
+                                            <li class="govuk-task-list__item govuk-task-list__item--with-link">
+                                                <div class="govuk-task-list__name-and-hint">
             Purpose
         </div>
-        <div class="govuk-task-list__status" id="standard-details-4-status">
-            {% if standard.fields.title %}
-                {% if standard.fields.purpose %}
+                                                <div class="govuk-task-list__status" id="standard-details-4-status">
+                                                    {% if standard.fields.title %}
+                                                        {% if standard.fields.purpose %}
                     Complete
                 {% else %}
-                    <strong class="govuk-tag govuk-tag--blue">Incomplete</strong>
-                {% endif %}
-            {% else %}
-                <strong class="govuk-tag govuk-tag--grey">Cannot start yet</strong>
-            {% endif %}
-        </div>
-    </li>
-    <li class="govuk-task-list__item govuk-task-list__item--with-link">
-        <div class="govuk-task-list__name-and-hint">
+                                                            <strong class="govuk-tag govuk-tag--blue">Incomplete</strong>
+                                                        {% endif %}
+                                                    {% else %}
+                                                        <strong class="govuk-tag govuk-tag--grey">Cannot start yet</strong>
+                                                    {% endif %}
+                                                </div>
+                                            </li>
+                                            <li class="govuk-task-list__item govuk-task-list__item--with-link">
+                                                <div class="govuk-task-list__name-and-hint">
             How to meet the standard
         </div>
-        <div class="govuk-task-list__status" id="standard-details-4-status">
-            {% if standard.fields.title %}
-                {% if standard.fields.guidance %}
+                                                <div class="govuk-task-list__status" id="standard-details-4-status">
+                                                    {% if standard.fields.title %}
+                                                        {% if standard.fields.guidance %}
                     Complete
                 {% else %}
-                    <strong class="govuk-tag govuk-tag--blue">Incomplete</strong>
-                {% endif %}
-            {% else %}
-                <strong class="govuk-tag govuk-tag--grey">Cannot start yet</strong>
-            {% endif %}
-        </div>
-    </li>
-    <li class="govuk-task-list__item govuk-task-list__item--with-link">
-        <div class="govuk-task-list__name-and-hint">
+                                                            <strong class="govuk-tag govuk-tag--blue">Incomplete</strong>
+                                                        {% endif %}
+                                                    {% else %}
+                                                        <strong class="govuk-tag govuk-tag--grey">Cannot start yet</strong>
+                                                    {% endif %}
+                                                </div>
+                                            </li>
+                                            <li class="govuk-task-list__item govuk-task-list__item--with-link">
+                                                <div class="govuk-task-list__name-and-hint">
             Approved or tolerated products
         </div>
-        <div class="govuk-task-list__status" id="standard-details-5-status">
-            {% if standard.fields.title %}
-                {% if standard.fields.products %}
+                                                <div class="govuk-task-list__status" id="standard-details-5-status">
+                                                    {% if standard.fields.title %}
+                                                        {% if standard.fields.products %}
                     Complete
                 {% else %}
-                    <strong class="govuk-tag govuk-tag--blue">Optional</strong>
-                {% endif %}
-            {% else %}
-                <strong class="govuk-tag govuk-tag--grey">Cannot start yet</strong>
-            {% endif %}
-        </div>
-    </li>
-    <li class="govuk-task-list__item govuk-task-list__item--with-link">
-        <div class="govuk-task-list__name-and-hint">
+                                                            <strong class="govuk-tag govuk-tag--blue">Optional</strong>
+                                                        {% endif %}
+                                                    {% else %}
+                                                        <strong class="govuk-tag govuk-tag--grey">Cannot start yet</strong>
+                                                    {% endif %}
+                                                </div>
+                                            </li>
+                                            <li class="govuk-task-list__item govuk-task-list__item--with-link">
+                                                <div class="govuk-task-list__name-and-hint">
             Exceptions
         </div>
-        <div class="govuk-task-list__status" id="standard-details-5-status">
-            {% if standard.fields.title %}
-                {% if standard.fields.exceptions %}
+                                                <div class="govuk-task-list__status" id="standard-details-5-status">
+                                                    {% if standard.fields.title %}
+                                                        {% if standard.fields.exceptions %}
                     Complete
                 {% else %}
-                    <strong class="govuk-tag govuk-tag--blue">Optional</strong>
-                {% endif %}
-            {% else %}
-                <strong class="govuk-tag govuk-tag--grey">Cannot start yet</strong>
-            {% endif %}
-        </div>
-    </li>
-    <li class="govuk-task-list__item govuk-task-list__item--with-link">
-        <div class="govuk-task-list__name-and-hint">
+                                                            <strong class="govuk-tag govuk-tag--blue">Optional</strong>
+                                                        {% endif %}
+                                                    {% else %}
+                                                        <strong class="govuk-tag govuk-tag--grey">Cannot start yet</strong>
+                                                    {% endif %}
+                                                </div>
+                                            </li>
+                                            <li class="govuk-task-list__item govuk-task-list__item--with-link">
+                                                <div class="govuk-task-list__name-and-hint">
             Owner and contacts
         </div>
-        <div class="govuk-task-list__status" id="standard-details-5-status">
-            {% if standard.fields.title %}
-                {% if standard.fields.owners or standard.fields.technicalContacts %}
+                                                <div class="govuk-task-list__status" id="standard-details-5-status">
+                                                    {% if standard.fields.title %}
+                                                        {% if standard.fields.owners or standard.fields.technicalContacts %}
                     Complete
                 {% else %}
-                    <strong class="govuk-tag govuk-tag--blue">Incomplete</strong>
-                {% endif %}
-            {% else %}
-                <strong class="govuk-tag govuk-tag--grey">Cannot start yet</strong>
-            {% endif %}
-        </div>
-    </li>
-</ul>
+                                                            <strong class="govuk-tag govuk-tag--blue">Incomplete</strong>
+                                                        {% endif %}
+                                                    {% else %}
+                                                        <strong class="govuk-tag govuk-tag--grey">Cannot start yet</strong>
+                                                    {% endif %}
+                                                </div>
+                                            </li>
+                                        </ul>
 
-                {% endif %}
+                                    {% endif %}
 
-            </div>
-            <div class="govuk-grid-column-one-quarter">
-               
-            </div>
-        </div>
-       
+                                </div>
+                                <div class="govuk-grid-column-one-quarter"></div>
+                            </div>
 
-    {% endblock %}
+                        {% endblock %}
