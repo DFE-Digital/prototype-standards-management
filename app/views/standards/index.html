@@ -80,14 +80,14 @@
                         {% for standard in standards %}
                             <tr class="govuk-table__row" data-category="{% for category in standard.fields.category %}{{ category.fields.number }}{% if not loop.last %},{% endif %}{% endfor %}">
                                 <td class="govuk-table__cell govuk-body-s">
-                                    <a href="/standards/view/{{ standard.sys.id }}" class="govuk-link">
+                                    <a href="/standards/view/{{ standard.sys.id }}" class="govuk-link govuk-link--no-visited-state">
                                         {{ standard.fields.title or "New" }}
                                     </a>
                                 </td>
                                 <td class="govuk-table__cell govuk-body-s">DDTS{{ standard.fields.number }}</td>
                                 <td class="govuk-table__cell govuk-body-s">{{ standard.sys.updatedAt | date('DD MMM YYYY') }}</td>
                                 <td class="govuk-table__cell govuk-body-s">
-                                    <ul class="govuk-list govuk-body-s">
+                                    <ul class="govuk-list govuk-body-s govuk-!-margin-bottom-0">
                                         {% for category in standard.fields.category %}
                                             <li>{{ category.fields.title }}</li>
                                         {% endfor %}

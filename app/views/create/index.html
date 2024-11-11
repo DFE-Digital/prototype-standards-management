@@ -30,10 +30,19 @@
   </svg>
 </a></p>
 
-<h2 class="govuk-heading-m">Your draft standards</h2>
+
+
 
 
 {% if drafts | length%}
+
+<div class="govuk-summary-card">
+  <div class="govuk-summary-card__title-wrapper">
+    <h2 class="govuk-summary-card__title">
+      Your draft standards
+    </h2>
+  </div>
+  <div class="govuk-summary-card__content">
 
 <table class="govuk-table">
   <thead class="govuk-table__head">
@@ -57,10 +66,8 @@
   </tbody>
 </table>
 
-
-{% else %}
-
-<p>There are no standards in draft stage.</p>
+</div>
+</div>
 
 {% endif %}
 

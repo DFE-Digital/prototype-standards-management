@@ -8,7 +8,7 @@ module.exports = {
 
   // Port to run local development server on
   port: process.env.PORT || 3471,
-  githubrepo: 'https://github.com/DFE-Digital/accessibility-manual',
+  githubrepo: 'https://github.com/DFE-Digital/prototype-standards-management',
 
   assetPath: process.env.assetPath
 };
