@@ -1,0 +1,32 @@
+{% extends "layouts/full.html" %}
+
+{% set selectedNav = "Manage" %}
+{% set pageName = "Standard deleted" %}
+{% set seoPageName = "" %}
+{% set pageDescription = ""%}
+{% set view = "standard" %}
+{% set mainClasses = "govuk-!-padding-top-9" %}
+
+{% block head %}
+    <meta name="robots" content="noindex, nofollow">
+{% endblock %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
+
+            <div class="govuk-panel govuk-panel--confirmation">
+                <h1 class="govuk-panel__title">
+    Standard deleted
+  </h1>
+
+            </div>
+
+            <p><a href="/manage">Back to standards</a></p>
+            
+      
+
+        </div>
+    </div>
+
+{% endblock %}

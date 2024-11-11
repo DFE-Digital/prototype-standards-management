@@ -3,7 +3,7 @@ const client = require("../middleware/contentful.js");
 const previewClient = require("../middleware/contentful-preview.js");
 const managementClient = require("../middleware/contentful-management.js");
 
-const { updateStatus, addStandardHistoryEntry, updateVersion } = require('../data/contentful/updates.js');
+const { updateStatus, addStandardHistoryEntry, updateVersion, updatePreviousVersion } = require('../data/contentful/updates.js');
 
 function generateRandomId() {
     return Math.random().toString(36).substr(2, 9); // Generates a random string
@@ -127,7 +127,8 @@ exports.g_manage = async function (req, res) {
         req.session.data = {};
     }
 
-    let id = req.session.data['id'];
+
+    let id = req.session.data['id'] ? req.session.data['id'] : req.params.id;
 
     if (id) {
         try {
@@ -460,7 +461,7 @@ exports.g_preview = async function (req, res) {
         req.session.data = {};
     }
 
-    let id = req.session.data['id'];
+    const { id } = req.params;
 
     if (id) {
         try {
@@ -481,7 +482,7 @@ exports.g_previewmeet = async function (req, res) {
         req.session.data = {};
     }
 
-    let id = req.session.data['id'];
+    const { id } = req.params;
 
     if (id) {
         try {
@@ -503,7 +504,7 @@ exports.g_previewproducts = async function (req, res) {
         req.session.data = {};
     }
 
-    let id = req.session.data['id'];
+    const { id } = req.params;
 
     if (id) {
         try {
@@ -565,6 +566,39 @@ exports.g_reverted = async function (req, res) {
         req.session.data['error'] = { error: 'No ID found in session data' };
         return res.redirect('/manage');
     }
+}
+
+exports.g_history = async function (req, res) {
+
+    if (!req.session.data) {
+        req.session.data = {};
+    }
+
+    let id = req.session.data['id'];
+
+    if (id) {
+        try {
+            const standard = await previewClient.getEntry(id);
+
+            const historyResponse = await previewClient.getEntries({
+                content_type: "standardHistory",
+                "fields.standard.sys.id": id,
+                order: "-sys.createdAt"
+            });
+
+            const history = historyResponse.items;
+
+            return res.render('manage/standard/history', { standard, history });
+        } catch (error) {
+            console.error("Error fetching standard entry from Contentful:", error);
+            req.session.data['error'] = { error: 'Failed to fetch standard entry' };
+            return res.redirect('/manage');
+        }
+    } else {
+        req.session.data['error'] = { error: 'No ID found in session data' };
+        return res.redirect('/manage');
+    }
+
 }
 
 // POSTS //
@@ -780,7 +814,14 @@ exports.p_publish = async function (req, res) {
 
         await updateStatus(standard_id, stageId);
 
+        const entry = await environment.getEntry(standard_id);
+
+
         await updateVersion(standard_id, 1.0);
+
+        await updatePreviousVersion(standard_id, entry.fields.version)
+
+        // ToDo: Update the previous version to be the current version and update the version by .1 for minor changes and 1. for major changes like a change in products or exceptions. 
 
         // Once updated, publish the standard
         const standard = await environment.getEntry(standard_id);
@@ -827,6 +868,35 @@ exports.p_publish = async function (req, res) {
         return res.redirect(`/manage/standard/reverted/${standard_id}`);
 
     }
+
+    if (action === 'Delete') {
+
+        // Update the statius of the standard to 'Approved'
+
+        const stage = await client.getEntries({
+            content_type: 'stage',
+            'fields.number': 0 // Deleted
+        });
+
+        const stageId = stage.items[0].sys.id;
+
+        await updateStatus(standard_id, stageId);
+
+        const historyData = {
+            action: "Deleted standard",
+            actionBy: req.session.User.FirstName + " " + req.session.User.LastName,
+            actionByEmail: req.session.User.EmailAddress,
+            actionDatetime: new Date().toISOString(),
+            comments: "ID: " + standard_id 
+        } 
+
+        await addStandardHistoryEntry(standard_id, historyData);
+
+        return res.redirect(`/manage/standard/deleted`);
+
+    }
+
+    
 
     
 };

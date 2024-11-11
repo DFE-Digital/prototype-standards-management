@@ -1,17 +1,17 @@
-<a href="/admin/standard" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-9">Back to standard</a>
+<a href="/admin/standard/{{standard.sys.id}}" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-9">Back to standard</a>
 
 <nav class="dfe-vertical-nav">
 
     <ul class="dfe-vertical-nav__section">
 
         <li class="dfe-vertical-nav__section-item {% if sidenav === 'overview' %}dfe-vertical-nav__section-item--current{% endif %}">
-            <a class="dfe-vertical-nav__link" href="/admin/standard/preview">Overview</a>
+            <a class="dfe-vertical-nav__link" href="/admin/standard/preview/{{standard.sys.id}}">Overview</a>
         </li>
         <li class="dfe-vertical-nav__section-item {% if sidenav === 'meet' %}dfe-vertical-nav__section-item--current{% endif %}">
-            <a class="dfe-vertical-nav__link" href="/admin/standard/preview-meet">How to meet</a>
+            <a class="dfe-vertical-nav__link" href="/admin/standard/preview-meet/{{standard.sys.id}}">How to meet</a>
         </li>
         <li class="dfe-vertical-nav__section-item {% if sidenav === 'products' %}dfe-vertical-nav__section-item--current{% endif %}">
-            <a class="dfe-vertical-nav__link" href="/admin/standard/preview-products">Approved and tolerated products</a>
+            <a class="dfe-vertical-nav__link" href="/admin/standard/preview-products/{{standard.sys.id}}">Approved and tolerated products</a>
         </li>
     </ul>
 </nav>
