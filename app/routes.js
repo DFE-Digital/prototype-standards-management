@@ -10,6 +10,7 @@ const previewController = require('./controllers/previewController.js');
 const adminController = require('./controllers/adminController.js');
 const profileController = require('./controllers/profileController');
 const standardsController = require('./controllers/standardsController.js');
+const complianceController = require('./controllers/complianceController.js');
 
 
 function isAuthenticated(req, res, next) {
@@ -169,6 +170,8 @@ router.post('/profile/change-name', isAuthenticated, profileController.p_changeN
 router.post('/profile/change-email', isAuthenticated, profileController.p_changeEmail);
 
 
+// Compliance routes
+router.get('/compliance', isAuthenticated, complianceController.g_dashboard);
 
 
 module.exports = router
