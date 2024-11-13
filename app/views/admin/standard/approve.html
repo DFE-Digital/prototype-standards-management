@@ -1,6 +1,6 @@
 {% extends "layouts/full.html" %}
 {% set selectedNav = "Admin" %}
-{% set pageName = "Approve standard" %}
+{% set pageName = "Standard forum decision" %}
 {% set seoPageName = "" %}
 {% set pageDescription = ""%}
 {% set view = "standard" %}
@@ -21,17 +21,21 @@
             <form action="/admin/standard/outcome" method="post">
                 <input type="hidden" name="standard_id" value="{{standard.sys.id}}">
 
+                <h1 class="govuk-heading-l">Standard forum decision</h1>
+
+                <p>Guidance...</p>
+
                 <div class="govuk-form-group">
                     <fieldset class="govuk-fieldset" aria-describedby="outcome-hint">
-                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                            <h1 class="govuk-fieldset__heading">
-        Standard forum decision
-      </h1>
+                        <legend class="govuk-fieldset__legend">
+                          
+        Decision
+  
                         </legend>
                         <div id="outcome-hint" class="govuk-hint">
       Select one option
     </div>
-                        <div class="govuk-radios" data-module="govuk-radios">
+                        <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="outcome" name="outcome" type="radio" value="Approve">
                                 <label class="govuk-label govuk-radios__label" for="outcome">
