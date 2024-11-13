@@ -369,7 +369,10 @@ exports.p_outcome = async function (req, res) {
 
 
         const templateParams = {
-            standardName: standard.fields.title
+            standardName: standard.fields.title,
+            serviceURL: process.env.serviceURL,
+            standardId: standard_id
+
         };
 
         uniquePublishersList.forEach(email => {
@@ -407,7 +410,9 @@ exports.p_outcome = async function (req, res) {
 
         const templateParams = {
             standardName: standard.fields.title,
-            reason: reason
+            reason: reason,
+            serviceURL: process.env.serviceURL,
+            standardId: standard_id
         };
 
         uniquePublishersList.forEach(email => {
