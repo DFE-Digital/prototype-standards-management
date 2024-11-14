@@ -116,6 +116,20 @@ async function updateGuidance(entryId, value) {
     });
 }
 
+async function updateGovernance(entryId, value) {
+    return await updateEntry(entryId, {
+        governance: { "en-US": value },
+    });
+}
+
+async function updateValidity(entryId, value) {
+    return await updateEntry(entryId, {
+        validity: { "en-US": value },
+    });
+}
+
+
+
 async function updateStatus(entryId, value) {
     try {
         const environment = await getSpaceAndEnvironment();
@@ -694,4 +708,4 @@ async function createStandardEntry(standardData) {
 
 
 
-module.exports = { createStandardEntry, updateTitle, updateSummary, updateCategories, updatePurpose, updateGuidance, createApprovedProductEntry, updateApprovedProductsField, createToleratedProductEntry, updateToleratedProductsField, removeApprovedProductsField, updateApprovedProduct, createExceptionEntry, updateExceptionField, updateException, removeExceptionField, createPerson, updateContactField, removeContactField, updateSubCategories, updateStatus, deleteEntry, updateToDraft, addStandardHistoryEntry, updateVersion, updatePreviousVersion };
+module.exports = { createStandardEntry, updateTitle, updateSummary, updateCategories, updatePurpose, updateGuidance, createApprovedProductEntry, updateApprovedProductsField, createToleratedProductEntry, updateToleratedProductsField, removeApprovedProductsField, updateApprovedProduct, createExceptionEntry, updateExceptionField, updateException, removeExceptionField, createPerson, updateContactField, removeContactField, updateSubCategories, updateStatus, deleteEntry, updateToDraft, addStandardHistoryEntry, updateVersion, updatePreviousVersion, updateGovernance, updateValidity };

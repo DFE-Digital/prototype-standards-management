@@ -5,3 +5,16 @@
 {% markdown %}
 {{ standard.fields.guidance}}
 {% endmarkdown %}
+
+
+<h2 class="govuk-heading-l">Review your compliance with this standard</h2>
+
+{% if standard.fields.validity === 'Indefinitely' %}
+
+<p>Once you have declared compliance with this standard, you don't have to redeclare compliance in the future.</p>
+
+{% else %}
+
+<p>The service owner or service team will need to report compliance with this standard every {{standard.fields.validity | lower }}. This is done in the Service health check hub.</p>
+
+{% endif %}

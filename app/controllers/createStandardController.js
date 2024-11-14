@@ -1,6 +1,6 @@
 require('dotenv').config();
 const { check, validationResult } = require('express-validator');
-const { validateTitle, validateSummary, validateCategory, validateSubCategories, validatePurpose, validateGuidance, validateApprovedFields, validateExceptionFields, validateContactFields } = require('../validation/create.js');
+const { validateTitle, validateSummary, validateCategory, validateSubCategories, validatePurpose, validateGuidance, validateApprovedFields, validateExceptionFields, validateContactFields, validateGovernance, validateValidity } = require('../validation/create.js');
 
 const client = require('../middleware/contentful.js');
 const previewClient = require('../middleware/contentful-preview.js');
@@ -9,7 +9,7 @@ const managementClient = require('../middleware/contentful-management.js');
 
 const { sendNotifyEmail } = require('../middleware/notify');
 
-const { createStandardEntry, updateTitle, updateSummary, updateCategories, updatePurpose, updateGuidance, createApprovedProductEntry, updateApprovedProductsField, createToleratedProductEntry, updateToleratedProductsField, removeApprovedProductsField, updateApprovedProduct, createExceptionEntry, updateExceptionField, updateException, removeExceptionField, createPerson, updateContactField, removeContactField, updateSubCategories, updateStatus, deleteEntry, updateToDraft, addStandardHistoryEntry } = require('../data/contentful/updates.js');
+const { createStandardEntry, updateTitle, updateSummary, updateCategories, updatePurpose, updateGuidance, createApprovedProductEntry, updateApprovedProductsField, createToleratedProductEntry, updateToleratedProductsField, removeApprovedProductsField, updateApprovedProduct, createExceptionEntry, updateExceptionField, updateException, removeExceptionField, createPerson, updateContactField, removeContactField, updateSubCategories, updateStatus, deleteEntry, updateToDraft, addStandardHistoryEntry, updateGovernance, updateValidity } = require('../data/contentful/updates.js');
 
 const { slugify } = require('../middleware/tools.js');
 
@@ -800,6 +800,49 @@ exports.g_guidance = async function (req, res) {
     }
 };
 
+exports.g_governance = async function (req, res) {
+    if (!req.session.data) {
+        return res.redirect('/create/standard');
+    }
+
+    const id = req.session.data['id'];
+
+    if (!id) {
+        req.session.data['error'] = { error: 'No ID found in session data' };
+        return res.redirect('/create');
+    }
+
+    try {
+        const standard = await previewClient.getEntry(id);
+        return res.render('create/standard/governance', { standard });
+    } catch (error) {
+        console.error("Error fetching standard entry from Contentful:", error);
+        req.session.data['error'] = { error: 'Failed to fetch standard entry' };
+        return res.redirect('/create');
+    }
+};
+
+exports.g_validity = async function (req, res) {
+    if (!req.session.data) {
+        return res.redirect('/create/standard');
+    }
+
+    const id = req.session.data['id'];
+
+    if (!id) {
+        req.session.data['error'] = { error: 'No ID found in session data' };
+        return res.redirect('/create');
+    }
+
+    try {
+        const standard = await previewClient.getEntry(id);
+        return res.render('create/standard/validity', { standard });
+    } catch (error) {
+        console.error("Error fetching standard entry from Contentful:", error);
+        req.session.data['error'] = { error: 'Failed to fetch standard entry' };
+        return res.redirect('/create');
+    }
+};
 
 // POSTS //
 
@@ -1307,6 +1350,72 @@ exports.p_guidance = [
         return res.redirect('/create/standard/products');
     }
 ];
+
+exports.p_governance = [
+    validateGovernance,
+    async function (req, res) {
+
+        const errors = validationResult(req);
+        const id = req.session.data['id'];
+
+        if (!id) {
+            req.session.data['error'] = { error: 'No ID found in session data' };
+            return res.redirect('/create');
+        }
+
+        if (!errors.isEmpty()) {
+            try {
+                const standard = await previewClient.getEntry(id);
+                standard.fields.purpose = "";
+                return res.render('create/standard/governance', {
+                    errors: errors.array(), standard
+                });
+            } catch (error) {
+                console.error("Error fetching standard entry from Contentful:", error);
+                req.session.data['error'] = { error: 'Failed to fetch standard entry' };
+                return res.redirect('/create');
+            }
+        }
+
+        // Update the standard entry with any changes to the title
+        await updateGovernance(id, req.body['governance']);
+        return res.redirect('/create/standard');
+    }
+];
+
+
+exports.p_validity = [
+    validateValidity,
+    async function (req, res) {
+
+        const errors = validationResult(req);
+        const id = req.session.data['id'];
+
+        if (!id) {
+            req.session.data['error'] = { error: 'No ID found in session data' };
+            return res.redirect('/create');
+        }
+
+        if (!errors.isEmpty()) {
+            try {
+                const standard = await previewClient.getEntry(id);
+                standard.fields.purpose = "";
+                return res.render('create/standard/validity', {
+                    errors: errors.array(), standard, formData: req.body,
+                });
+            } catch (error) {
+                console.error("Error fetching standard entry from Contentful:", error);
+                req.session.data['error'] = { error: 'Failed to fetch standard entry' };
+                return res.redirect('/create');
+            }
+        }
+
+        // Update the standard entry with any changes to the title
+        await updateValidity(id, req.body['validity']);
+        return res.redirect('/create/standard/governance');
+    }
+];
+
 
 
 

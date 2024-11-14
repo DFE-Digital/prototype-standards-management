@@ -19,7 +19,8 @@ exports.validateCategory = checkExists('categories', 'Select a category');
 exports.validateSubCategories = checkExists('subcategories', 'Select a sub-category');
 exports.validatePurpose = checkExists('purpose', 'Enter a purpose');
 exports.validateGuidance = checkExists('guidance', 'Enter guidance for how to meet the standard');
-
+exports.validateGovernance = checkExists('governance', 'Enter information about the governance of the standard');
+exports.validateValidity = checkExists('validity', 'Select an option');
 // Validation for approved fields, flattening the nested array by spreading each result
 exports.validateApprovedFields = [
     ...checkExists('approved_name', 'Enter an approved name'),

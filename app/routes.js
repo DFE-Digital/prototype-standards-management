@@ -62,6 +62,8 @@ router.get('/create/standard/preview', isAuthenticated, createController.g_previ
 router.get('/create/standard/preview-meet', isAuthenticated, createController.g_previewmeet);
 router.get('/create/standard/preview-products', isAuthenticated, createController.g_previewproducts);
 router.get('/create/standard/guidance', isAuthenticated, createController.g_guidance);
+router.get('/create/standard/governance', isAuthenticated, createController.g_governance);
+router.get('/create/standard/validity', isAuthenticated, createController.g_validity);
 
 router.post('/create/standard/title', isAuthenticated, createController.p_title);
 router.post('/create/standard/summary', isAuthenticated, createController.p_summary);
@@ -77,8 +79,10 @@ router.post('/create/standard/contacts', isAuthenticated, createController.p_con
 router.post('/create/standard/add-tolerated-product', isAuthenticated, createController.p_addtoleratedproduct);
 router.post('/create/standard/add-contact', isAuthenticated, createController.p_addcontact);
 router.post('/create/standard/guidance', isAuthenticated, createController.p_guidance);
+router.post('/create/standard/governance', isAuthenticated, createController.p_governance);
 router.post('/create/standard/submit', isAuthenticated, createController.p_submit);
 router.post('/create/standard/confirm-delete', isAuthenticated, createController.p_confirmdelete);
+router.post('/create/standard/validity', isAuthenticated, createController.p_validity);
 
 // Manage routes for standard owners/drafters
 router.get('/manage', isAuthenticated, manageController.g_dashboard);

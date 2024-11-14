@@ -1,0 +1,109 @@
+{% extends "layouts/full.html" %}
+
+{% set selectedNav = "Create" %}
+{% set pageName = "When will a service have to reconfirm compliance with this standard?" %}
+{% set seoPageName = "" %}
+{% set pageDescription = ""%}
+
+{% set view = "standard" %}
+{% set sidenav = 'validity' %}
+
+{% block hero %}
+  {% include 'create/standard/_head.html' %}
+{% endblock %}
+
+{% block head %}
+  <meta name="robots" content="noindex, nofollow">
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-quarter">
+      {% include 'create/standard/_sidenav.html' %}
+    </div>
+    <div class="govuk-grid-column-three-quarters">
+
+      {% include 'partials/errorSummary.html' %}
+
+      <form action="/create/standard/validity" method="post">
+
+        <div class="govuk-form-group {% if errors %}govuk-form-group--error{% endif %}">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--l" aria-describedby="validity-hint">
+            <h1 class="govuk-fieldset__heading">
+              {{pageName}}
+            </h1>
+          </legend>
+          <div id="signIn-hint" class="govuk-hint">
+      This is the period of time after which a service will have to check it still meets the standard.
+    </div>
+          {% if errors %}
+            <span class="govuk-error-message">Select an option</span>
+          {% endif %}
+          <div class="govuk-radios" data-module="govuk-radios">
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="validity" name="validity" type="radio" value="Monthly" {% if standard.fields.validity == "Monthly" %}checked{% endif %}>
+              <label class="govuk-label govuk-radios__label" for="validity">
+                                    Monthly
+                                </label>
+            </div>
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="validity-2" name="validity" type="radio" value="3 months" {% if standard.fields.validity == "3 months" %}checked{% endif %}>
+              <label class="govuk-label govuk-radios__label" for="validity-2">
+                                    3 months
+                                </label>
+            </div>
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="validity-3" name="validity" type="radio" value="6 months" {% if standard.fields.validity == "6 months" %}checked{% endif %}>
+              <label class="govuk-label govuk-radios__label" for="validity-3">
+                                    6 months
+                                </label>
+            </div>
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="validity-4" name="validity" type="radio" value="12 months" {% if standard.fields.validity == "12 months" %}checked{% endif %}>
+              <label class="govuk-label govuk-radios__label" for="validity-4">
+                                   12 months
+                                </label>
+            </div>
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="validity-5" name="validity" type="radio" value="18 months" {% if standard.fields.validity == "18 months" %}checked{% endif %}>
+              <label class="govuk-label govuk-radios__label" for="validity-5">
+                                    18 months
+                                </label>
+            </div>
+
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="validity-6" name="validity" type="radio" value="2 years" {% if standard.fields.validity == "2 years" %}checked{% endif %}>
+              <label class="govuk-label govuk-radios__label" for="validity-6">
+                                    2 years
+                                </label>
+            </div>
+
+            <div class="govuk-radios__divider">or</div>
+
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="validity-7" name="validity" type="radio" value="Indefinitely" {% if standard.fields.validity == "Indefinitely" %}checked{% endif %}>
+              <label class="govuk-label govuk-radios__label" for="validity-7">
+                                   Valid indefinitely
+                                </label>
+              <div id="validity-7-item-hint" class="govuk-hint govuk-radios__hint">
+         Once a service has confirmed compliance with this standard, it will not need to reconfirm compliance.
+        </div>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+
+
+      <div class="govuk-button-group">
+        <button type="submit" class="govuk-button" data-module="govuk-button">
+Save and continue
+  </button>
+
+      </div>
+
+    </form>
+
+  </div>
+</div>
+
+{% endblock %}
