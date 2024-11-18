@@ -154,9 +154,12 @@ router.get('/admin/standard/preview-products/:id', isAuthenticated, adminControl
 router.get('/admin/admins', isAuthenticated, adminController.g_admins);
 router.get('/admin/:id', isAuthenticated, adminController.g_dashboard);
 router.get('/admin/standard/:id', isAuthenticated, adminController.g_manage);
+router.get('/admin/standard/task/governance/:id', isAuthenticated, adminController.g_governance);
 
 router.post('/admin/standard/outcome', isAuthenticated, adminController.p_outcome);
+router.post('/admin/standard/governance', isAuthenticated, adminController.p_governance);
 router.post('/admin/standard/publish', isAuthenticated, adminController.p_publish);
+
 
 
 // Standards routes

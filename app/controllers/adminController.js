@@ -2,9 +2,7 @@ require('dotenv').config();
 const client = require('../middleware/contentful.js');
 const previewClient = require('../middleware/contentful-preview.js');
 const managementClient = require('../middleware/contentful-management.js');
-
-const { updateStatus, addStandardHistoryEntry } = require('../data/contentful/updates.js');
-
+const { updateStatus, addStandardHistoryEntry, updateGovernance } = require('../data/contentful/updates.js');
 const { sendNotifyEmail } = require('../middleware/notify');
 
 // Helper function to fetch a standard entry by ID with error handling
@@ -131,6 +129,7 @@ exports.g_manage = async function (req, res) {
     }
 };
 
+
 exports.g_outcome = async function (req, res) {
     const { id } = req.params;
 
@@ -141,6 +140,20 @@ exports.g_outcome = async function (req, res) {
     }
 
     return res.render('admin/standard/approve', { standard });
+
+
+};
+
+exports.g_governance = async function (req, res) {
+    const { id } = req.params;
+
+    const standard = await fetchStandardById(id);
+
+    if (!standard) {
+        return res.status(404).send('Standard not found');
+    }
+
+    return res.render('admin/standard/governance', { standard });
 
 
 };
@@ -342,8 +355,14 @@ exports.p_outcome = async function (req, res) {
         standardName: standard.fields.title
     };
 
-    if (outcome === 'Approve') {
+   
 
+    if (outcome === 'Approve') {
+        if (standard.fields.governanceApproval == false) {
+                // Cant approve
+
+            return res.render('admin/standard/approve', {standard});
+        }
         // Update the statius of the standard to 'Approved'
 
         const stage = await client.getEntries({
@@ -419,13 +438,33 @@ exports.p_outcome = async function (req, res) {
             sendNotifyEmail(process.env.email_forumRejected, email, templateParams);
         });
 
-
+        return res.redirect(`/admin/standard/outcome-rejected/${standard_id}`);
     }
 
     // Send submittor, owner an email with the outcome 
 
     return res.redirect(`/admin/standard/${standard_id}`);
 };
+
+exports.p_governance = async function(req, res){
+
+    const { standard_id, governanceApproval } = req.body;
+
+    await updateGovernance(standard_id, governanceApproval === "Yes" ? true : false);
+
+    const historyData = {
+        action: "Governance outcome",
+        actionBy: req.session.User.FirstName + " " + req.session.User.LastName,
+        actionByEmail: req.session.User.EmailAddress,
+        actionDatetime: new Date().toISOString(),
+        comments: governanceApproval === "Yes" ? "Acceptable" : "Not acceptable"
+    }
+
+    await addStandardHistoryEntry(standard_id, historyData);
+
+    return res.redirect(`/admin/standard/${standard_id}`);
+
+}
 
 exports.p_publish = async function (req, res) {
     const { standard_id, action } = req.body;

@@ -1,0 +1,68 @@
+{% extends "layouts/full.html" %}
+{% set selectedNav = "Admin" %}
+{% set pageName = "How this standard will be governed" %}
+{% set seoPageName = "" %}
+{% set pageDescription = ""%}
+{% set view = "standard" %}
+
+{% set mainClasses = "govuk-!-padding-top-1" %}
+
+{% block hero %}
+    {% include 'partials/_head.html' %}
+{% endblock %}
+
+{% block content %}
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
+
+            <a href="/admin/standard/{{standard.sys.id}}" class="govuk-back-link govuk-!-margin-bottom-5">Back</a>
+
+            <form action="/admin/standard/governance" method="post">
+                <input type="hidden" name="standard_id" value="{{standard.sys.id}}">
+
+                <h1 class="govuk-heading-l">{{pageName}}</h1>
+
+                {% markdown %}
+                {{standard.fields.governance}}
+                {% endmarkdown %}
+
+                <div class="govuk-form-group">
+  <fieldset class="govuk-fieldset" aria-describedby="governanceApproval-hint">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+      <h2 class="govuk-fieldset__heading">
+        Is the governance satisfactory?
+      </h2>
+    </legend>
+    <div id="governanceApproval-hint" class="govuk-hint">
+      You won't be able to approve the standard if you select no.
+    </div>
+    <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
+      <div class="govuk-radios__item">
+        <input class="govuk-radios__input" id="governanceApproval" name="governanceApproval" type="radio" value="Yes">
+        <label class="govuk-label govuk-radios__label" for="governanceApproval">
+          Yes
+        </label>
+      </div>
+      <div class="govuk-radios__item">
+        <input class="govuk-radios__input" id="governanceApproval-2" name="governanceApproval" type="radio" value="No">
+        <label class="govuk-label govuk-radios__label" for="governanceApproval-2">
+          No
+        </label>
+      </div>
+    </div>
+  </fieldset>
+</div>
+
+                <div class="govuk-button-group">
+                    <button type="submit" class="govuk-button" data-module="govuk-button">Confirm outcome</button>
+                </button>
+                <a class="govuk-link" href="/admin/standard/{{standard.sys.id}}">Cancel and return to standard</a>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+{% endblock %}

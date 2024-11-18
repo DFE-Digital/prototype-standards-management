@@ -18,6 +18,42 @@
 
             <a href="/admin/standard/{{standard.sys.id}}" class="govuk-back-link govuk-!-margin-bottom-5">Back</a>
 
+            {% if standard.fields.governanceApproval == false %}
+
+            <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+  <div class="govuk-notification-banner__header">
+    <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+      Important
+    </h2>
+  </div>
+  <div class="govuk-notification-banner__content">
+    <p class="govuk-notification-banner__heading">
+      You cannot approve this standard as governance is not acceptable. You can 
+      <a class="govuk-notification-banner__link" href="/admin/standard/task/governance/{{standard.sys.id}}">review governance decision</a> or reject the standard and give a reason.
+    </p>
+  </div>
+</div>
+
+{% endif %}
+
+  {% if standard.fields.governanceApproval is not defined %}
+
+            <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+  <div class="govuk-notification-banner__header">
+    <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+      Important
+    </h2>
+  </div>
+  <div class="govuk-notification-banner__content">
+    <p class="govuk-notification-banner__heading">
+      You cannot approve or reject this standard as governance has not been answered. You must 
+      <a class="govuk-notification-banner__link" href="/admin/standard/task/governance/{{standard.sys.id}}">make governance decision</a> before continuing.
+    </p>
+  </div>
+</div>
+
+{% endif %}
+
             <form action="/admin/standard/outcome" method="post">
                 <input type="hidden" name="standard_id" value="{{standard.sys.id}}">
 
