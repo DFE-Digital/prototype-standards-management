@@ -74,6 +74,7 @@ app.use(favicon(path.join(__dirname, 'public/assets/images', 'favicon.ico')));
 app.set('view engine', 'html');
 
 app.locals.serviceName = "Manage standards";
+app.locals.standardsManualURL = process.env.standardsManualURL;
 
 // Set up Nunjucks as the template engine
 var nunjuckEnv = nunjucks.configure(

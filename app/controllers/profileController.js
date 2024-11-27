@@ -13,7 +13,7 @@ exports.g_profile = async (req, res, next) => {
             return res.redirect('/auth/sign-out');
         }
 
-        console.log(userInfo);
+        //console.log(userInfo);
        
         return res.render('profile/index', {userInfo});
     } catch (error) {
@@ -31,7 +31,7 @@ exports.g_changeName = async (req, res, next) => {
             return res.redirect('/auth/sign-out');
         }
 
-        console.log(userInfo);
+        //console.log(userInfo);
 
         return res.render('profile/change-name', { userInfo });
     } catch (error) {
@@ -48,7 +48,7 @@ exports.g_changeEmail = async (req, res, next) => {
             return res.redirect('/auth/sign-out');
         }
 
-        console.log(userInfo);
+        //console.log(userInfo);
 
         return res.render('profile/change-email', { userInfo });
     } catch (error) {

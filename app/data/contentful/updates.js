@@ -128,7 +128,7 @@ async function updateValidity(entryId, value) {
     });
 }
 
-async function updateGovernance(entryId, value) {
+async function updateGovernanceApproval(entryId, value) {
     return await updateEntry(entryId, {
         governanceApproval: { "en-US": value },
     });
@@ -714,4 +714,4 @@ async function createStandardEntry(standardData) {
 
 
 
-module.exports = { createStandardEntry, updateTitle, updateSummary, updateCategories, updatePurpose, updateGuidance, createApprovedProductEntry, updateApprovedProductsField, createToleratedProductEntry, updateToleratedProductsField, removeApprovedProductsField, updateApprovedProduct, createExceptionEntry, updateExceptionField, updateException, removeExceptionField, createPerson, updateContactField, removeContactField, updateSubCategories, updateStatus, deleteEntry, updateToDraft, addStandardHistoryEntry, updateVersion, updatePreviousVersion, updateGovernance, updateValidity, updateGovernance };
+module.exports = { createStandardEntry, updateTitle, updateSummary, updateCategories, updatePurpose, updateGuidance, createApprovedProductEntry, updateApprovedProductsField, createToleratedProductEntry, updateToleratedProductsField, removeApprovedProductsField, updateApprovedProduct, createExceptionEntry, updateExceptionField, updateException, removeExceptionField, createPerson, updateContactField, removeContactField, updateSubCategories, updateStatus, deleteEntry, updateToDraft, addStandardHistoryEntry, updateVersion, updatePreviousVersion, updateGovernance, updateValidity, updateGovernanceApproval };

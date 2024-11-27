@@ -30,7 +30,7 @@ router.get('/check-email', authController.g_checkemail);
 router.post('/sign-in', authController.p_signin);
 
 // Home route
-router.get("/", manageController.g_dashboard);
+router.get("/", isAuthenticated, manageController.g_dashboard);
 
 
 // Create routes for standard owners/drafters

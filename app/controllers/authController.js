@@ -120,9 +120,9 @@ exports.p_signin = [
                 // Send the email
                 const emailSent = await sendNotifyEmail(templateId, email, templateParams);
                 if (emailSent) {
-                    console.log('Email sent successfully');
+                    //('Email sent successfully');
                 } else {
-                    console.error('Failed to send email');
+                    //console.error('Failed to send email');
                 }
 
                 // Return the user to the check email page

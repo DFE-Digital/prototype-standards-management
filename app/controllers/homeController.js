@@ -2,7 +2,7 @@ require('dotenv').config();
 const client = require('../middleware/contentful.js');
 const previewClient = require('../middleware/contentful-preview.js');
 const managementClient = require('../middleware/contentful-management.js');
-
+const { cache, clearCache, removeFromCache } = require('../middleware/cache.js')
 
 
 exports.g_home = async function (req, res) {

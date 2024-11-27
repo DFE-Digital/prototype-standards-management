@@ -1,14 +1,31 @@
 require('dotenv').config();
+
 const client = require('../middleware/contentful.js');
 const previewClient = require('../middleware/contentful-preview.js');
 const managementClient = require('../middleware/contentful-management.js');
 const { updateStatus, addStandardHistoryEntry, updateGovernance } = require('../data/contentful/updates.js');
 const { sendNotifyEmail } = require('../middleware/notify');
+const { cache, clearCache, removeFromCache } = require('../middleware/cache.js')
 
-// Helper function to fetch a standard entry by ID with error handling
+
+// Helper function to fetch a standard entry by ID
 async function fetchStandardById(id) {
+    // Check if the result is already cached
+    
+    if (cache.has(id)) {
+        //(`Cache hit for ID ${id}`);
+        return cache.get(id);
+    }
+
     try {
-        return await previewClient.getEntry(id);
+        //console.log(`Fetching standard with ID ${id} from API`);
+        const entry = await previewClient.getEntry(id);
+
+        // Cache the result for future use
+        cache.set(id, entry);
+        //console.log(`Entry added to cache ${id}`)
+
+        return entry;
     } catch (error) {
         console.error(`Error fetching standard with ID ${id}:`, error);
         return null; // Handle the case when the entry is not found or there's an error
@@ -355,13 +372,13 @@ exports.p_outcome = async function (req, res) {
         standardName: standard.fields.title
     };
 
-   
+
 
     if (outcome === 'Approve') {
         if (standard.fields.governanceApproval == false) {
-                // Cant approve
+            // Cant approve
 
-            return res.render('admin/standard/approve', {standard});
+            return res.render('admin/standard/approve', { standard });
         }
         // Update the statius of the standard to 'Approved'
 
@@ -446,7 +463,7 @@ exports.p_outcome = async function (req, res) {
     return res.redirect(`/admin/standard/${standard_id}`);
 };
 
-exports.p_governance = async function(req, res){
+exports.p_governance = async function (req, res) {
 
     const { standard_id, governanceApproval } = req.body;
 

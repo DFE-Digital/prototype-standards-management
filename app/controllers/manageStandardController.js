@@ -2,13 +2,8 @@ require("dotenv").config();
 const client = require("../middleware/contentful.js");
 const previewClient = require("../middleware/contentful-preview.js");
 const managementClient = require("../middleware/contentful-management.js");
-
 const { updateStatus, addStandardHistoryEntry, updateVersion, updatePreviousVersion } = require('../data/contentful/updates.js');
-
-function generateRandomId() {
-    return Math.random().toString(36).substr(2, 9); // Generates a random string
-}
-
+const { cache, clearCache, removeFromCache } = require('../middleware/cache.js')
 
 
 // GETS //
@@ -38,6 +33,8 @@ exports.g_dashboard = async function (req, res) {
             order: "fields.number"
         });
 
+        
+
         // Whats my user email?
 
         let user = req.session.User.EmailAddress;
@@ -55,7 +52,7 @@ exports.g_dashboard = async function (req, res) {
             let owners = standard?.fields?.owners;
             let technicalContacts = standard?.fields?.technicalContacts;
 
-            console.log(owners);
+            //console.log(owners);
 
             if (creator === user) {
                 return true;
@@ -97,7 +94,7 @@ exports.g_dashboard = async function (req, res) {
 
 exports.g_standard_getdraft = async function (req, res) {
 
-    console.log('get draft');
+    //console.log('get draft');
 
     req.session.data = {};
 
@@ -609,7 +606,7 @@ exports.p_manage_purpose = async function (req, res) {
     // Update the standard guidance field in contentful
     let result = await updatePurposeField(standard_id, purpose);
 
-    console.log(result);
+    //console.log(result);
 
     req.session.success = true;
 
@@ -622,7 +619,7 @@ exports.p_manage_guidance = async function (req, res) {
     // Update the standard guidance field in contentful
     let result = await updateComplianceField(standard_id, guidance);
 
-    console.log(result);
+    //console.log(result);
 
     req.session.success = true;
 
@@ -632,11 +629,11 @@ exports.p_manage_guidance = async function (req, res) {
 exports.p_manage_considerations = async function (req, res) {
     const { standard_id, considerations } = req.body;
 
-    console.log(considerations);
+    //console.log(considerations);
 
     let result = await updateConsiderationsField(standard_id, considerations);
 
-    console.log(result);
+    //console.log(result);
 
     req.session.success = true;
 
@@ -646,11 +643,11 @@ exports.p_manage_considerations = async function (req, res) {
 exports.p_manage_templates = async function (req, res) {
     const { standard_id, templates } = req.body;
 
-    console.log(templates);
+    //console.log(templates);
 
     let result = await updateTemplatesField(standard_id, templates);
 
-    console.log(result);
+    //console.log(result);
 
     req.session.success = true;
 
@@ -726,7 +723,7 @@ exports.p_manage_addcontact = async function (req, res) {
 
         const person = response.items[0]; // Get the first result
 
-        console.log(person);
+        //console.log(person);
         if (contactType === "Owner") {
             const result = await addOwnerContact(standard_id, person.sys.id);
             if (result) {
@@ -920,7 +917,7 @@ async function createEntry(entryType, fields) {
         const environment = await getSpaceAndEnvironment();
         const newEntry = await environment.createEntry(entryType, { fields });
         await newEntry.publish();
-        console.log(`${entryType} entry created successfully:`, newEntry.sys.id);
+        //console.log(`${entryType} entry created successfully:`, newEntry.sys.id);
         return newEntry;
     } catch (error) {
         handleError(`creating ${entryType} entry`, error);
@@ -933,7 +930,7 @@ async function updateEntry(entryId, updateFields) {
         const entry = await environment.getEntry(entryId);
         Object.assign(entry.fields, updateFields);
         const updatedEntry = await entry.update();
-        console.log(`Entry ${entryId} updated successfully.`);
+        //console.log(`Entry ${entryId} updated successfully.`);
         return updatedEntry;
     } catch (error) {
         handleError(`updating entry ${entryId}`, error);
@@ -1013,7 +1010,7 @@ async function deleteException(exceptionId, standardId) {
             );
 
             await standardEntry.update();
-            console.log(`Updated standard with ID ${standardId} to remove the exception.`);
+            //(`Updated standard with ID ${standardId} to remove the exception.`);
         }
 
         const exceptionEntry = await environment.getEntry(exceptionId);
@@ -1024,7 +1021,7 @@ async function deleteException(exceptionId, standardId) {
         }
 
         await exceptionEntry.delete();
-        console.log(`Exception with ID ${exceptionId} deleted successfully.`);
+        //console.log(`Exception with ID ${exceptionId} deleted successfully.`);
         return true;
     } catch (error) {
         handleError("deleting exception or updating standard", error);
