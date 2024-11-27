@@ -3,7 +3,7 @@ require('dotenv').config();
 const client = require('../middleware/contentful.js');
 const previewClient = require('../middleware/contentful-preview.js');
 const managementClient = require('../middleware/contentful-management.js');
-const { updateStatus, addStandardHistoryEntry, updateGovernance } = require('../data/contentful/updates.js');
+const { updateStatus, addStandardHistoryEntry, updateGovernance, updateGovernanceApproval } = require('../data/contentful/updates.js');
 const { sendNotifyEmail } = require('../middleware/notify');
 const { cache, clearCache, removeFromCache } = require('../middleware/cache.js')
 
@@ -467,7 +467,7 @@ exports.p_governance = async function (req, res) {
 
     const { standard_id, governanceApproval } = req.body;
 
-    await updateGovernance(standard_id, governanceApproval === "Yes" ? true : false);
+    await updateGovernanceApproval(standard_id, governanceApproval === "Yes" ? true : false);
 
     const historyData = {
         action: "Governance outcome",
