@@ -42,12 +42,37 @@
         <div class="govuk-grid-column-three-quarters">
 
             {% include 'partials/errorSummary.html' %}
+   <form action="/create/standard/add-approved-product" method="post">
+            <h2 class="govuk-heading-l">Approved products and services</h2>
 
-            <h2 class="govuk-heading-l">Add an approved product or service</h2>
+            <p>The approved products which should be used to comply with this standard.</p>
 
-            <p>The approved and tolerated products that are associated with this standard.</p>
+<h3 class="govuk-heading-m">Select an existing approved product</h3>
 
-            <form action="/create/standard/add-approved-product" method="post">
+<p>These are existing approved products and services which you can select from.</p>
+
+                <div class="govuk-form-group {% if errors.products %}govuk-form-group--error{% endif %}">
+                    <legend class="govuk-fieldset__legend" for="approved_products">
+                        Select existing approved product
+                    </legend>
+                    {% if errors.products %}
+                        <span class="govuk-error-message">{{ errors.people }}</span>
+                    {% endif %}
+                    <select class="govuk-select govuk-!-width-one-half productlist" id="approved_products" name="approved_products">
+                        <option value=""></option>
+                        {% for product in products %}
+                            <option value="{{ product.value }}" {% if formData.approved_products == product.value %}selected{% endif %}>{{ product.text }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+
+            <h3 class="govuk-heading-m">Add a new approved product</h3>
+
+            <p>If there are no approved products that match your requirements, you can add a new one.</p>
+
+
+         
 
                 <div class="govuk-form-group {% if approved_name_error %}govuk-form-group--error{% endif %}">
                     <label class="govuk-label" for="approved_name">Approved product name</label>
@@ -97,4 +122,11 @@ Save and continue
         </div>
     </div>
 
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script>
+        accessibleAutocomplete.enhanceSelectElement({defaultValue: '', selectElement: document.querySelector('.productlist')})
+    </script>
 {% endblock %}

@@ -1,6 +1,6 @@
 require('dotenv').config();
 const { check, validationResult } = require('express-validator');
-const { validateTitle, validateSummary, validateCategory, validateSubCategories, validatePurpose, validateGuidance, validateApprovedFields, validateExceptionFields, validateContactFields, validateGovernance, validateValidity } = require('../validation/create.js');
+const { validateTitle, validateSummary, validateCategory, validateSubCategories, validatePurpose, validateGuidance, validateApprovedFields, validateToleratedFields, validateExceptionFields, validateContactFields, validateGovernance, validateValidity } = require('../validation/create.js');
 
 const client = require('../middleware/contentful.js');
 const previewClient = require('../middleware/contentful-preview.js');
@@ -516,10 +516,25 @@ exports.g_addapprovedproduct = async function (req, res) {
 
     let id = req.session.data['id'];
 
+    // Get the approved products
+
+    const response = await client.getEntries({
+        content_type: 'approvedProducts',
+        order: 'fields.product',
+        select: 'fields.product, sys.id, fields.vendor, fields.version'
+    });
+
+    const products = response.items.map(item => ({
+        text: item.fields.product + " (" + item.fields.vendor + ") - Version:  " + item.fields.version,
+        value: item.sys.id
+    }));
+
+
+
     if (id) {
         try {
             const standard = await previewClient.getEntry(id);
-            return res.render('create/standard/add-approved-product', { standard });
+            return res.render('create/standard/add-approved-product', { standard, products });
         } catch (error) {
             console.error("Error fetching standard entry from Contentful:", error);
             req.session.data['error'] = { error: 'Failed to fetch standard entry' };
@@ -593,6 +608,8 @@ exports.g_managecontact = async function (req, res) {
 
     let id = req.session.data['id'];
 
+
+
     if (id) {
         try {
             const standard = await previewClient.getEntry(id);
@@ -620,10 +637,21 @@ exports.g_addtoleratedproduct = async function (req, res) {
 
     let id = req.session.data['id'];
 
+    const response = await client.getEntries({
+        content_type: 'toleratedProducts',
+        order: 'fields.product',
+        select: 'fields.product, sys.id, fields.vendor, fields.version'
+    });
+
+    const products = response.items.map(item => ({
+        text: item.fields.product + " (" + item.fields.vendor + ") - Version:  " + item.fields.version,
+        value: item.sys.id
+    }));
+
     if (id) {
         try {
             const standard = await previewClient.getEntry(id);
-            return res.render('create/standard/add-tolerated-product', { standard });
+            return res.render('create/standard/add-tolerated-product', { standard, products });
         } catch (error) {
             console.error("Error fetching standard entry from Contentful:", error);
             req.session.data['error'] = { error: 'Failed to fetch standard entry' };
@@ -1073,6 +1101,7 @@ exports.p_contacts = async function (req, res) {
 exports.p_addapprovedproduct = [
     ...validateApprovedFields,
 
+
     async function (req, res) {
         const errors = validationResult(req);
         const id = req.session.data['id'];
@@ -1087,10 +1116,23 @@ exports.p_addapprovedproduct = [
             try {
                 const standard = await previewClient.getEntry(id);
 
+                const response = await client.getEntries({
+                    content_type: 'approvedProducts',
+                    order: 'fields.product',
+                    select: 'fields.product, sys.id, fields.vendor, fields.version'
+                });
+
+                const products = response.items.map(item => ({
+                    text: item.fields.product + " (" + item.fields.vendor + ") - Version:  " + item.fields.version,
+                    value: item.sys.id
+                }));
+
+
                 // Render the form with validation errors and the standard data
                 return res.render('create/standard/add-approved-product', {
                     errors: errors.array(),
                     standard,
+                    products,
                     formData: req.body // Include form data to populate fields
                 });
             } catch (error) {
@@ -1101,27 +1143,44 @@ exports.p_addapprovedproduct = [
         }
 
         // If no validation errors, proceed with the main functionality
-        const { approved_name, approved_vendor, approved_version, approved_usecase } = req.body;
+        const { approved_products, approved_name, approved_vendor, approved_version, approved_usecase } = req.body;
 
-        try {
-            // Create a new approved product entry
-            const newProductEntry = await createApprovedProductEntry(
-                approved_name,
-                approved_vendor,
-                approved_version,
-                approved_usecase
-            );
+        if (approved_products) {
+            // Just update the standard with the selected approved products
 
-            if (newProductEntry) {
-                // Update the standard to link the new product entry
-                await updateApprovedProductsField(id, newProductEntry.sys.id);
-
-                // Redirect upon successful entry creation and update
-                return res.redirect("/create/standard/products");
+            try {
+                await updateApprovedProductsField(id, approved_products);
+                return res.redirect('/create/standard/products');
             }
-        } catch (error) {
-            console.error("Error adding approved product:", error);
-            return res.status(500).send("Failed to add approved product.");
+            catch (error) {
+                console.error("Error updating approved products:", error);
+                req.session.data['error'] = { error: 'Failed to update approved products' };
+                return res.redirect('/create');
+
+            }
+        }
+        else {
+
+            try {
+                // Create a new approved product entry
+                const newProductEntry = await createApprovedProductEntry(
+                    approved_name,
+                    approved_vendor,
+                    approved_version,
+                    approved_usecase
+                );
+
+                if (newProductEntry) {
+                    // Update the standard to link the new product entry
+                    await updateApprovedProductsField(id, newProductEntry.sys.id);
+
+                    // Redirect upon successful entry creation and update
+                    return res.redirect("/create/standard/products");
+                }
+            } catch (error) {
+                console.error("Error adding approved product:", error);
+                return res.status(500).send("Failed to add approved product.");
+            }
         }
     }
 ];
@@ -1129,7 +1188,7 @@ exports.p_addapprovedproduct = [
 
 
 exports.p_addtoleratedproduct = [
-    ...validateApprovedFields, // Assuming you have validation setup for tolerated products
+    ...validateToleratedFields, // Assuming you have validation setup for tolerated products
 
     async function (req, res) {
         const errors = validationResult(req);
@@ -1145,10 +1204,22 @@ exports.p_addtoleratedproduct = [
             try {
                 const standard = await previewClient.getEntry(id);
 
+                const response = await client.getEntries({
+                    content_type: 'toleratedProducts',
+                    order: 'fields.product',
+                    select: 'fields.product, sys.id, fields.vendor, fields.version'
+                });
+
+                const products = response.items.map(item => ({
+                    text: item.fields.product + " (" + item.fields.vendor + ") - Version:  " + item.fields.version,
+                    value: item.sys.id
+                }));
+
                 // Render the form with validation errors and the standard data
                 return res.render('create/standard/add-tolerated-product', {
                     errors: errors.array(),
                     standard,
+                    products,
                     formData: req.body // Include form data to populate fields
                 });
             } catch (error) {
@@ -1158,28 +1229,45 @@ exports.p_addtoleratedproduct = [
             }
         }
 
-        const { tolerated_name, tolerated_vendor, tolerated_version, tolerated_usecase } = req.body;
+        const { tolerated_products, tolerated_name, tolerated_vendor, tolerated_version, tolerated_usecase } = req.body;
 
-        try {
-            // Create a new tolerated product entry
-            const newProductEntry = await createToleratedProductEntry(
-                tolerated_name,
-                tolerated_vendor,
-                tolerated_version,
-                tolerated_usecase
-            );
+        if (tolerated_products) {
+            // Just update the standard with the selected approved products
 
-            if (newProductEntry) {
-                // Update the standard to link the new product entry
-                await updateToleratedProductsField(id, newProductEntry.sys.id);
-
-                // Redirect upon successful entry creation and update
-                return res.redirect("/create/standard/products");
+            try {
+                await updateToleratedProductsField(id, tolerated_products);
+                return res.redirect('/create/standard/products');
             }
-        } catch (error) {
-            console.error("Error adding tolerated product:", error);
-            req.session.data['error'] = { error: 'Failed to add tolerated product' };
-            return res.redirect('/create');
+            catch (error) {
+                console.error("Error updating approved products:", error);
+                req.session.data['error'] = { error: 'Failed to update approved products' };
+                return res.redirect('/create');
+
+            }
+        }
+        else {
+
+            try {
+                // Create a new tolerated product entry
+                const newProductEntry = await createToleratedProductEntry(
+                    tolerated_name,
+                    tolerated_vendor,
+                    tolerated_version,
+                    tolerated_usecase
+                );
+
+                if (newProductEntry) {
+                    // Update the standard to link the new product entry
+                    await updateToleratedProductsField(id, newProductEntry.sys.id);
+
+                    // Redirect upon successful entry creation and update
+                    return res.redirect("/create/standard/products");
+                }
+            } catch (error) {
+                console.error("Error adding tolerated product:", error);
+                req.session.data['error'] = { error: 'Failed to add tolerated product' };
+                return res.redirect('/create');
+            }
         }
     }
 ];
@@ -1502,7 +1590,7 @@ exports.p_submit = async function (req, res) {
             uniqueawarenessList.forEach(email => {
                 sendNotifyEmail(process.env.email_standardSubmittedAwareness, email, templateParams);
             });
-   
+
             // Render the success view
             return res.render('create/standard/success', { id });
         }

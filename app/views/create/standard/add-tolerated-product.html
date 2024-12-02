@@ -16,55 +16,118 @@
     <meta name="robots" content="noindex, nofollow">
 {% endblock %}
 
+{% set tolerated_name_error = null %}
+{% set tolerated_vendor_error = null %}
+{% set tolerated_version_error = null %}
+{% set tolerated_usecase_error = null %}
+
+{% for error in errors %}
+    {% if error.path == "tolerated_name" %}
+        {% set tolerated_name_error = error.msg %}
+    {% elif error.path == "tolerated_vendor" %}
+        {% set tolerated_vendor_error = error.msg %}
+    {% elif error.path == "tolerated_version" %}
+        {% set tolerated_version_error = error.msg %}
+    {% elif error.path == "tolerated_usecase" %}
+        {% set tolerated_usecase_error = error.msg %}
+    {% endif %}
+{% endfor %}
+
+
+
 {% block content %}
-    <div class="govuk-grid-row">            <div class="govuk-grid-column-one-quarter">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-one-quarter">
             {% include 'create/standard/_sidenav.html' %}
         </div>
         <div class="govuk-grid-column-three-quarters">
-
-
-            <h2 class="govuk-heading-l">Add a tolerated product or service</h2>
-
-            <p>The tolerated and tolerated products that are associated with this standard.</p>
-
+                  {% include 'partials/errorSummary.html' %}
             <form action="/create/standard/add-tolerated-product" method="post">
+                <h2 class="govuk-heading-l">Tolerated products and services</h2>
 
-                <div class="govuk-form-group">
+                <p>The tolerated products which can be used to comply with this standard.</p>
+
+                <h3 class="govuk-heading-m">Select an existing tolerated product</h3>
+
+                <p>These are existing tolerated products and services which you can select from.</p>
+
+                <div class="govuk-form-group {% if errors.products %}govuk-form-group--error{% endif %}">
+                    <legend class="govuk-fieldset__legend" for="tolerated_products">
+                        Select existing tolerated product
+                    </legend>
+                    {% if errors.products %}
+                        <span class="govuk-error-message">{{ errors.products }}</span>
+                    {% endif %}
+                    <select class="govuk-select govuk-!-width-one-half productlist" id="tolerated_products" name="tolerated_products">
+                        <option value=""></option>
+                        {% for product in products %}
+                            <option value="{{ product.value }}" {% if formData.tolerated_products == product.value %}selected{% endif %}>{{ product.text }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <h3 class="govuk-heading-m">Add a new tolerated product</h3>
+
+                <p>If there are no tolerated products that match your requirements, you can add a new one.</p>
+
+                <div class="govuk-form-group {% if tolerated_name_error %}govuk-form-group--error{% endif %}">
                     <label class="govuk-label" for="tolerated-name">
-    Tolerated product name
-  </label>
-                    <input class="govuk-input" id="tolerated-name" name="tolerated_name" type="text">
-                </div>
-                <div class="govuk-form-group">
-                    <label class="govuk-label" for="tolerated-vendor">
-    Vendor or supplier
-  </label>
-                    <input class="govuk-input" id="tolerated-vendor" name="tolerated_vendor" type="text">
-                </div>
-                <div class="govuk-form-group">
-                    <label class="govuk-label" for="tolerated-version">
-    Version
-  </label>
-                    <input class="govuk-input" id="tolerated-version" name="tolerated_version" type="text">
+                        Tolerated product name
+                    </label>
+                    {% if tolerated_name_error %}
+                        <span class="govuk-error-message">{{ tolerated_name_error }}</span>
+                    {% endif %}
+                    <input class="govuk-input {% if tolerated_name_error %}govuk-input--error{% endif %}" 
+                           id="tolerated-name" name="tolerated_name" type="text" value="{{ formData['tolerated_name'] | escape }}">
                 </div>
 
-                <div class="govuk-form-group">
+                <div class="govuk-form-group {% if tolerated_vendor_error %}govuk-form-group--error{% endif %}">
+                    <label class="govuk-label" for="tolerated-vendor">
+                        Vendor or supplier
+                    </label>
+                    {% if tolerated_vendor_error %}
+                        <span class="govuk-error-message">{{ tolerated_vendor_error }}</span>
+                    {% endif %}
+                    <input class="govuk-input {% if tolerated_vendor_error %}govuk-input--error{% endif %}" 
+                           id="tolerated-vendor" name="tolerated_vendor" type="text" value="{{ formData['tolerated_vendor'] | escape }}">
+                </div>
+
+                <div class="govuk-form-group {% if tolerated_version_error %}govuk-form-group--error{% endif %}">
+                    <label class="govuk-label" for="tolerated-version">
+                        Version
+                    </label>
+                    {% if tolerated_version_error %}
+                        <span class="govuk-error-message">{{ tolerated_version_error }}</span>
+                    {% endif %}
+                    <input class="govuk-input {% if tolerated_version_error %}govuk-input--error{% endif %}" 
+                           id="tolerated-version" name="tolerated_version" type="text" value="{{ formData['tolerated_version'] | escape }}">
+                </div>
+
+                <div class="govuk-form-group {% if tolerated_usecase_error %}govuk-form-group--error{% endif %}">
                     <label class="govuk-label" for="tolerated-usecase">
-    Use-case
-  </label>
-                    <input class="govuk-input" id="tolerated-usecase" name="tolerated_usecase" type="text">
+                        Use-case
+                    </label>
+                    {% if tolerated_usecase_error %}
+                        <span class="govuk-error-message">{{ tolerated_usecase_error }}</span>
+                    {% endif %}
+                    <input class="govuk-input {% if tolerated_usecase_error %}govuk-input--error{% endif %}" 
+                           id="tolerated-usecase" name="tolerated_usecase" type="text" value="{{ formData['tolerated_usecase'] | escape }}">
                 </div>
 
                 <div class="govuk-button-group">
                     <button type="submit" class="govuk-button" data-module="govuk-button">
-Save and continue
-  </button>
+                        Save and continue
+                    </button>
                     <a class="govuk-link" href="/create/standard/products">Cancel and return to products</a>
                 </div>
-
             </form>
-
         </div>
     </div>
+{% endblock %}
 
+{% block scripts %}
+    {{ super() }}
+    <script>
+        accessibleAutocomplete.enhanceSelectElement({defaultValue: '', selectElement: document.querySelector('.productlist')})
+    </script>
 {% endblock %}
