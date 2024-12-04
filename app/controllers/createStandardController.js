@@ -1089,7 +1089,7 @@ exports.p_contacts = async function (req, res) {
             return res.render('create/standard/contacts', { errors, standard });
         }
 
-        return res.redirect("/create/standard");
+        return res.redirect("/create/standard/validity");
     } catch (error) {
         console.error("Error fetching standard entry from Contentful:", error);
         req.session.data['error'] = { error: 'Failed to fetch standard entry' };

@@ -816,7 +816,7 @@ exports.p_publish = async function (req, res) {
 
         await updateVersion(standard_id, 1.0);
 
-        await updatePreviousVersion(standard_id, entry.fields.version)
+        //await updatePreviousVersion(standard_id, entry.fields.version)
 
         // ToDo: Update the previous version to be the current version and update the version by .1 for minor changes and 1. for major changes like a change in products or exceptions. 
 
